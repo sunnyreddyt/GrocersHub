@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="SwipeRevealLayout">
+        <attr name="dragEdge">
+            <flag name="left" value="1" />
+            <flag name="right" value="2" />
+            <flag name="top" value="4" />
+            <flag name="bottom" value="8" />
+        </attr>
+
+        <attr name="mode">
+            <enum name="normal" value="0" />
+            <enum name="same_level" value="1" />
+        </attr>
+
+        <attr name="flingVelocity" format="integer" />
+
+        <attr name="minDistRequestDisallowParent" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="StickyScrollView">
+        <attr name="stickyFooter" format="reference" />
+        <attr name="stickyHeader" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ShadowLayout">
+        <attr name="sl_shadowed" format="boolean" />
+        <attr name="sl_shadow_distance" format="dimension" />
+        <attr name="sl_shadow_angle" format="integer" />
+        <attr name="sl_shadow_radius" format="dimension" />
+        <attr name="sl_shadow_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="expandableLayout">
+        <attr name="ael_duration" format="integer" />
+        <attr name="ael_expanded" format="boolean" />
+        <attr name="ael_defaultChildIndex" format="integer" />
+        <attr name="ael_defaultPosition" format="dimension" />
+        <attr name="ael_orientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+
+        <attr name="ael_interpolator" format="enum">
+            <enum name="accelerateDecelerate" value="0" />
+            <enum name="accelerate" value="1" />
+            <enum name="anticipate" value="2" />
+            <enum name="anticipateOvershoot" value="3" />
+            <enum name="bounce" value="4" />
+            <enum name="decelerate" value="5" />
+            <enum name="fastOutLinearIn" value="6" />
+            <enum name="fastOutSlowIn" value="7" />
+            <enum name="linear" value="8" />
+            <enum name="linearOutSlowIn" value="9" />
+            <enum name="overshoot" value="10" />
+        </attr>
+
+    </declare-styleable>
+
+
+    <!-- style reference -->
+    <declare-styleable name="MultiSliderTheme">
+        <attr name="multiSliderStyle" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="MultiSlider">
+
+
+        <attr name="scaleMin" format="integer" />
+        <attr name="scaleMax" format="integer" />
+        <attr name="scaleStep" format="integer" />
+
+
+        <attr name="stepsThumbsApart" format="integer" />
+        <attr name="drawThumbsApart" format="boolean" />
+
+        <attr name="android:thumb" />
+        <attr name="thumbNumber" format="integer" />
+        <attr name="android:thumbOffset" />
+
+        <attr name="thumbValue1" format="integer" />
+        <attr name="thumbValue2" format="integer" />
+        <attr name="range1" format="reference" />
+        <attr name="range2" format="reference" />
+
+        <attr name="android:track" />
+        <attr name="android:focusable" />
+
+        <attr name="range" format="reference" />
+
+        <attr name="mirrorForRTL" format="boolean" />
+
+        <attr name="thumbColor" format="color" />
+        <attr name="trackColor" format="color" />
+        <attr name="rangeColor" format="color" />
+        <attr name="range1Color" format="color" />
+        <attr name="range2Color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="Theme">
+        <attr name="discreteSeekBarStyle" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="DiscreteSeekBar">
+        <attr name="dsb_min" format="integer|dimension" />
+        <attr name="dsb_max" format="integer|dimension" />
+        <attr name="dsb_value" format="integer|dimension" />
+        <attr name="dsb_mirrorForRtl" format="boolean" />
+        <attr name="dsb_allowTrackClickToDrag" format="boolean" />
+        <attr name="dsb_progressColor" format="color|reference" />
+        <attr name="dsb_trackColor" format="color|reference" />
+        <attr name="dsb_indicatorTextAppearance" format="reference" />
+        <attr name="dsb_indicatorColor" format="color|reference" />
+        <attr name="dsb_indicatorElevation" format="dimension" />
+        <attr name="dsb_indicatorFormatter" format="string|reference" />
+        <attr name="dsb_rippleColor" format="color|reference" />
+        <attr name="dsb_indicatorPopupEnabled" format="boolean" />
+        <attr name="dsb_trackHeight" format="integer|dimension" />
+        <attr name="dsb_scrubberHeight" format="integer|dimension" />
+        <attr name="dsb_thumbSize" format="integer|dimension" />
+        <attr name="dsb_indicatorSeparation" format="integer|dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="BetterVideoPlayer">
+
+        <attr name="bvp_source" format="string" />
+        <attr name="bvp_title" format="string" />
+
+        <attr name="bvp_playDrawable" format="reference" />
+        <attr name="bvp_pauseDrawable" format="reference" />
+        <attr name="bvp_restartDrawable" format="reference" />
+        <attr name="bvp_loadingStyle">
+            <enum name="DoubleBounce" value="0" />
+            <enum name="RotatingPlane" value="1" />
+            <enum name="Wave" value="2" />
+            <enum name="WanderingCubes" value="3" />
+            <enum name="Pulse" value="4" />
+            <enum name="ChasingDots" value="5" />
+            <enum name="ThreeBounce" value="6" />
+            <enum name="Circle" value="7" />
+            <enum name="CubeGrid" value="8" />
+            <enum name="FadingCircle" value="9" />
+            <enum name="RotatingCircle" value="10" />
+        </attr>
+
+        <attr name="bvp_menu" format="reference" />
+
+        <attr name="bvp_hideControlsOnPlay" format="boolean" />
+        <attr name="bvp_autoPlay" format="boolean" />
+        <attr name="bvp_loop" format="boolean" />
+
+        <attr name="bvp_disableControls" format="boolean" />
+
+        <attr name="bvp_autoFullscreen" format="boolean" />
+
+        <attr name="bvp_captionSize" format="dimension" />
+        <attr name="bvp_captionColor" format="color" />
+
+    </declare-styleable>
+
+    <!--    <declare-styleable name="CustomTheme">
+            <attr name="gifViewStyle" format="reference" />
+        </declare-styleable>-->
+
+    <declare-styleable name="GifView">
+        <attr name="gif" format="reference" />
+        <attr name="paused" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomTheme">
+        <attr name="gifViewStyle" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="ArcHeader">
+        <attr name="arc_height" format="dimension" />
+        <attr name="arc_cropDirection" format="enum">
+            <enum name="cropInside" value="0" />
+            <enum name="cropOutside" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="RobotoTextView">
+        <attr name="typeface" />
+    </declare-styleable>
+
+    <attr name="typeface" format="enum">
+        <enum name="roboto_light" value="0" />
+        <enum name="roboto_regular" value="1" />
+        <enum name="roboto_medium" value="2" />
+        <enum name="roboto_bold" value="3" />
+    </attr>
+
+    <declare-styleable name="FlowLayout">
+        <attr name="android:gravity" />
+    </declare-styleable>
+
+    <declare-styleable name="FlowLayout_Layout">
+        <attr name="android:layout_gravity" />
+    </declare-styleable>
+
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension" />
+        <attr name="civ_border_color" format="color" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <attr name="civ_fill_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="FoldingCell">
+        <attr name="backSideColor" format="color" />
+        <attr name="animationDuration" format="integer" />
+        <attr name="additionalFlipsCount" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="LikeButton">
+        <attr name="icon_type" format="string" />
+        <attr name="icon_size" format="dimension|reference" />
+        <attr name="like_drawable" format="reference" />
+        <attr name="unlike_drawable" format="reference" />
+        <attr name="dots_primary_color" format="color|reference" />
+        <attr name="dots_secondary_color" format="color|reference" />
+        <attr name="circle_start_color" format="color|reference" />
+        <attr name="circle_end_color" format="color|reference" />
+        <attr name="liked" format="boolean" />
+        <attr name="is_enabled" format="boolean" />
+        <attr name="anim_scale_factor" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="ShapeView">
+        <attr name="shapeColor" format="color" />
+        <attr name="shapeStrokeColor" format="color" />
+        <attr name="shapeStrokeWidth" format="dimension" />
+        <attr name="shapeDashOnWidth" format="dimension" />
+        <attr name="shapeDashOffWidth" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="TicketShapeView">
+        <attr name="outerRadius" format="dimension" />
+        <attr name="innerRadius" format="dimension" />
+        <attr name="innerOffset" format="dimension" />
+        <attr name="innerMargin" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="ShineButton">
+        <attr name="btn_color" format="color" />
+        <attr name="btn_fill_color" format="color" />
+        <attr name="shine_count" format="integer" />
+        <attr name="shine_turn_angle" format="float" />
+        <attr name="small_shine_offset_angle" format="float" />
+        <attr name="enable_flashing" format="boolean" />
+        <attr name="allow_random_color" format="boolean" />
+        <attr name="small_shine_color" format="color" />
+        <attr name="big_shine_color" format="color" />
+        <attr name="shine_animation_duration" format="integer" />
+        <attr name="click_animation_duration" format="integer" />
+        <attr name="shine_distance_multiple" format="float" />
+        <attr name="shine_size" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="PorterImageView">
+        <attr name="siShape" format="integer|reference" />
+    </declare-styleable>
+
+</resources>

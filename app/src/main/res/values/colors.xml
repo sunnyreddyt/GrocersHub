@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#01d365</color>
+    <color name="colorPrimaryDark">#01d365</color>
+    <color name="colorAccent">#000000</color>
+
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="red">#ff0013</color>
+    <color name="background_color">#f7f7f7</color>
+    <color name="products_box_color">#ffffff</color>
+    <color name="grey">#8b8b8b</color>
+    <color name="area">#33383f</color>
+    <color name="category_active_icon">#01d365</color>
+    <color name="category_active_text">#000000</color>
+    <color name="green">#01d365</color>
+
+</resources>
