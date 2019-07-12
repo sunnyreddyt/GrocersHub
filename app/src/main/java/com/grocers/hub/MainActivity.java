@@ -1,7 +1,6 @@
 package com.grocers.hub;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +18,7 @@ import com.grocers.hub.fragments.AccountFragment;
 import com.grocers.hub.fragments.CartFragment;
 import com.grocers.hub.fragments.HomeFragment;
 import com.grocers.hub.fragments.SearchFragment;
-import com.grocers.hub.fragments.StoresFragment;
+import com.grocers.hub.fragments.CategoriesFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                fragment = new StoresFragment();
+                fragment = new CategoriesFragment();
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.mainFramelayout, fragment);
