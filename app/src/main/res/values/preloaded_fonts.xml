@@ -2,6 +2,7 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/concert_one</item>
+        <item>@font/poppins</item>
         <item>@font/poppins_medium</item>
         <item>@font/quicksand</item>
         <item>@font/quicksand_medium</item>

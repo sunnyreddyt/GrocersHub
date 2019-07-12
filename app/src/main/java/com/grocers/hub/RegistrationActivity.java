@@ -41,7 +41,7 @@ import java.util.List;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    EditText userNameEditText, emailEditText, passwordEditText;
+    EditText firstNameEditText, lastNameEditText, mobileNumberEditText, passwordEditText;
     TextView registerTextView;
     ABUtil abUtil;
     Shared shared;
@@ -54,8 +54,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
         abUtil = ABUtil.getInstance(RegistrationActivity.this);
         shared = new Shared(RegistrationActivity.this);
-        userNameEditText = (EditText) findViewById(R.id.userNameEditText);
-        emailEditText = (EditText) findViewById(R.id.emailEditText);
+        firstNameEditText = (EditText) findViewById(R.id.firstNameEditText);
+        lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
+        mobileNumberEditText = (EditText) findViewById(R.id.mobileNumberEditText);
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         registerTextView = (TextView) findViewById(R.id.registerTextView);
 
@@ -65,7 +66,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (userNameEditText.getText().toString().length() > 0 && emailEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
+                if (firstNameEditText.getText().toString().length() > 0 && lastNameEditText.getText().toString().length() > 0 && mobileNumberEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
 
                     // new Register().execute();
                     Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
@@ -75,128 +76,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(RegistrationActivity.this, "Enter Valid Details", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
-    }
-
-
-    private class Register extends AsyncTask<String, Integer, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            // TODO Auto-generated method stub
-            String str = postData();
-            return str;
-        }
-
-        protected void onPostExecute(String json) {
-
-            try {
-                if (json.length() > 0) {
-
-                    JSONObject jsonObjectMain;
-
-                    try {
-
-                        jsonObjectMain = new JSONObject(json);
-                        String path = "";
-                        Log.e("jsonObjectMain", "" + jsonObjectMain);
-
-                        if (jsonObjectMain.getString("error").equalsIgnoreCase("false")) {
-                            if (jsonObjectMain.has("userDetails")) {
-
-
-                                JSONObject userDetailsObject = jsonObjectMain.getJSONObject("userDetails");
-                                shared.setUserMobile(userDetailsObject.getString("user_mobile"));
-                                shared.setUserUserEmail(userDetailsObject.getString("user_email"));
-                                shared.setUserName(userDetailsObject.getString("user_name"));
-                                shared.setUserLocation(userDetailsObject.getString("user_location"));
-                                shared.setUserLatitude(userDetailsObject.getString("user_latitude"));
-                                shared.setUserLongitude(userDetailsObject.getString("user_longitude"));
-
-
-                                Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-
-                            }
-
-                        } else {
-                            Toast.makeText(RegistrationActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
-                        }
-
-
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                } else {
-
-                }
-
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-
-            }
-
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-        }
-
-        @SuppressWarnings("deprecation")
-        public String postData() {
-            // Create a new HttpClient and Post Header
-            HttpClient httpclient = new DefaultHttpClient();
-
-            HttpPost httppost = new HttpPost(Constants.BASE_URL + "createUser");
-
-            String json = "";
-            try {
-
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-
-                nameValuePairs.add(new BasicNameValuePair("user_name", userNameEditText.getText().toString()));
-                nameValuePairs.add(new BasicNameValuePair("email", emailEditText.getText().toString()));
-                nameValuePairs.add(new BasicNameValuePair("password", passwordEditText.getText().toString()));
-                nameValuePairs.add(new BasicNameValuePair("mobile_number", mobile_numberString));
-                nameValuePairs.add(new BasicNameValuePair("'user_location'", "Madhapur, Hyderabad"));
-                nameValuePairs.add(new BasicNameValuePair("'user_latitude'", "17.4483"));
-                nameValuePairs.add(new BasicNameValuePair("'user_longitude'", "78.3915"));
-
-
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                // Execute HTTP Post Request
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity httpEntity = response.getEntity();
-                InputStream is = httpEntity.getContent();
-
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(is, "iso-8859-1"), 8);
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-                is.close();
-                json = sb.toString();
-                Log.e("objJsonMain", "" + json);
-                Log.e("nameValuePairs", "" + nameValuePairs.toString());
-
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-                // TODO Auto-generated catch block
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return json;
-        }
     }
 }
