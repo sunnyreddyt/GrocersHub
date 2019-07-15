@@ -1,6 +1,7 @@
 package com.grocers.hub.fragments;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.grocers.hub.LoginActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.constants.Shared;
 
@@ -30,7 +32,7 @@ public class AccountFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_account, container, false);
+        View view = inflater.inflate(R.layout.fragment_account_duplicate, container, false);
 
         signOutLayout = (LinearLayout) view.findViewById(R.id.signOutLayout);
         userNameTextView = (TextView) view.findViewById(R.id.userNameTextView);
@@ -39,14 +41,13 @@ public class AccountFragment extends Fragment {
         ordersLayout = (LinearLayout) view.findViewById(R.id.ordersLayout);
         shared = new Shared(getActivity());
 
-
        /* userNameTextView.setText(shared.getUserName());
         userNumberTextView.setText(shared.getUserMobile());
         userMailTextView.setText(shared.getUserEmail());*/
+
         signOutLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 new AlertDialog.Builder(getActivity())
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -64,6 +65,8 @@ public class AccountFragment extends Fragment {
                                 shared.setUserLongitude("");
                                 Toast.makeText(getActivity(), "Signout Successful", Toast.LENGTH_SHORT).show();
 
+                                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                startActivity(intent);
 
                             }
 
@@ -76,7 +79,6 @@ public class AccountFragment extends Fragment {
 
                         })
                         .show();
-
 
             }
         });

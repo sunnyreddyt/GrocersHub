@@ -31,7 +31,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         productUnitsRecyclerView = (RecyclerView) findViewById(R.id.productUnitsRecyclerView);
         cartLayout = (RelativeLayout) findViewById(R.id.cartLayout);
 
-
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
         productImagesRecyclerView.setLayoutManager(mLayoutManager);
         productImagesListAdapter = new ProductImagesListAdapter(ProductDetailActivity.this, null);
@@ -41,7 +40,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         productUnitsRecyclerView.setLayoutManager(mLayoutManager1);
         productsUnitsAdapter = new ProductsUnitsAdapter(ProductDetailActivity.this, null);
         productUnitsRecyclerView.setAdapter(productsUnitsAdapter);
-
 
         cartLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +55,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
-
 
     }
 }

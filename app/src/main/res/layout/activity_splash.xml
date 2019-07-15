@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -26,7 +26,7 @@
                 android:layout_height="@dimen/_28sdp"
                 android:padding="@dimen/_4sdp"
                 android:src="@drawable/stores_near_icon"
-                android:tint="@color/white" />
+                android:tint="@color/black" />
 
             <TextView
                 android:id="@+id/locationTextView"
@@ -34,14 +34,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_10sdp"
                 android:ellipsize="end"
-                android:fontFamily="@font/quicksand"
+                android:fontFamily="@font/poppins"
                 android:gravity="center"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_5sdp"
                 android:text="122, Madhapur Jublee Hills. Hyderabad ..."
-                android:textColor="@color/white"
-                android:textSize="@dimen/_11sdp"
-                android:textStyle="bold" />
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
 
         </LinearLayout>
 
@@ -57,12 +56,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
             android:gravity="center"
-            android:visibility="invisible"
             android:text="Grocers Hub"
             android:textColor="@color/white"
             android:textSize="@dimen/_22sdp"
+            android:visibility="invisible"
             app:fontFamily="@font/yatra_one" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_150sdp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bottom_background"></LinearLayout>
 
 </RelativeLayout>

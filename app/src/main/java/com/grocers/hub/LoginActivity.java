@@ -38,7 +38,7 @@ import java.util.List;
 public class LoginActivity extends AppCompatActivity {
 
     EditText userNameEditText, passwordEditText;
-    TextView registerTextView, loginTextView;
+    TextView registerTextView, loginTextView, forgetPasswordTextView;
     ABUtil abUtil;
     Shared shared;
     String mobile_numberString;
@@ -54,7 +54,16 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         registerTextView = (TextView) findViewById(R.id.registerTextView);
         loginTextView = (TextView) findViewById(R.id.loginTextView);
+        forgetPasswordTextView = (TextView) findViewById(R.id.forgetPasswordTextView);
 
+
+        forgetPasswordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
 
         userNameEditText.setText("xxx");
         passwordEditText.setText("yyy");
@@ -77,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     // new Register().execute();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
 

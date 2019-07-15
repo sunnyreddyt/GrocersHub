@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ public class RegistrationActivity extends AppCompatActivity {
     TextView registerTextView;
     ABUtil abUtil;
     Shared shared;
+    ImageView backImageView;
     String mobile_numberString;
 
     @Override
@@ -56,12 +58,21 @@ public class RegistrationActivity extends AppCompatActivity {
         shared = new Shared(RegistrationActivity.this);
         firstNameEditText = (EditText) findViewById(R.id.firstNameEditText);
         lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
+        backImageView = (ImageView) findViewById(R.id.backImageView);
         mobileNumberEditText = (EditText) findViewById(R.id.mobileNumberEditText);
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         registerTextView = (TextView) findViewById(R.id.registerTextView);
 
         Intent intent = getIntent();
         mobile_numberString = intent.getStringExtra("mobile_number");
+
+
+        backImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         registerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +81,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                     // new Register().execute();
                     Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
 

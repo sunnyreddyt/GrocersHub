@@ -29,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
             android:text="Signin your account and get started"
             android:textColor="@color/black"
             android:textSize="@dimen/_12sdp" />
@@ -36,23 +37,23 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp">
+            android:layout_marginTop="@dimen/_15sdp">
 
             <EditText
                 android:id="@+id/userNameEditText"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:background="@drawable/item_border"
-                app:fontFamily="@font/poppins"
+                android:layout_height="wrap_content"
                 android:hint="Email / Mobile Number"
-                android:textColorHint="@color/black"
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:maxLength="40"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/_8sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/_12sdp"
+                app:fontFamily="@font/poppins" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -64,10 +65,7 @@
             <EditText
                 android:id="@+id/passwordEditText"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:background="@drawable/item_border"
-                app:fontFamily="@font/poppins"
-                android:textColorHint="@color/black"
+                android:layout_height="wrap_content"
                 android:hint="password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
@@ -75,7 +73,9 @@
                 android:paddingLeft="@dimen/_8sdp"
                 android:password="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/_12sdp"
+                app:fontFamily="@font/poppins" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -85,15 +85,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginTop="@dimen/_16sdp"
-            app:fontFamily="@font/poppins"
             android:paddingLeft="@dimen/_20sdp"
             android:paddingTop="@dimen/_5sdp"
             android:paddingRight="@dimen/_5sdp"
             android:paddingBottom="@dimen/_5sdp"
-            android:text="forgot password ?"
+            android:text="forgot password ? "
             android:textColor="@color/green"
             android:textSize="@dimen/_12sdp"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            app:fontFamily="@font/poppins" />
 
 
         <TextView
@@ -135,7 +135,7 @@
     <ImageView
         android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_150sdp"
+        android:layout_height="@dimen/_140sdp"
         android:layout_alignParentBottom="true"
         android:scaleType="fitXY"
         android:src="@drawable/bottom_background" />
@@ -149,7 +149,6 @@
         android:layout_gravity="right"
         android:layout_marginTop="@dimen/_16sdp"
         android:layout_marginBottom="@dimen/_20sdp"
-        app:fontFamily="@font/poppins_medium"
         android:gravity="center"
         android:paddingLeft="@dimen/_20sdp"
         android:paddingTop="@dimen/_5sdp"
@@ -157,7 +156,8 @@
         android:paddingBottom="@dimen/_5sdp"
         android:text="Dont have an account ? Signup"
         android:textColor="@color/black"
-        android:textSize="@dimen/_12sdp" />
+        android:textSize="@dimen/_12sdp"
+        app:fontFamily="@font/poppins_medium" />
 
 
 </RelativeLayout>

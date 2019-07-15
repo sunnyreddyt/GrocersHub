@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.grocers.hub.fragments.AccountFragment;
-import com.grocers.hub.fragments.CartFragment;
+import com.grocers.hub.fragments.OffersFragment;
 import com.grocers.hub.fragments.HomeFragment;
 import com.grocers.hub.fragments.SearchFragment;
 import com.grocers.hub.fragments.CategoriesFragment;
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                fragment = new CartFragment();
+                fragment = new OffersFragment();
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.mainFramelayout, fragment);

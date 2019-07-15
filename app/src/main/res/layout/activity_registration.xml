@@ -27,13 +27,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp">
+            android:layout_marginTop="@dimen/_15sdp">
 
             <EditText
                 android:id="@+id/firstNameEditText"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:background="@drawable/item_border"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
                 android:hint="First Name"
                 android:imeOptions="actionNext"
                 android:inputType="textCapWords"
@@ -55,8 +55,7 @@
             <EditText
                 android:id="@+id/lastNameEditText"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:background="@drawable/item_border"
+                android:layout_height="wrap_content"
                 android:hint="Last Name"
                 android:imeOptions="actionNext"
                 android:inputType="textCapWords"
@@ -78,8 +77,7 @@
             <EditText
                 android:id="@+id/mobileNumberEditText"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:background="@drawable/item_border"
+                android:layout_height="wrap_content"
                 android:hint="Mobile Number"
                 android:imeOptions="actionNext"
                 android:inputType="number"
@@ -102,8 +100,7 @@
             <EditText
                 android:id="@+id/passwordEditText"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:background="@drawable/item_border"
+                android:layout_height="wrap_content"
                 android:hint="password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
@@ -135,10 +132,10 @@
             android:textSize="@dimen/_12sdp"
             app:fontFamily="@font/poppins_medium" />
 
-
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/backImageView"
         android:layout_width="@dimen/_35sdp"
         android:layout_height="@dimen/_35sdp"
         android:layout_marginLeft="@dimen/_15sdp"
@@ -165,10 +162,10 @@
         android:paddingLeft="@dimen/_20sdp"
         android:paddingTop="@dimen/_5sdp"
         android:paddingRight="@dimen/_5sdp"
-        app:fontFamily="@font/poppins_medium"
         android:paddingBottom="@dimen/_5sdp"
         android:text="Have an account ? Signin"
         android:textColor="@color/black"
-        android:textSize="@dimen/_12sdp" />
+        android:textSize="@dimen/_12sdp"
+        app:fontFamily="@font/poppins_medium" />
 
 </RelativeLayout>
