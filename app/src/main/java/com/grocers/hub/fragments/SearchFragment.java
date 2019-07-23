@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.grocers.hub.R;
 import com.grocers.hub.constants.Constants;
 import com.grocers.hub.constants.Shared;
-import com.grocers.hub.utils.ABUtil;
+import com.grocers.hub.utils.GHUtil;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -46,7 +46,7 @@ import java.util.List;
 public class SearchFragment extends Fragment {
 
     EditText searchEditText;
-    ABUtil abUtil;
+    GHUtil abUtil;
     Shared shared;
 
     @Nullable
@@ -55,7 +55,7 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         shared = new Shared(getActivity());
-        abUtil = ABUtil.getInstance(getActivity());
+        abUtil = GHUtil.getInstance(getActivity());
         searchEditText = (EditText) view.findViewById(R.id.searchEditText);
 
 

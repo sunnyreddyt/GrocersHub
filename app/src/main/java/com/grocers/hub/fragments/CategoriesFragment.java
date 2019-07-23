@@ -1,12 +1,9 @@
 package com.grocers.hub.fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 
 import androidx.annotation.Nullable;
@@ -17,31 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.AllCategoriesListAdapter;
-import com.grocers.hub.adapters.CategoriesListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
-import com.grocers.hub.constants.Constants;
-import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CategoryModel;
-import com.grocers.hub.utils.ABUtil;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ctel-cpu-84 on 2/8/2018.

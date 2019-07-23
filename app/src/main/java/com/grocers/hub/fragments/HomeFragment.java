@@ -16,14 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.CartActivity;
-import com.grocers.hub.CategoryProductsActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.CategoriesListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OfferProductsListAdapter;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CategoryModel;
-import com.grocers.hub.utils.ABUtil;
+import com.grocers.hub.utils.GHUtil;
 
 import java.util.ArrayList;
 
@@ -36,7 +35,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     RecyclerView categoriesRecyclerView, offerProductsRecyclerView;
     public static ImageView recyclerLayout;
     TextView locationTextView;
-    ABUtil abUtil;
+    GHUtil abUtil;
     Shared shared;
     RelativeLayout cartLayout;
     CategoriesListAdapter categoriesListAdapter;
@@ -77,7 +76,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         locationTextView = (TextView) view.findViewById(R.id.locationTextView);
         cartLayout = (RelativeLayout) view.findViewById(R.id.cartLayout);
         shared = new Shared(getActivity());
-        abUtil = ABUtil.getInstance(getActivity());
+        abUtil = GHUtil.getInstance(getActivity());
 
         // categories ArrayList
         categoryModelArrayList = new ArrayList<CategoryModel>();

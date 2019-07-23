@@ -3,7 +3,6 @@ package com.grocers.hub.utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
@@ -26,25 +25,29 @@ import java.util.regex.Pattern;
 /**
  * Created by yakub on 08/10/15.
  */
-public class ABUtil {
+public class GHUtil {
 
-    public static ABUtil util;
+    public static GHUtil util;
     Context context;
     static Typeface lightFont;
     Typeface regularFont;
     Typeface mediumFont;
     private ProgressDialog progressdialog;
+    private static final Pattern[] inputRegexes = new Pattern[4];
 
-    private ABUtil(Context context) {
 
+    private GHUtil(Context context) {
         this.context = context;
-
-
     }
 
-    public static ABUtil getInstance(Context context) {
+    public static GHUtil getInstance(Context context) {
         if (util == null)
-            util = new ABUtil(context);
+            util = new GHUtil(context);
+
+        inputRegexes[0] = Pattern.compile(".*[A-Z].*");
+        inputRegexes[1] = Pattern.compile(".*[a-z].*");
+        inputRegexes[2] = Pattern.compile(".*\\d.*");
+        inputRegexes[3] = Pattern.compile(".*[`~!@#$%^&*()\\-_=+\\\\|\\[{\\]};:'\",<.>/?].*");
 
         return util;
     }
@@ -265,7 +268,7 @@ public class ABUtil {
         SharedPreferences.Editor edit = preferences.edit();
         edit.putString("parseDeviceToken", parseDeviceToken);
         edit.commit();
-        Log.d("ABUtil", "Device token saved");
+        Log.d("GHUtil", "Device token saved");
     }
 
     public void setFirstTimeInstallation() {
@@ -519,4 +522,15 @@ try {
 catch (Exception e){}
     }
 */
+
+    public static boolean isPasswordValid(String input) {
+        boolean inputMatches = true;
+        for (Pattern inputRegex : inputRegexes) {
+            if (!inputRegex.matcher(input).matches()) {
+                inputMatches = false;
+            }
+        }
+        return inputMatches;
+    }
+
 }

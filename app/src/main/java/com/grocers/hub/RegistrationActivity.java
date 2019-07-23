@@ -1,9 +1,8 @@
 package com.grocers.hub;
 
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,28 +12,17 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.grocers.hub.constants.Constants;
 import com.grocers.hub.constants.Shared;
-import com.grocers.hub.utils.ABUtil;
+import com.grocers.hub.models.GeneralRequest;
+import com.grocers.hub.models.GeneralResponse;
+import com.grocers.hub.models.customer;
+import com.grocers.hub.network.APIInterface;
+import com.grocers.hub.network.ApiClient;
+import com.grocers.hub.utils.GHUtil;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by sunnyreddy on 27/02/18.
@@ -42,30 +30,32 @@ import java.util.List;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    EditText firstNameEditText, lastNameEditText, mobileNumberEditText, passwordEditText;
+    EditText firstNameEditText, lastNameEditText, emailEditText, passwordEditText;
     TextView registerTextView;
-    ABUtil abUtil;
+    GHUtil ghUtil;
     Shared shared;
     ImageView backImageView;
     String mobile_numberString;
+    Context context;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        abUtil = ABUtil.getInstance(RegistrationActivity.this);
-        shared = new Shared(RegistrationActivity.this);
+        context = RegistrationActivity.this;
+
+        ghUtil = GHUtil.getInstance(context);
+        shared = new Shared(context);
         firstNameEditText = (EditText) findViewById(R.id.firstNameEditText);
         lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
         backImageView = (ImageView) findViewById(R.id.backImageView);
-        mobileNumberEditText = (EditText) findViewById(R.id.mobileNumberEditText);
+        emailEditText = (EditText) findViewById(R.id.emailEditText);
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         registerTextView = (TextView) findViewById(R.id.registerTextView);
 
         Intent intent = getIntent();
         mobile_numberString = intent.getStringExtra("mobile_number");
-
 
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,19 +67,60 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (firstNameEditText.getText().toString().length() > 0 && lastNameEditText.getText().toString().length() > 0 && mobileNumberEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
+                if (firstNameEditText.getText().toString().length() > 0 && lastNameEditText.getText().toString().length() > 0 && emailEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
 
-                    // new Register().execute();
-                    Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
+                    if (ghUtil.isPasswordValid(passwordEditText.getText().toString().trim())) {
+                        registerServiceCall();
+                    } else {
+                        Toast.makeText(context, "Password must contain atleast one number,special character, lower case and upper case", Toast.LENGTH_SHORT).show();
+                    }
 
                 } else {
-                    Toast.makeText(RegistrationActivity.this, "Enter Valid Details", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Enter Valid Details", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
+
+    public void registerServiceCall() {
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        GeneralRequest generalRequest = new GeneralRequest();
+        customer customerReq = new customer();
+        customerReq.setEmail(emailEditText.getText().toString().trim());
+        customerReq.setFirstname(firstNameEditText.getText().toString().trim());
+        customerReq.setLastname(lastNameEditText.getText().toString().trim());
+        generalRequest.setCustomer(customerReq);
+        generalRequest.setPassword(passwordEditText.getText().toString().trim());
+        Call<GeneralResponse> loginResponseCall = service.userLogin(generalRequest);
+        loginResponseCall.enqueue(new Callback<GeneralResponse>() {
+            @Override
+            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+                if (response.code() == 200) {
+                    if (response.body().getStatus().equalsIgnoreCase("200")) {
+                        Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(context, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    if (response.body().getMessage() != null) {
+                        Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeneralResponse> call, Throwable t) {
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 }

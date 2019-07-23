@@ -75,12 +75,12 @@
             android:layout_marginTop="@dimen/_5sdp">
 
             <EditText
-                android:id="@+id/mobileNumberEditText"
+                android:id="@+id/emailEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Mobile Number"
+                android:hint="Email"
                 android:imeOptions="actionNext"
-                android:inputType="number"
+                android:inputType="textEmailAddress"
                 android:maxLength="10"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/_8sdp"
