@@ -97,14 +97,38 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
                 if (response.code() == 200) {
                     if (response.body().getStatus().equalsIgnoreCase("200")) {
-                        Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(context, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
+                        shared.setToken(response.body().getToken());
+                        customerDetailsServiceCall();
                     } else {
                         Toast.makeText(context, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeneralResponse> call, Throwable t) {
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void customerDetailsServiceCall() {
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<GeneralResponse> loginResponseCall = service.customerDetails(shared.getToken());
+        loginResponseCall.enqueue(new Callback<GeneralResponse>() {
+            @Override
+            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+                if (response.code() == 200) {
+                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
+                    shared.setUserFirstName(response.body().getFirstname());
+                    shared.setUserLastName(response.body().getLastname());
+                    shared.setUserUserEmail(response.body().getEmail());
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }

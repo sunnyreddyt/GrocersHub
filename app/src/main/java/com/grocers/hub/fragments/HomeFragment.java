@@ -1,5 +1,6 @@
 package com.grocers.hub.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -16,15 +18,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.CartActivity;
+import com.grocers.hub.MainActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.CategoriesListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OfferProductsListAdapter;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.models.GeneralResponse;
+import com.grocers.hub.network.APIInterface;
+import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by ctel-cpu-78 on 4/20/2017.
@@ -44,6 +54,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     Integer[] icons = {R.drawable.ic_categories_black, R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs,
             R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs};
     String categories[] = {"All Categories", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household"};
+    Context context;
 
     @Nullable
     @Override
@@ -67,10 +78,13 @@ public class HomeFragment extends Fragment implements ItemClickListener {
             }
         });
 
+        getCategoriesServiceCall();
+
         return view;
     }
 
     public void init(View view) {
+        context = getActivity();
         categoriesRecyclerView = (RecyclerView) view.findViewById(R.id.categoriesRecyclerView);
         offerProductsRecyclerView = (RecyclerView) view.findViewById(R.id.offerProductsRecyclerView);
         locationTextView = (TextView) view.findViewById(R.id.locationTextView);
@@ -92,11 +106,6 @@ public class HomeFragment extends Fragment implements ItemClickListener {
             categoryModelArrayList.add(categoryModel);
         }
 
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        categoriesRecyclerView.setLayoutManager(mLayoutManager);
-        categoriesListAdapter = new CategoriesListAdapter(getActivity(), categoryModelArrayList);
-        categoriesRecyclerView.setAdapter(categoriesListAdapter);
-        categoriesListAdapter.setClickListener(this);
 
         //products List
         LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -140,4 +149,30 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         }
         categoriesListAdapter.notifyDataSetChanged();
     }
+
+
+    public void getCategoriesServiceCall() {
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<GeneralResponse> loginResponseCall = service.getCategories();
+        loginResponseCall.enqueue(new Callback<GeneralResponse>() {
+            @Override
+            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+                if (response.code() == 200) {
+                    LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+                    categoriesRecyclerView.setLayoutManager(mLayoutManager);
+                    categoriesListAdapter = new CategoriesListAdapter(getActivity(), categoryModelArrayList);
+                    categoriesRecyclerView.setAdapter(categoriesListAdapter);
+                    categoriesListAdapter.setClickListener(HomeFragment.this);
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeneralResponse> call, Throwable t) {
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

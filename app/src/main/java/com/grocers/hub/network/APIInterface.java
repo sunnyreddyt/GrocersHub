@@ -5,6 +5,7 @@ import com.grocers.hub.models.GeneralResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -14,12 +15,20 @@ import retrofit2.http.Query;
 public interface APIInterface {
 
     @Headers({"Accept: application/json"})
-    @POST("rest/V1/customers")
+    @POST("homeapi/customerlogin")
     Call<GeneralResponse> userLogin(@Body GeneralRequest generalRequest);
 
     @Headers({"Accept: application/json"})
     @POST("rest/V1/customers")
-    Call<GeneralResponse> checkBankDetails(@Header("Authorization") String auth, @Query("Aadhaar") String Aadhaar, @Query("BankAccountNo") String BankAccountNo, @Query("IFSCCode") String IFSCCode, @Query("BorrowerID") String BorrowerID);
+    Call<GeneralResponse> userRegistration(@Body GeneralRequest generalRequest);
+
+    @Headers({"Accept: application/json"})
+    @GET("rest//V1/customers/me")
+    Call<GeneralResponse> customerDetails(@Header("Authorization") String auth);
+
+    @Headers({"Accept: application/json"})
+    @GET("rest//V1/categories")
+    Call<GeneralResponse> getCategories();
 
    /* @Headers({"Accept: application/json"})
     @POST("client/centre-meeting")

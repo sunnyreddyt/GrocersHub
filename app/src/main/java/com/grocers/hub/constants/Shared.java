@@ -117,14 +117,34 @@ public class Shared extends Application {
         editor.commit();
     }
 
-    public String getCart() {
+    public String getToken() {
 
-        return preference.getString("Cart", "[]");
+        return preference.getString("Token", "");
     }
 
-    public void setCart(String Cart) {
+    public void setToken(String Token) {
         editor = preference.edit();
-        editor.putString("Cart", Cart);
+        editor.putString("Token", Token);
+        editor.commit();
+    }
+
+    public String getUserFirstName() {
+        return preference.getString("UserFirstName", "");
+    }
+
+    public void setUserFirstName(String UserFirstName) {
+        editor = preference.edit();
+        editor.putString("UserFirstName", UserFirstName);
+        editor.commit();
+    }
+
+    public String getUserLastName() {
+        return preference.getString("UserLastName", "");
+    }
+
+    public void setUserLastName(String UserLastName) {
+        editor = preference.edit();
+        editor.putString("UserLastName", UserLastName);
         editor.commit();
     }
 

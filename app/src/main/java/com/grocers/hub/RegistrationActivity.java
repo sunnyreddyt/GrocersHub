@@ -92,7 +92,7 @@ public class RegistrationActivity extends AppCompatActivity {
         customerReq.setLastname(lastNameEditText.getText().toString().trim());
         generalRequest.setCustomer(customerReq);
         generalRequest.setPassword(passwordEditText.getText().toString().trim());
-        Call<GeneralResponse> loginResponseCall = service.userLogin(generalRequest);
+        Call<GeneralResponse> loginResponseCall = service.userRegistration(generalRequest);
         loginResponseCall.enqueue(new Callback<GeneralResponse>() {
             @Override
             public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {

@@ -1,5 +1,7 @@
 package com.grocers.hub.models;
 
+import java.util.ArrayList;
+
 public class GeneralResponse {
 
     private String status;
@@ -9,6 +11,24 @@ public class GeneralResponse {
     private String firstname;
     private String lastname;
     private String message;
+    private String name;
+    ArrayList<GeneralResponse> children_data;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ArrayList<GeneralResponse> getChildren_data() {
+        return children_data;
+    }
+
+    public void setChildren_data(ArrayList<GeneralResponse> children_data) {
+        this.children_data = children_data;
+    }
 
     public String getMessage() {
         return message;
