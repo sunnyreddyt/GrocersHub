@@ -148,5 +148,16 @@ public class Shared extends Application {
         editor.commit();
     }
 
+
+    public String getCity() {
+        return preference.getString("City", "");
+    }
+
+    public void setCity(String City) {
+        editor = preference.edit();
+        editor.putString("City", City);
+        editor.commit();
+    }
+
 }
 

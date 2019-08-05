@@ -64,8 +64,8 @@ public class AllCategoriesListAdapter extends RecyclerView.Adapter<AllCategories
     public void onBindViewHolder(final AllCategoriesListAdapter.MyViewHolder holder, final int position) {
 
         CategoryModel categoryModel = categoryModelArrayList.get(position);
-        holder.categoryImageView.setImageResource(categoryModel.getCategoryIcon());
-        holder.categoryNameTextView.setText(categoryModel.getCategoryName());
+        holder.categoryImageView.setImageResource(R.drawable.ic_categories_black);
+        holder.categoryNameTextView.setText(categoryModel.getName());
         if (categoryModel.isCategoryBackground()) {
             holder.categoryBackgroundImageView.setImageResource(R.drawable.circle_filled_green);
             holder.categoryImageView.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
@@ -77,9 +77,9 @@ public class AllCategoriesListAdapter extends RecyclerView.Adapter<AllCategories
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (itemClickListener != null) {
+                /*if (itemClickListener != null) {
                     itemClickListener.onClick(position);
-                }
+                }*/
                 Intent intent = new Intent(mContext, CategoryProductsActivity.class);
                 mContext.startActivity(intent);
             }

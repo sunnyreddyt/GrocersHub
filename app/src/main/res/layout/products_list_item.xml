@@ -28,6 +28,7 @@
                 android:layout_width="@dimen/_135sdp"
                 android:layout_height="@dimen/_120sdp"
                 android:layout_centerInParent="true"
+                android:scaleType="fitXY"
                 android:src="#989898" />
 
             <RelativeLayout
@@ -62,7 +63,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/categoryNameTextView"
+            android:id="@+id/productNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
@@ -96,7 +97,7 @@
                 android:background="@drawable/strike_through"
                 android:gravity="center|right"
                 android:paddingLeft="@dimen/_3sdp"
-                android:text="₹420"
+                android:text="₹ XXX"
                 android:textSize="@dimen/_10sdp" />
 
         </RelativeLayout>

@@ -18,14 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.CartActivity;
-import com.grocers.hub.MainActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.CategoriesListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OfferProductsListAdapter;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CategoryModel;
-import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
@@ -45,15 +43,16 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     RecyclerView categoriesRecyclerView, offerProductsRecyclerView;
     public static ImageView recyclerLayout;
     TextView locationTextView;
-    GHUtil abUtil;
+    GHUtil ghUtil;
     Shared shared;
     RelativeLayout cartLayout;
     CategoriesListAdapter categoriesListAdapter;
     OfferProductsListAdapter offerProductsListAdapter;
     ArrayList<CategoryModel> categoryModelArrayList;
-    Integer[] icons = {R.drawable.ic_categories_black, R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs,
-            R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs};
-    String categories[] = {"All Categories", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household"};
+    /* Integer[] icons = {R.drawable.ic_categories_black, R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs,
+             R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs};
+     String categories[] = {"All Categories", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household"};
+     */
     Context context;
 
     @Nullable
@@ -90,22 +89,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         locationTextView = (TextView) view.findViewById(R.id.locationTextView);
         cartLayout = (RelativeLayout) view.findViewById(R.id.cartLayout);
         shared = new Shared(getActivity());
-        abUtil = GHUtil.getInstance(getActivity());
-
-        // categories ArrayList
-        categoryModelArrayList = new ArrayList<CategoryModel>();
-        for (int p = 0; p < 9; p++) {
-            CategoryModel categoryModel = new CategoryModel();
-            if (p == 0) {
-                categoryModel.setCategoryBackground(true);
-            } else {
-                categoryModel.setCategoryBackground(false);
-            }
-            categoryModel.setCategoryName(categories[p]);
-            categoryModel.setCategoryIcon(icons[p]);
-            categoryModelArrayList.add(categoryModel);
-        }
-
+        ghUtil = GHUtil.getInstance(getActivity());
 
         //products List
         LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -121,7 +105,6 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         }
 
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -153,23 +136,38 @@ public class HomeFragment extends Fragment implements ItemClickListener {
 
     public void getCategoriesServiceCall() {
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<GeneralResponse> loginResponseCall = service.getCategories();
-        loginResponseCall.enqueue(new Callback<GeneralResponse>() {
+        Call<CategoryModel> loginResponseCall = service.getCategories();
+        loginResponseCall.enqueue(new Callback<CategoryModel>() {
             @Override
-            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+            public void onResponse(Call<CategoryModel> call, Response<CategoryModel> response) {
                 if (response.code() == 200) {
+
+                    categoryModelArrayList = new ArrayList<CategoryModel>();
+                    CategoryModel categoryModel = new CategoryModel();
+                    categoryModel.setId(0);
+                    categoryModel.setCategoryBackground(true);
+                    categoryModel.setName("All Categories");
+                    categoryModelArrayList.add(categoryModel);
+
+                    for (int p = 0; p < response.body().getChildren_data().size(); p++) {
+                        categoryModelArrayList.add(response.body().getChildren_data().get(p));
+                    }
+
                     LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
                     categoriesRecyclerView.setLayoutManager(mLayoutManager);
                     categoriesListAdapter = new CategoriesListAdapter(getActivity(), categoryModelArrayList);
                     categoriesRecyclerView.setAdapter(categoriesListAdapter);
                     categoriesListAdapter.setClickListener(HomeFragment.this);
+
+                    ghUtil.setcategoryModel(response.body());
+
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<GeneralResponse> call, Throwable t) {
+            public void onFailure(Call<CategoryModel> call, Throwable t) {
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });

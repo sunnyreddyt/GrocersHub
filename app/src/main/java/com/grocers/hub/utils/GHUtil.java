@@ -16,7 +16,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.grocers.hub.R;
+import com.grocers.hub.models.CategoryModel;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -355,23 +357,23 @@ public class GHUtil {
     }*/
 
 
-   /* public void setCitiesList(GetSectorsResponse getCitiesResponse) {
+    public void setcategoryModel(CategoryModel categoryModel) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefsEditor = preferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(getCitiesResponse); // myObject - instance of MyObject
-        prefsEditor.putString("getCitiesResponse", json);
+        String json = gson.toJson(categoryModel); // myObject - instance of MyObject
+        prefsEditor.putString("categoryModel", json);
         prefsEditor.commit();
     }
 
 
-    public GetSectorsResponse getCitiesList(){
+    public CategoryModel getcategoryModel() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         Gson gson = new Gson();
-        String json = preferences.getString("getCitiesResponse", "");
-        GetSectorsResponse getCitiesResponse = gson.fromJson(json, GetSectorsResponse.class);
-        return getCitiesResponse;
-    }*/
+        String json = preferences.getString("categoryModel", "");
+        CategoryModel categoryModel = gson.fromJson(json, CategoryModel.class);
+        return categoryModel;
+    }
 
     public String getMobile() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -426,102 +428,6 @@ public class GHUtil {
         return matcher.matches();
     }
 
-
-  /*  public void showAdvertisement(Context con, String fileType) {
-
-try {
-    final Dialog dialog = new Dialog(con, R.style.Theme_D1NoTitleDim);
-    //  dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-    dialog.setContentView(R.layout.adv_popup);
-    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-
-    //  fileType = "video";
-    JWPlayerView mPlayerView;
-    JWEventHandler mEventHandler;
-    RelativeLayout jwPlayerLayout, viewpagerLayout;
-    final LinearLayout sector_llDots;
-    final ViewPagerAdapter viewPagerAdapter;
-    AutoScrollViewPager autoScrollViewPager;
-    int resources[] = {R.drawable.homedecorbig, R.drawable.homedecordown, R.drawable.homedecorup};
-
-    mPlayerView = (JWPlayerView) dialog.findViewById(R.id.jwplayer);
-    jwPlayerLayout = (RelativeLayout) dialog.findViewById(R.id.jwPlayerLayout);
-    viewpagerLayout = (RelativeLayout) dialog.findViewById(R.id.viewpagerLayout);
-    autoScrollViewPager = (AutoScrollViewPager) dialog.findViewById(R.id.sector_pager);
-    sector_llDots = (LinearLayout) dialog.findViewById(R.id.sector_llDots);
-
-    if (fileType.equals("image")) {
-
-        viewpagerLayout.setVisibility(View.VISIBLE);
-        jwPlayerLayout.setVisibility(View.GONE);
-
-    } else if (fileType.equals("video")) {
-
-        viewpagerLayout.setVisibility(View.GONE);
-        jwPlayerLayout.setVisibility(View.VISIBLE);
-
-    }
-
-    new KeepScreenOnHandler(mPlayerView, dialog.getWindow());
-    // mEventHandler = new JWEventHandler(mPlayerView, outputTextView);
-
-    //viewpager setting adapter
-    viewPagerAdapter = new ViewPagerAdapter(context, resources);
-    autoScrollViewPager.setAdapter(viewPagerAdapter);
-    autoScrollViewPager.startAutoScroll();
-    autoScrollViewPager.getInterval();
-
-
-    for (int in = 0; in < viewPagerAdapter.getCount(); in++) {
-        ImageButton imgDot = new ImageButton(context);
-        imgDot.setTag(in);
-        imgDot.setImageResource(R.drawable.dot_selector);
-        imgDot.setBackgroundResource(0);
-        imgDot.setPadding(2, 2, 2, 2);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 20);
-        imgDot.setLayoutParams(params);
-        if (in == 0)
-            imgDot.setSelected(true);
-
-        sector_llDots.addView(imgDot);
-    }
-
-    autoScrollViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-        @Override
-        public void onPageSelected(int pos) {
-            Log.e("", "Page Selected is ===> " + pos);
-            for (int i = 0; i < viewPagerAdapter.getCount(); i++) {
-                if (i != pos) {
-                    ((ImageView) sector_llDots.findViewWithTag(i)).setSelected(false);
-                }
-            }
-            ((ImageView) sector_llDots.findViewWithTag(pos)).setSelected(true);
-        }
-
-        @Override
-        public void onPageScrolled(int pos, float arg1, int arg2) {
-
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int arg0) {
-
-        }
-    });
-
-    PlaylistItem pi = new PlaylistItem.Builder()
-            .file("http://10.10.10.215/DT/HappyGiffy/happygiffy/backend/web/assets/images/marketing/video/20170214_114856.mp4")
-            .title("BipBop")
-            .description("A video player testing video.")
-            .build();
-    mPlayerView.load(pi);
-    dialog.show();
-}
-catch (Exception e){}
-    }
-*/
 
     public static boolean isPasswordValid(String input) {
         boolean inputMatches = true;

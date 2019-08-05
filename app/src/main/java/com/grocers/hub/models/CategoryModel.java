@@ -1,29 +1,25 @@
 package com.grocers.hub.models;
 
+import java.util.ArrayList;
+
 public class CategoryModel {
 
-    private String categoryName;
-    private int categoryIcon;
+    private int id;
+    private int parent_id;
+    private boolean is_active;
+    private String name;
+    private int position;
+    private int level;
+    private int product_count;
     private boolean categoryBackground;
+    private ArrayList<CategoryModel> children_data;
 
-    public String getCategoryName() {
-        return categoryName;
+    public ArrayList<CategoryModel> getChildren_data() {
+        return children_data;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public Integer getCategoryIcon() {
-        return categoryIcon;
-    }
-
-    public void setCategoryIcon(Integer categoryIcon) {
-        this.categoryIcon = categoryIcon;
-    }
-
-    public void setCategoryIcon(int categoryIcon) {
-        this.categoryIcon = categoryIcon;
+    public void setChildren_data(ArrayList<CategoryModel> children_data) {
+        this.children_data = children_data;
     }
 
     public boolean isCategoryBackground() {
@@ -32,5 +28,62 @@ public class CategoryModel {
 
     public void setCategoryBackground(boolean categoryBackground) {
         this.categoryBackground = categoryBackground;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getParent_id() {
+        return parent_id;
+    }
+
+    public void setParent_id(int parent_id) {
+        this.parent_id = parent_id;
+    }
+
+    public boolean isIs_active() {
+        return is_active;
+    }
+
+    public void setIs_active(boolean is_active) {
+        this.is_active = is_active;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getProduct_count() {
+        return product_count;
+    }
+
+    public void setProduct_count(int product_count) {
+        this.product_count = product_count;
     }
 }

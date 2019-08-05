@@ -14,33 +14,36 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.models.ProductsResponse;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyViewHolder> {
 
     private Context mContext;
-    ArrayList<CategoryModel> categoryModelArrayList;
+    ArrayList<ProductsResponse> productsResponseArrayList;
 
     public ProductsAdapter(Context mContext,
-                                    ArrayList<CategoryModel> categoryModelArrayList) {
+                           ArrayList<ProductsResponse> productsResponseArrayList) {
         this.mContext = mContext;
-        this.categoryModelArrayList = categoryModelArrayList;
+        this.productsResponseArrayList = productsResponseArrayList;
     }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout itemLayout;
-        TextView categoryNameTextView;
-        ImageView categoryBackgroundImageView, categoryImageView;
+        TextView productNameTextView, offerCostTextView, costTextView;
+        ImageView productImageView;
 
         public MyViewHolder(View view) {
             super(view);
             itemLayout = (LinearLayout) view.findViewById(R.id.itemLayout);
-            /*categoryNameTextView = (TextView) view.findViewById(R.id.categoryNameTextView);
-            categoryBackgroundImageView = (ImageView) view.findViewById(R.id.categoryBackgroundImageView);
-            categoryImageView = (ImageView) view.findViewById(R.id.categoryImageView);*/
+            productNameTextView = (TextView) view.findViewById(R.id.productNameTextView);
+            offerCostTextView = (TextView) view.findViewById(R.id.offerCostTextView);
+            costTextView = (TextView) view.findViewById(R.id.costTextView);
+            productImageView = (ImageView) view.findViewById(R.id.productImageView);
         }
     }
 
@@ -55,6 +58,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
     @Override
     public void onBindViewHolder(final ProductsAdapter.MyViewHolder holder, final int position) {
 
+        holder.productNameTextView.setText(productsResponseArrayList.get(position).getName());
+        holder.offerCostTextView.setText(String.valueOf(productsResponseArrayList.get(position).getPrice()));
+        Picasso.get().load(productsResponseArrayList.get(position).getImage()).into(holder.productImageView);
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,7 +72,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return 10;
+        return productsResponseArrayList.size();
     }
 
 }

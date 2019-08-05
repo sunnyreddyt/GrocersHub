@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
@@ -14,10 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.AllCategoriesListAdapter;
+import com.grocers.hub.adapters.CategoriesListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.network.APIInterface;
+import com.grocers.hub.network.ApiClient;
+import com.grocers.hub.utils.GHUtil;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by ctel-cpu-84 on 2/8/2018.
@@ -25,6 +34,7 @@ import java.util.ArrayList;
 
 public class CategoriesFragment extends Fragment implements ItemClickListener {
 
+    GHUtil ghUtil;
     RecyclerView categoriesRecyclerView;
     ArrayList<CategoryModel> categoryModelArrayList;
     Integer[] icons = {R.drawable.ic_categories_black, R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs,
@@ -38,15 +48,13 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         init(view);
 
-
         return view;
     }
 
     public void init(View view) {
         categoriesRecyclerView = (RecyclerView) view.findViewById(R.id.categoriesRecyclerView);
-
-
-        // categories ArrayList
+        ghUtil = GHUtil.getInstance(getActivity());
+        /*// categories ArrayList
         categoryModelArrayList = new ArrayList<CategoryModel>();
         for (int p = 0; p < 9; p++) {
             CategoryModel categoryModel = new CategoryModel();
@@ -64,12 +72,13 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
         categoriesRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         allCategoriesListAdapter = new AllCategoriesListAdapter(getActivity(), categoryModelArrayList);
         categoriesRecyclerView.setAdapter(allCategoriesListAdapter);
-        allCategoriesListAdapter.setClickListener(this);
+        allCategoriesListAdapter.setClickListener(this);*/
+
     }
 
     @Override
     public void onClick(int position) {
-        for (int p = 0; p < categoryModelArrayList.size(); p++) {
+        /*for (int p = 0; p < categoryModelArrayList.size(); p++) {
             CategoryModel categoryModel = categoryModelArrayList.get(p);
             if (p == position) {
                 categoryModel.setCategoryBackground(true);
@@ -78,7 +87,43 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
             }
             categoryModelArrayList.set(p, categoryModel);
         }
-        allCategoriesListAdapter.notifyDataSetChanged();
+        allCategoriesListAdapter.notifyDataSetChanged();*/
+    }
+
+
+    public void getCategoriesServiceCall() {
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<CategoryModel> loginResponseCall = service.getCategories();
+        loginResponseCall.enqueue(new Callback<CategoryModel>() {
+            @Override
+            public void onResponse(Call<CategoryModel> call, Response<CategoryModel> response) {
+                if (response.code() == 200) {
+
+                    categoryModelArrayList = new ArrayList<CategoryModel>();
+                    CategoryModel categoryModel = new CategoryModel();
+                    categoryModel.setId(0);
+                    categoryModel.setCategoryBackground(true);
+                    categoryModel.setName("All Categories");
+                    categoryModelArrayList.add(categoryModel);
+
+                    for (int p = 0; p < response.body().getChildren_data().size(); p++) {
+                        categoryModelArrayList.add(response.body().getChildren_data().get(p));
+                    }
+
+                    categoriesRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+                    allCategoriesListAdapter = new AllCategoriesListAdapter(getActivity(), categoryModelArrayList);
+                    categoriesRecyclerView.setAdapter(allCategoriesListAdapter);
+                    allCategoriesListAdapter.setClickListener(CategoriesFragment.this);
+                } else {
+                    Toast.makeText(getActivity(), "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryModel> call, Throwable t) {
+                Toast.makeText(getActivity(), "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

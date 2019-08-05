@@ -1,7 +1,9 @@
 package com.grocers.hub.network;
 
+import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
+import com.grocers.hub.models.ProductsResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -9,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /*Interface for all api's*/
@@ -28,7 +31,11 @@ public interface APIInterface {
 
     @Headers({"Accept: application/json"})
     @GET("rest//V1/categories")
-    Call<GeneralResponse> getCategories();
+    Call<CategoryModel> getCategories();
+
+    @Headers({"Accept: application/json"})
+    @GET("homeapi/Categoryproducts?")
+    Call<ProductsResponse> getProducts(@Query("categoryId") int categoryId);
 
    /* @Headers({"Accept: application/json"})
     @POST("client/centre-meeting")

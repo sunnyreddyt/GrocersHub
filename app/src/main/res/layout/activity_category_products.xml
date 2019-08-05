@@ -114,6 +114,16 @@
 
     </RelativeLayout>
 
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/subCategoriesRecyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginRight="@dimen/_10sdp"></androidx.recyclerview.widget.RecyclerView>
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productsRecyclerView"
         android:layout_width="wrap_content"
