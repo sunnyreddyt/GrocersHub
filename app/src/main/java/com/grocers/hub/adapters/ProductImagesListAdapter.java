@@ -12,33 +12,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.R;
 import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.models.ProductDetailsResponse;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class ProductImagesListAdapter extends RecyclerView.Adapter<ProductImagesListAdapter.MyViewHolder> {
 
     private Context mContext;
-    ArrayList<CategoryModel> categoryModelArrayList;
+    private ArrayList<ProductDetailsResponse> media_gallery_entries;
 
-    public ProductImagesListAdapter(Context mContext,
-                                    ArrayList<CategoryModel> categoryModelArrayList) {
+    public ProductImagesListAdapter(Context mContext, ArrayList<ProductDetailsResponse> media_gallery_entries) {
         this.mContext = mContext;
-        this.categoryModelArrayList = categoryModelArrayList;
+        this.media_gallery_entries = media_gallery_entries;
     }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout itemLayout;
-        TextView categoryNameTextView;
-        ImageView categoryBackgroundImageView, categoryImageView;
+        ImageView productImageView;
 
         public MyViewHolder(View view) {
             super(view);
-            /*itemLayout = (RelativeLayout) view.findViewById(R.id.itemLayout);
-            categoryNameTextView = (TextView) view.findViewById(R.id.categoryNameTextView);
-            categoryBackgroundImageView = (ImageView) view.findViewById(R.id.categoryBackgroundImageView);
-            categoryImageView = (ImageView) view.findViewById(R.id.categoryImageView);*/
+            productImageView = (ImageView) view.findViewById(R.id.productImageView);
         }
     }
 
@@ -53,11 +49,12 @@ public class ProductImagesListAdapter extends RecyclerView.Adapter<ProductImages
     @Override
     public void onBindViewHolder(final ProductImagesListAdapter.MyViewHolder holder, final int position) {
 
+        Picasso.get().load(media_gallery_entries.get(position).getFile()).into(holder.productImageView);
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return media_gallery_entries.size();
     }
 
 }

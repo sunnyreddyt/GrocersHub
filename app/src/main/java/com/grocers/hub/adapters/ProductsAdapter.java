@@ -65,6 +65,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, ProductDetailActivity.class);
+                String skuID = productsResponseArrayList.get(position).getSku();
+                intent.putExtra("skuID", skuID);
                 mContext.startActivity(intent);
             }
         });

@@ -127,6 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_12sdp"
                     android:layout_weight="0.7"
+                    android:id="@+id/productNameTextView"
                     android:text="Freedom Refined Sunflower Oil 1L Pack"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_13sdp" />
@@ -138,15 +139,34 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="₹420"
-                        android:textColor="@color/green"
-                        android:textSize="@dimen/_13sdp"
-                        android:textStyle="bold"
-                        app:fontFamily="@font/poppins_medium" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="₹"
+                            android:textColor="@color/green"
+                            android:textSize="@dimen/_13sdp"
+                            android:textStyle="bold"
+                            app:fontFamily="@font/poppins_medium" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="420"
+                            android:id="@+id/productPriceTextView"
+                            android:textColor="@color/green"
+                            android:textSize="@dimen/_13sdp"
+                            android:textStyle="bold"
+                            app:fontFamily="@font/poppins_medium" />
+
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
