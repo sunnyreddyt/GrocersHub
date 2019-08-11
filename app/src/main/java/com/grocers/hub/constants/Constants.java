@@ -1,7 +1,7 @@
 package com.grocers.hub.constants;
 
 /*****
- ********        Created by ctel-cpu-50 on 9/16/2016.
+ ********        Created by Sarveshwar Reddy on 08/08/2019.
  **************/
 
 public class Constants {
@@ -10,9 +10,10 @@ public class Constants {
    public static String BASE_URL = "http://10.10.10.131/DT/ctisconnect";*/
 
     //Live url
-    public static String BASE_URL = "http://192.168.0.11:12/SunnyProjects/Pricer/public/";
+    //public static String BASE_URL = "http://192.168.0.11:12/SunnyProjects/Pricer/public/";
+    public static String PRODUCT_IMAGE__BASE_URL = "https://www.grocershub.in/pub/media/catalog/product";
 
-   // public static String BASE_URL = "http://183.82.106.234:9999/";
+    // public static String BASE_URL = "http://183.82.106.234:9999/";
 
 
     public static final String TRUE = "true";

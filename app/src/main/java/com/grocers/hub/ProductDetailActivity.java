@@ -11,31 +11,29 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.ProductImagesListAdapter;
-import com.grocers.hub.adapters.ProductsAdapter;
 import com.grocers.hub.adapters.ProductsUnitsAdapter;
+import com.grocers.hub.constants.Constants;
 import com.grocers.hub.models.ProductDetailsResponse;
-import com.grocers.hub.models.ProductsResponse;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
-
-import java.util.ArrayList;
+import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductDetailActivity extends AppCompatActivity {
+public class ProductDetailActivity extends AppCompatActivity implements ItemClickListener {
 
     RecyclerView productImagesRecyclerView, productUnitsRecyclerView;
     ProductImagesListAdapter productImagesListAdapter;
     ProductsUnitsAdapter productsUnitsAdapter;
     RelativeLayout cartLayout;
-    ImageView backImageView;
+    ImageView backImageView, productImageView;
     String skuID;
     TextView productNameTextView, productPriceTextView;
     ProductDetailsResponse productDetailsResponse;
@@ -52,6 +50,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         context = ProductDetailActivity.this;
         productPriceTextView = (TextView) findViewById(R.id.productPriceTextView);
         productNameTextView = (TextView) findViewById(R.id.productNameTextView);
+        productImageView = (ImageView) findViewById(R.id.productImageView);
 
         Intent intent = getIntent();
         skuID = intent.getStringExtra("skuID");
@@ -97,10 +96,14 @@ public class ProductDetailActivity extends AppCompatActivity {
                         productNameTextView.setText(name);
                         productPriceTextView.setText(String.valueOf(productDetailsResponse.getPrice()));
 
+                        if (productDetailsResponse.getMedia_gallery_entries().size() > 0) {
+                            Picasso.get().load(Constants.PRODUCT_IMAGE__BASE_URL + productDetailsResponse.getMedia_gallery_entries().get(0).getFile()).into(productImageView);
+                        }
                         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
                         productImagesRecyclerView.setLayoutManager(mLayoutManager);
                         productImagesListAdapter = new ProductImagesListAdapter(ProductDetailActivity.this, productDetailsResponse.getMedia_gallery_entries());
                         productImagesRecyclerView.setAdapter(productImagesListAdapter);
+                        productImagesListAdapter.setClickListener(ProductDetailActivity.this);
                     }
 
                 } else {
@@ -113,5 +116,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onClick(int position) {
+        Picasso.get().load(Constants.PRODUCT_IMAGE__BASE_URL + productDetailsResponse.getMedia_gallery_entries().get(position).getFile()).into(productImageView);
     }
 }
