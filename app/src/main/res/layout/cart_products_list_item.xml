@@ -28,6 +28,7 @@
 
                 <ImageView
                     android:layout_width="@dimen/_60sdp"
+                    android:id="@+id/productImageView"
                     android:layout_height="@dimen/_70sdp"
                     android:background="@color/grey" />
 
@@ -39,6 +40,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/productNameTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Tata Sampann Organic Moong Dai"
@@ -46,6 +48,7 @@
                         android:textSize="@dimen/_12sdp" />
 
                     <TextView
+                        android:id="@+id/productQuantityTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"

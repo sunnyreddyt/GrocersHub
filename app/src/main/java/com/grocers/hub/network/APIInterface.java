@@ -1,10 +1,18 @@
 package com.grocers.hub.network;
 
+import com.grocers.hub.models.AddToCartRequest;
+import com.grocers.hub.models.AddToCartResponse;
+import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
+import com.grocers.hub.models.PaymentRequest;
 import com.grocers.hub.models.ProductDetailsResponse;
 import com.grocers.hub.models.ProductsResponse;
+import com.grocers.hub.models.QuoteIDResponse;
+import com.grocers.hub.models.ShippingAddressRequest;
+import com.grocers.hub.models.ShippingResponse;
+import com.grocers.hub.models.SimilarProductsResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -36,11 +44,36 @@ public interface APIInterface {
 
     @Headers({"Accept: application/json"})
     @GET("homeapi/Categoryproducts?")
-    Call<ProductsResponse> getProducts(@Query("categoryId") int categoryId,@Query("zipcode") String zipcode);
+    Call<ProductsResponse> getProducts(@Query("categoryId") int categoryId, @Query("zipcode") String zipcode);
 
     @Headers({"Accept: application/json"})
     @GET("/rest/V1/products/{id}")
     Call<ProductDetailsResponse> getProductDetails(@Path("id") String Id);
+
+    @Headers({"Accept: application/json"})
+    @GET("homeapi/Similarproduct?")
+    Call<SimilarProductsResponse> getSimilarProducts(@Query("sku") String sku);
+
+    @Headers({"Accept: application/json"})
+    @GET("homeapi/Quoteid?")
+    Call<QuoteIDResponse> getQuoteID(@Query("token") String token, @Query("customer_id") String customer_id);
+
+    @Headers({"Accept: application/json"})
+    @POST("rest/V1/carts/mine/items")
+    Call<AddToCartResponse> addToCart(@Header("Authorization") String auth, @Body AddToCartRequest addToCartRequest);
+
+    @Headers({"Accept: application/json"})
+    @GET("rest/V1/carts/mine")
+    Call<CartResponse> getCartProducts(@Header("Authorization") String auth);
+
+    @Headers({"Accept: application/json"})
+    @POST("rest/V1/carts/mine/items")
+    Call<ShippingResponse> setShipping(@Header("Authorization") String auth, @Body ShippingAddressRequest shippingAddressRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("rest/V1/carts/mine/items")
+    Call<GeneralResponse> setPayment(@Header("Authorization") String auth, @Body PaymentRequest paymentRequest);
+
 
    /* @Headers({"Accept: application/json"})
     @POST("client/centre-meeting")

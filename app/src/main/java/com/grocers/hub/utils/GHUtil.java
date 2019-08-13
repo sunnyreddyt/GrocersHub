@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.grocers.hub.R;
 import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.models.ShippingResponse;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -338,24 +339,25 @@ public class GHUtil {
         prefsEditor.commit();
     }
 
-    public void setCompaniesList(CompaniesListResponse companiesListResponse) {
+    */
+
+    public void setShippingResponse(ShippingResponse shippingResponse) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefsEditor = preferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(companiesListResponse); // myObject - instance of MyObject
-        prefsEditor.putString("companiesListResponse", json);
+        String json = gson.toJson(shippingResponse); // myObject - instance of MyObject
+        prefsEditor.putString("shippingResponse", json);
         prefsEditor.commit();
     }
 
 
-    public CompaniesListResponse getCompaniesList(){
+    public ShippingResponse getShippingResponse() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         Gson gson = new Gson();
-        String json = preferences.getString("companiesListResponse", "");
-        CompaniesListResponse companiesListResponse = gson.fromJson(json, CompaniesListResponse.class);
-        return companiesListResponse;
-    }*/
-
+        String json = preferences.getString("shippingResponse", "");
+        ShippingResponse shippingResponse = gson.fromJson(json, ShippingResponse.class);
+        return shippingResponse;
+    }
 
     public void setcategoryModel(CategoryModel categoryModel) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

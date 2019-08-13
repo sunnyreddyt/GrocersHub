@@ -44,7 +44,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomLayout"
-        android:layout_below="@+id/topLayout">
+        android:layout_below="@+id/topLayout"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/paymentMethodsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -52,15 +58,8 @@
             android:layout_marginLeft="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginRight="@dimen/_20sdp"
-            android:orientation="vertical">
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins"
-                android:paddingLeft="@dimen/_6sdp"
-                android:text="Debit / Credit Cart"
-                android:textSize="@dimen/_12sdp" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <RadioButton
                 android:layout_width="match_parent"
@@ -80,30 +79,28 @@
                 android:text="Cash on Delivery"
                 android:textSize="@dimen/_12sdp" />
 
-
         </RadioGroup>
 
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#17435C">
 
         <TextView
-            android:id="@+id/paymentTextView"
+            android:id="@+id/orderTextView"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_38sdp"
             android:layout_centerInParent="true"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center"
-            android:text="Pay"
+            android:text="Order"
             android:textColor="@color/white"
             android:textSize="@dimen/_13sdp" />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/amountTextView"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_38sdp"
@@ -112,7 +109,7 @@
             android:gravity="center"
             android:text="(₹. 443)"
             android:textColor="@color/white"
-            android:textSize="@dimen/_13sdp" />
+            android:textSize="@dimen/_13sdp" />-->
 
 
     </RelativeLayout>
