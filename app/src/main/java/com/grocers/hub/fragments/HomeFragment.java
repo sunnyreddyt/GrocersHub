@@ -20,10 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.grocers.hub.CartActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.CategoriesListAdapter;
+import com.grocers.hub.adapters.HomeAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OfferProductsListAdapter;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.models.HomeResponse;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
@@ -40,7 +42,7 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements ItemClickListener {
 
-    RecyclerView categoriesRecyclerView, offerProductsRecyclerView;
+    RecyclerView categoriesRecyclerView, homeRecyclerView;
     public static ImageView recyclerLayout;
     TextView locationTextView;
     GHUtil ghUtil;
@@ -85,17 +87,11 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     public void init(View view) {
         context = getActivity();
         categoriesRecyclerView = (RecyclerView) view.findViewById(R.id.categoriesRecyclerView);
-        offerProductsRecyclerView = (RecyclerView) view.findViewById(R.id.offerProductsRecyclerView);
+        homeRecyclerView = (RecyclerView) view.findViewById(R.id.homeRecyclerView);
         locationTextView = (TextView) view.findViewById(R.id.locationTextView);
         cartLayout = (RelativeLayout) view.findViewById(R.id.cartLayout);
         shared = new Shared(getActivity());
         ghUtil = GHUtil.getInstance(getActivity());
-
-        //products List
-        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        offerProductsRecyclerView.setLayoutManager(mLayoutManager1);
-        offerProductsListAdapter = new OfferProductsListAdapter(getActivity(), categoryModelArrayList);
-        offerProductsRecyclerView.setAdapter(offerProductsListAdapter);
 
     }
 
@@ -161,6 +157,8 @@ public class HomeFragment extends Fragment implements ItemClickListener {
 
                     ghUtil.setcategoryModel(response.body());
 
+                    getHomeDetailsServiceCall();
+
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -168,6 +166,32 @@ public class HomeFragment extends Fragment implements ItemClickListener {
 
             @Override
             public void onFailure(Call<CategoryModel> call, Throwable t) {
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    public void getHomeDetailsServiceCall() {
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<HomeResponse> loginResponseCall = service.getHomeDetails("hyderabad");
+        loginResponseCall.enqueue(new Callback<HomeResponse>() {
+            @Override
+            public void onResponse(Call<HomeResponse> call, Response<HomeResponse> response) {
+                if (response.code() == 200) {
+
+                    LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+                    homeRecyclerView.setLayoutManager(mLayoutManager1);
+                    HomeAdapter homeAdapter = new HomeAdapter(getActivity(), response.body().getCategoryProducts());
+                    homeRecyclerView.setAdapter(homeAdapter);
+
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HomeResponse> call, Throwable t) {
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });

@@ -17,33 +17,40 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.models.HomeResponse;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProductsListAdapter.MyViewHolder> {
 
     private Context mContext;
-    ArrayList<CategoryModel> categoryModelArrayList;
+    ArrayList<HomeResponse> homeResponseArrayList;
 
     public OfferProductsListAdapter(Context mContext,
-                                    ArrayList<CategoryModel> categoryModelArrayList) {
+                                    ArrayList<HomeResponse> homeResponseArrayList) {
         this.mContext = mContext;
-        this.categoryModelArrayList = categoryModelArrayList;
+        this.homeResponseArrayList = homeResponseArrayList;
     }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout itemLayout;
-        TextView categoryNameTextView;
-        ImageView categoryBackgroundImageView, categoryImageView;
+        ImageView productImageView;
+        TextView productNameTextView, addImageView, offerCostTextView;
+
 
         public MyViewHolder(View view) {
             super(view);
             itemLayout = (LinearLayout) view.findViewById(R.id.itemLayout);
-            /*categoryNameTextView = (TextView) view.findViewById(R.id.categoryNameTextView);
+            /*
             categoryBackgroundImageView = (ImageView) view.findViewById(R.id.categoryBackgroundImageView);
-            categoryImageView = (ImageView) view.findViewById(R.id.categoryImageView);*/
+            */
+            productImageView = (ImageView) view.findViewById(R.id.productImageView);
+            productNameTextView = (TextView) view.findViewById(R.id.productNameTextView);
+            offerCostTextView = (TextView) view.findViewById(R.id.offerCostTextView);
+            addImageView = (TextView) view.findViewById(R.id.addImageView);
         }
     }
 
@@ -58,18 +65,32 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
     @Override
     public void onBindViewHolder(final OfferProductsListAdapter.MyViewHolder holder, final int position) {
 
+        Picasso.get().load(homeResponseArrayList.get(position).getImage()).into(holder.productImageView);
+        holder.offerCostTextView.setText(String.valueOf(homeResponseArrayList.get(position).getPrice()));
+        holder.productNameTextView.setText(String.valueOf(homeResponseArrayList.get(position).getName()));
+
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, ProductDetailActivity.class);
+                String skuID = homeResponseArrayList.get(position).getSku();
+                intent.putExtra("skuID", skuID);
                 mContext.startActivity(intent);
             }
         });
+
+        holder.addImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return homeResponseArrayList.size();
     }
 
 }

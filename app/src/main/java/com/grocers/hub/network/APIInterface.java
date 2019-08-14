@@ -6,6 +6,7 @@ import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
+import com.grocers.hub.models.HomeResponse;
 import com.grocers.hub.models.PaymentRequest;
 import com.grocers.hub.models.ProductDetailsResponse;
 import com.grocers.hub.models.ProductsResponse;
@@ -41,6 +42,10 @@ public interface APIInterface {
     @Headers({"Accept: application/json"})
     @GET("rest//V1/categories")
     Call<CategoryModel> getCategories();
+
+    @Headers({"Accept: application/json"})
+    @GET("homeapi?")
+    Call<HomeResponse> getHomeDetails(@Query("city") String city);
 
     @Headers({"Accept: application/json"})
     @GET("homeapi/Categoryproducts?")

@@ -74,7 +74,7 @@ public class SearchFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 if (s.length() != 0) {
-                    new GetProducts().execute();
+                    //new GetProducts().execute();
                 }
             }
         });
@@ -84,7 +84,7 @@ public class SearchFragment extends Fragment {
     }
 
 
-    public class GetProducts extends AsyncTask<String, Integer, String> {
+   /* public class GetProducts extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... params) {
@@ -113,11 +113,11 @@ public class SearchFragment extends Fragment {
 
                                 if (storeProducts.length() > 0) {
 
-/*                                    LinearLayoutManager mLayoutManager = new LinearLayoutManager(StoreDetailsActivity.this, LinearLayoutManager.VERTICAL, false);
+*//*                                    LinearLayoutManager mLayoutManager = new LinearLayoutManager(StoreDetailsActivity.this, LinearLayoutManager.VERTICAL, false);
                                     productsRecyclerView.setLayoutManager(mLayoutManager);
                                     StoreProductsAdapter storeProductsAdapter = new StoreProductsAdapter(StoreDetailsActivity.this, storeProducts);
                                     productsRecyclerView.setAdapter(storeProductsAdapter);
-                                    storeProductsAdapter.setClickListener(StoreDetailsActivity.this);*/
+                                    storeProductsAdapter.setClickListener(StoreDetailsActivity.this);*//*
 
                                 }
                             }
@@ -189,6 +189,6 @@ public class SearchFragment extends Fragment {
 
             return json;
         }
-    }
+    }*/
 
 }

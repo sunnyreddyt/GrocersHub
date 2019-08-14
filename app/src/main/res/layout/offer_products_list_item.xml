@@ -38,7 +38,6 @@
                 android:background="@drawable/circle_filled_red">
 
                 <TextView
-                    android:id="@+id/categoryImageView"
                     android:layout_width="@dimen/_22sdp"
                     android:layout_height="@dimen/_22sdp"
                     android:layout_centerInParent="true"
@@ -62,7 +61,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/categoryNameTextView"
+            android:id="@+id/productNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
@@ -97,6 +96,7 @@
                 android:gravity="center|right"
                 android:paddingLeft="@dimen/_3sdp"
                 android:text="₹420"
+                android:visibility="gone"
                 android:textSize="@dimen/_10sdp" />
 
         </RelativeLayout>
