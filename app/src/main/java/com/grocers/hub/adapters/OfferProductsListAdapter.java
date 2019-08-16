@@ -11,11 +11,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
+import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.HomeResponse;
 import com.squareup.picasso.Picasso;
@@ -26,11 +28,13 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
 
     private Context mContext;
     ArrayList<HomeResponse> homeResponseArrayList;
+    Shared shared;
 
     public OfferProductsListAdapter(Context mContext,
                                     ArrayList<HomeResponse> homeResponseArrayList) {
         this.mContext = mContext;
         this.homeResponseArrayList = homeResponseArrayList;
+        this.shared = new Shared(mContext);
     }
 
 
@@ -66,7 +70,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
     public void onBindViewHolder(final OfferProductsListAdapter.MyViewHolder holder, final int position) {
 
         Picasso.get().load(homeResponseArrayList.get(position).getImage()).into(holder.productImageView);
-        holder.offerCostTextView.setText(String.valueOf(homeResponseArrayList.get(position).getPrice()));
+        holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getPrice()));
         holder.productNameTextView.setText(String.valueOf(homeResponseArrayList.get(position).getName()));
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +86,11 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
         holder.addImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (shared.getUserName().length() > 0) {
 
+                } else {
+                    Toast.makeText(mContext, "Please login to add", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

@@ -15,7 +15,6 @@ public class Constants {
 
     // public static String BASE_URL = "http://183.82.106.234:9999/";
 
-
     public static final String TRUE = "true";
     public static final String FALSE = "false";
     public static final String SUCCESS = "success";
@@ -23,6 +22,5 @@ public class Constants {
     public static final String FAIL = "fail";
     public final static int RESULT_LOAD_IMG = 1003;
     public final static int RESULT_VERIFY = 1001;
-
 
 }

@@ -107,7 +107,8 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             permissionUtils.check_permission(permissions, "Allow permissions to have best Experience", 1);
         } else {
-            animate();
+            //animate();
+            animation();
         }
 
     }

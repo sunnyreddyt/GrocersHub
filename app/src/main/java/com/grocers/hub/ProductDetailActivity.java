@@ -3,6 +3,7 @@ package com.grocers.hub;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -28,6 +29,7 @@ import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.models.SimilarProductsResponse;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
+import com.grocers.hub.utils.GHUtil;
 import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
@@ -47,15 +49,17 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     Context context;
     Shared shared;
     String quoteID = "";
+    GHUtil ghUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
+        ghUtil = GHUtil.getInstance(ProductDetailActivity.this);
         shared = new Shared(ProductDetailActivity.this);
         backImageView = (ImageView) findViewById(R.id.backImageView);
         productImagesRecyclerView = (RecyclerView) findViewById(R.id.productImagesRecyclerView);
-        productUnitsRecyclerView = (RecyclerView) findViewById(R.id.productUnitsRecyclerView);
+        // productUnitsRecyclerView = (RecyclerView) findViewById(R.id.productUnitsRecyclerView);
         cartLayout = (RelativeLayout) findViewById(R.id.cartLayout);
         similarProductsRecyclerView = (RecyclerView) findViewById(R.id.similarProductsRecyclerView);
         context = ProductDetailActivity.this;
@@ -66,13 +70,13 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
         Intent intent = getIntent();
         skuID = intent.getStringExtra("skuID");
+        Log.v("skuID", skuID);
         getProductDetailServiceCall();
 
-
-        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
+  /*      LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
         productUnitsRecyclerView.setLayoutManager(mLayoutManager1);
         productsUnitsAdapter = new ProductsUnitsAdapter(ProductDetailActivity.this, null);
-        productUnitsRecyclerView.setAdapter(productsUnitsAdapter);
+        productUnitsRecyclerView.setAdapter(productsUnitsAdapter);*/
 
         cartLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,11 +109,13 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     }
 
     public void getProductDetailServiceCall() {
+        ghUtil.showDialog(ProductDetailActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<ProductDetailsResponse> loginResponseCall = service.getProductDetails(skuID);
         loginResponseCall.enqueue(new Callback<ProductDetailsResponse>() {
             @Override
             public void onResponse(Call<ProductDetailsResponse> call, Response<ProductDetailsResponse> response) {
+                ghUtil.dismissDialog();
                 productDetailsResponse = new ProductDetailsResponse();
                 if (response.code() == 200) {
                     productDetailsResponse = response.body();
@@ -139,6 +145,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
             @Override
             public void onFailure(Call<ProductDetailsResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
@@ -150,27 +157,30 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     }
 
     public void getSimilarProductsServiceCall() {
+        ghUtil.showDialog(ProductDetailActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<SimilarProductsResponse> loginResponseCall = service.getSimilarProducts(skuID);
         loginResponseCall.enqueue(new Callback<SimilarProductsResponse>() {
             @Override
             public void onResponse(Call<SimilarProductsResponse> call, Response<SimilarProductsResponse> response) {
-
+                ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     if (response.body().getStatus() == 200) {
                         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
                         similarProductsRecyclerView.setLayoutManager(mLayoutManager);
                         SimilarProductsAdapter similarProductsAdapter = new SimilarProductsAdapter(context, response.body().getData());
                         similarProductsRecyclerView.setAdapter(similarProductsAdapter);
+                    } else if (response.body().getStatus() == 400) {
+                        Toast.makeText(context, "No similar products available", Toast.LENGTH_SHORT);
                     }
-
                 } else {
-                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "No similar products available", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<SimilarProductsResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
@@ -213,7 +223,6 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         loginResponseCall.enqueue(new Callback<AddToCartResponse>() {
             @Override
             public void onResponse(Call<AddToCartResponse> call, Response<AddToCartResponse> response) {
-
                 if (response.code() == 200) {
                     Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
                     cartTextView.setText("Added");

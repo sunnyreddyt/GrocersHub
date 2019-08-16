@@ -128,7 +128,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_12sdp"
                     android:layout_weight="0.7"
-                    android:text="Freedom Refined Sunflower Oil 1L Pack"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_13sdp" />
 
@@ -159,7 +158,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="420"
                             android:textColor="@color/green"
                             android:textSize="@dimen/_13sdp"
                             android:textStyle="bold"
@@ -171,7 +169,8 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -243,13 +242,13 @@
                 android:layout_marginTop="@dimen/_3sdp"
                 android:layout_marginRight="@dimen/_10sdp"></androidx.recyclerview.widget.RecyclerView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:background="@drawable/strike_through" />
-
-            <TextView
+            <!-- <TextView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginTop="@dimen/_10sdp"
+                 android:background="@drawable/strike_through" />
+ -->
+            <!--<TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_15sdp"
@@ -264,7 +263,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_10sdp"></androidx.recyclerview.widget.RecyclerView>
-
+-->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
@@ -334,10 +333,12 @@
                            android:background="@drawable/strike_through" />
 
            -->
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:text="Similar Products"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_13sdp"

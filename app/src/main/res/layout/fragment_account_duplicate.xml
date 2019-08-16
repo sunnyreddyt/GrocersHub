@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,10 +47,10 @@
             android:orientation="horizontal">
 
             <RelativeLayout
-                android:id="@+id/cartLayout"
+                android:id="@+id/editLayout"
                 android:layout_width="@dimen/_28sdp"
                 android:layout_height="@dimen/_28sdp"
-                android:gravity="center_vertical">
+                android:gravity="center">
 
                 <ImageView
                     android:layout_width="@dimen/_18sdp"
@@ -66,10 +66,12 @@
     </RelativeLayout>
 
     <ScrollView
+        android:id="@+id/loginLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/topLayout"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,7 +97,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
-                    android:text="T.Sarveshwar Reddy"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp"
                     app:fontFamily="@font/poppins" />
@@ -118,7 +119,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins"
-                        android:text="sarveshwarreddyt@gmail.com"
                         android:textSize="@dimen/_10sdp" />
 
                 </LinearLayout>
@@ -140,7 +140,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins"
-                        android:text="8686123123"
+                        android:text="xxxxxxxxxx"
                         android:textSize="@dimen/_10sdp" />
 
                 </LinearLayout>
@@ -375,4 +375,44 @@
 
     </ScrollView>
 
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/logoutLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/loginTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/item_border"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingRight="@dimen/_12sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            android:text="Login/Register"
+            android:textColor="@color/green" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loginTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:fontFamily="@font/poppins"
+            android:gravity="center"
+            android:text="Please Login/Register to view\norders,notifications" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bottom_background" />
+
+    </RelativeLayout>
+
+</LinearLayout>

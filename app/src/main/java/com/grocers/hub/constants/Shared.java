@@ -24,7 +24,7 @@ public class Shared extends Application {
         // TODO Auto-generated constructor stub
         mContext = context;
 
-        preference = mContext.getSharedPreferences("fileName", Context.MODE_PRIVATE);
+        preference = mContext.getSharedPreferences("grocersHub", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -39,6 +39,12 @@ public class Shared extends Application {
         super.onCreate();
     }
 
+    public void clearPreferences() {
+        preference = mContext.getSharedPreferences("grocersHub", Context.MODE_PRIVATE);
+        editor = preference.edit();
+        editor.clear();
+        editor.apply();
+    }
 
     public String getCategoriesResponse() {
 

@@ -58,7 +58,7 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
     public void onBindViewHolder(final SimilarProductsAdapter.MyViewHolder holder, final int position) {
 
         holder.productNameTextView.setText(similarProductsResponseArrayList.get(position).getName());
-        holder.offerCostTextView.setText(String.valueOf(similarProductsResponseArrayList.get(position).getPrice()));
+        holder.offerCostTextView.setText("₹ " + String.valueOf(similarProductsResponseArrayList.get(position).getPrice()));
         Picasso.get().load(similarProductsResponseArrayList.get(position).getImage()).into(holder.productImageView);
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override

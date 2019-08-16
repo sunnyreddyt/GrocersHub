@@ -8,17 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.grocers.hub.CartActivity;
 import com.grocers.hub.R;
+import com.grocers.hub.ViewPagerAdapter;
 import com.grocers.hub.adapters.CategoriesListAdapter;
 import com.grocers.hub.adapters.HomeAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
@@ -51,11 +55,13 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     CategoriesListAdapter categoriesListAdapter;
     OfferProductsListAdapter offerProductsListAdapter;
     ArrayList<CategoryModel> categoryModelArrayList;
-    /* Integer[] icons = {R.drawable.ic_categories_black, R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs,
-             R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs};
-     String categories[] = {"All Categories", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household"};
-     */
+    ViewPager viewPager;
     Context context;
+
+    LinearLayout sliderDotspanel;
+    private int dotscount;
+    private ImageView[] dots;
+    ViewPagerAdapter viewPagerAdapter;
 
     @Nullable
     @Override
@@ -90,6 +96,9 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         homeRecyclerView = (RecyclerView) view.findViewById(R.id.homeRecyclerView);
         locationTextView = (TextView) view.findViewById(R.id.locationTextView);
         cartLayout = (RelativeLayout) view.findViewById(R.id.cartLayout);
+        viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+
+        sliderDotspanel = (LinearLayout) view.findViewById(R.id.SliderDots);
         shared = new Shared(getActivity());
         ghUtil = GHUtil.getInstance(getActivity());
 
@@ -131,13 +140,14 @@ public class HomeFragment extends Fragment implements ItemClickListener {
 
 
     public void getCategoriesServiceCall() {
+        ghUtil.showDialog(getActivity());
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<CategoryModel> loginResponseCall = service.getCategories();
         loginResponseCall.enqueue(new Callback<CategoryModel>() {
             @Override
             public void onResponse(Call<CategoryModel> call, Response<CategoryModel> response) {
+                ghUtil.dismissDialog();
                 if (response.code() == 200) {
-
                     categoryModelArrayList = new ArrayList<CategoryModel>();
                     CategoryModel categoryModel = new CategoryModel();
                     categoryModel.setId(0);
@@ -166,19 +176,26 @@ public class HomeFragment extends Fragment implements ItemClickListener {
 
             @Override
             public void onFailure(Call<CategoryModel> call, Throwable t) {
+                ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-
     public void getHomeDetailsServiceCall() {
+        ghUtil.showDialog(getActivity());
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<HomeResponse> loginResponseCall = service.getHomeDetails("hyderabad");
         loginResponseCall.enqueue(new Callback<HomeResponse>() {
             @Override
             public void onResponse(Call<HomeResponse> call, Response<HomeResponse> response) {
+                ghUtil.dismissDialog();
+
                 if (response.code() == 200) {
+
+                    viewPagerAdapter = new ViewPagerAdapter(getActivity(), response.body().getBanners());
+                    viewPager.setAdapter(viewPagerAdapter);
+                    setUpViewPager();
 
                     LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
                     homeRecyclerView.setLayoutManager(mLayoutManager1);
@@ -192,7 +209,44 @@ public class HomeFragment extends Fragment implements ItemClickListener {
 
             @Override
             public void onFailure(Call<HomeResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void setUpViewPager() {
+        dotscount = viewPagerAdapter.getCount();
+        dots = new ImageView[dotscount];
+
+        for (int i = 0; i < dotscount; i++) {
+            dots[i] = new ImageView(getActivity());
+            dots[i].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.non_active_dot));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(8, 0, 8, 0);
+            sliderDotspanel.addView(dots[i], params);
+        }
+
+        dots[0].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.active_dot));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                for (int i = 0; i < dotscount; i++) {
+                    dots[i].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.non_active_dot));
+                }
+                dots[position].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.active_dot));
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
     }

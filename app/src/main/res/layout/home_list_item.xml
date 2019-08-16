@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:text="View all > "
+                android:visibility="invisible"
                 android:id="@+id/viewAllTextView"
                 android:textSize="@dimen/_11sdp" />
 

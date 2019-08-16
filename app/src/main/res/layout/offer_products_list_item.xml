@@ -66,6 +66,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginRight="@dimen/_2sdp"
+            android:maxLines="2"
+            android:minHeight="@dimen/_35sdp"
             android:paddingLeft="@dimen/_3sdp"
             android:text="Freedom Refined Sunflower"
             android:textSize="@dimen/_11sdp" />

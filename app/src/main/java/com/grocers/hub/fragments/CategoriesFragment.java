@@ -48,6 +48,7 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         init(view);
 
+        getCategoriesServiceCall();
         return view;
     }
 
@@ -92,11 +93,13 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
 
 
     public void getCategoriesServiceCall() {
+        ghUtil.showDialog(getActivity());
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<CategoryModel> loginResponseCall = service.getCategories();
         loginResponseCall.enqueue(new Callback<CategoryModel>() {
             @Override
             public void onResponse(Call<CategoryModel> call, Response<CategoryModel> response) {
+                ghUtil.dismissDialog();
                 if (response.code() == 200) {
 
                     categoryModelArrayList = new ArrayList<CategoryModel>();
@@ -121,6 +124,7 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
 
             @Override
             public void onFailure(Call<CategoryModel> call, Throwable t) {
+                ghUtil.dismissDialog();
                 Toast.makeText(getActivity(), "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });

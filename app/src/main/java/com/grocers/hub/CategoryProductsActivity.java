@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -48,6 +49,8 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     SubCategoriesAdapter subCategoriesAdapter;
     String selectedSubCategoryId = "";
     Context context;
+    String categoryName = "";
+    TextView categoryNameTextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,12 +59,15 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
         context = CategoryProductsActivity.this;
         ghUtil = GHUtil.getInstance(CategoryProductsActivity.this);
         backImageView = (ImageView) findViewById(R.id.backImageView);
+        categoryNameTextView = (TextView) findViewById(R.id.categoryNameTextView);
         productsRecyclerView = (RecyclerView) findViewById(R.id.productsRecyclerView);
         subCategoriesRecyclerView = (RecyclerView) findViewById(R.id.subCategoriesRecyclerView);
         cartLayout = (RelativeLayout) findViewById(R.id.cartLayout);
 
         intent = getIntent();
         categoryID = intent.getStringExtra("id");
+        categoryName = intent.getStringExtra("name");
+        categoryNameTextView.setText(categoryName);
         CategoryModel categoryModelResponse = ghUtil.getcategoryModel();
         for (int p = 0; p < categoryModelResponse.getChildren_data().size(); p++) {
             if (categoryModelResponse.getChildren_data().get(p).getId() == Integer.parseInt(categoryID)) {
@@ -123,19 +129,23 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     }
 
     public void getProductsServiceCall() {
+        ghUtil.showDialog(CategoryProductsActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<ProductsResponse> loginResponseCall = service.getProducts(Integer.parseInt(selectedSubCategoryId), "500081");
         loginResponseCall.enqueue(new Callback<ProductsResponse>() {
             @Override
             public void onResponse(Call<ProductsResponse> call, Response<ProductsResponse> response) {
+                ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     productsResponseArrayList = new ArrayList<ProductsResponse>();
                     productsResponseArrayList = response.body().getProducts();
-                    if (productsResponseArrayList.size() > 0) {
+                    if (productsResponseArrayList != null && productsResponseArrayList.size() > 0) {
                         //products List
                         productsRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));
                         productsAdapter = new ProductsAdapter(context, productsResponseArrayList);
                         productsRecyclerView.setAdapter(productsAdapter);
+                    } else {
+                        Toast.makeText(context, "No products available", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -144,6 +154,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
 
             @Override
             public void onFailure(Call<ProductsResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });

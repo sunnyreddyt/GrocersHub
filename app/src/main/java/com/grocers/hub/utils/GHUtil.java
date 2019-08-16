@@ -1,9 +1,11 @@
 package com.grocers.hub.utils;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -12,12 +14,15 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.grocers.hub.R;
+import com.grocers.hub.library.style.Circle;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.ShippingResponse;
 
@@ -37,7 +42,8 @@ public class GHUtil {
     Typeface mediumFont;
     private ProgressDialog progressdialog;
     private static final Pattern[] inputRegexes = new Pattern[4];
-
+    Dialog progressDialog;
+    Circle mCircleDrawable;
 
     private GHUtil(Context context) {
         this.context = context;
@@ -439,6 +445,35 @@ public class GHUtil {
             }
         }
         return inputMatches;
+    }
+
+    public void showDialog(Activity act) {
+        try {
+            progressDialog = new Dialog(act, R.style.Theme_D1NoTitleDim);
+            progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            progressDialog.setContentView(R.layout.progress_layout);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
+            ProgressBar progressBar = progressDialog.findViewById(R.id.progress);
+
+            mCircleDrawable = new Circle();
+            mCircleDrawable.setBounds(0, 0, 30, 30);
+            mCircleDrawable.setColor(Color.WHITE);
+            progressBar.setIndeterminateDrawable(mCircleDrawable);
+            progressDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dismissDialog() {
+        try {
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,8 @@ import com.grocers.hub.LoginActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.constants.Shared;
 
+import static android.view.View.GONE;
+
 
 /**
  * Created by ctel-cpu-84 on 2/8/2018.
@@ -27,7 +31,10 @@ public class AccountFragment extends Fragment {
 
     LinearLayout signOutLayout, ordersLayout;
     Shared shared;
-    TextView userNameTextView, userNumberTextView, userMailTextView;
+    ScrollView loginLayout;
+    RelativeLayout logoutLayout;
+    RelativeLayout editLayout;
+    TextView userNameTextView, loginTextView, userNumberTextView, userMailTextView;
 
     @Nullable
     @Override
@@ -36,10 +43,24 @@ public class AccountFragment extends Fragment {
 
         signOutLayout = (LinearLayout) view.findViewById(R.id.signOutLayout);
         userNameTextView = (TextView) view.findViewById(R.id.userNameTextView);
+        loginTextView = (TextView) view.findViewById(R.id.loginTextView);
         userNumberTextView = (TextView) view.findViewById(R.id.userNumberTextView);
+        editLayout = (RelativeLayout) view.findViewById(R.id.editLayout);
         userMailTextView = (TextView) view.findViewById(R.id.userMailTextView);
         ordersLayout = (LinearLayout) view.findViewById(R.id.ordersLayout);
+        loginLayout = (ScrollView) view.findViewById(R.id.loginLayout);
+        logoutLayout = (RelativeLayout) view.findViewById(R.id.logoutLayout);
         shared = new Shared(getActivity());
+
+
+        loginTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
        /* userNameTextView.setText(shared.getUserName());
         userNumberTextView.setText(shared.getUserMobile());
@@ -57,12 +78,7 @@ public class AccountFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                shared.setUserMobile("");
-                                shared.setUserUserEmail("");
-                                shared.setUserName("");
-                                shared.setUserLocation("");
-                                shared.setUserLatitude("");
-                                shared.setUserLongitude("");
+                                shared.clearPreferences();
                                 Toast.makeText(getActivity(), "Signout Successful", Toast.LENGTH_SHORT).show();
 
                                 Intent intent = new Intent(getActivity(), LoginActivity.class);
@@ -94,5 +110,20 @@ public class AccountFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (shared.getUserName().length() > 0) {
+            loginLayout.setVisibility(View.VISIBLE);
+            editLayout.setVisibility(View.VISIBLE);
+            logoutLayout.setVisibility(GONE);
+        } else {
+            loginLayout.setVisibility(GONE);
+            editLayout.setVisibility(GONE);
+            logoutLayout.setVisibility(View.VISIBLE);
+        }
 
+        userNameTextView.setText(shared.getUserName());
+        userMailTextView.setText(shared.getUserEmail());
+    }
 }

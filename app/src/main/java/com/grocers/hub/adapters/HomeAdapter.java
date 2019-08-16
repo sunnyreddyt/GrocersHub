@@ -76,7 +76,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         OfferProductsListAdapter offerProductsListAdapter = new OfferProductsListAdapter(mContext, categoryProducts.get(position).getProducts());
         holder.productsRecyclerView.setAdapter(offerProductsListAdapter);
 
-
     }
 
     @Override

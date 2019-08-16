@@ -162,23 +162,38 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_140sdp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <ImageView
+                <!-- <ImageView
+                     android:layout_width="match_parent"
+                     android:layout_height="@dimen/_140sdp"
+                     android:scaleType="fitXY"
+                     android:src="@drawable/veg" />-->
+
+                <!-- <ImageView
+                     android:layout_width="match_parent"
+                     android:layout_height="@dimen/_140sdp"
+                     android:scaleType="fitXY"
+                     android:src="#30000000" />-->
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewPager"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_140sdp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/veg" />
+                    android:layout_height="@dimen/_140sdp"></androidx.viewpager.widget.ViewPager>
 
-                <ImageView
+                <LinearLayout
+                    android:id="@+id/SliderDots"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_140sdp"
-                    android:scaleType="fitXY"
-                    android:src="#30000000" />
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/viewPager"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="horizontal" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/homeRecyclerView"

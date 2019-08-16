@@ -31,7 +31,7 @@ import retrofit2.Response;
 public class RegistrationActivity extends AppCompatActivity {
 
     EditText firstNameEditText, lastNameEditText, emailEditText, passwordEditText;
-    TextView registerTextView;
+    TextView registerTextView, loginTextView;
     GHUtil ghUtil;
     Shared shared;
     ImageView backImageView;
@@ -48,6 +48,7 @@ public class RegistrationActivity extends AppCompatActivity {
         ghUtil = GHUtil.getInstance(context);
         shared = new Shared(context);
         firstNameEditText = (EditText) findViewById(R.id.firstNameEditText);
+        loginTextView = (TextView) findViewById(R.id.loginTextView);
         lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
         backImageView = (ImageView) findViewById(R.id.backImageView);
         emailEditText = (EditText) findViewById(R.id.emailEditText);
@@ -68,22 +69,28 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (firstNameEditText.getText().toString().length() > 0 && lastNameEditText.getText().toString().length() > 0 && emailEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
-
                     if (ghUtil.isPasswordValid(passwordEditText.getText().toString().trim())) {
                         registerServiceCall();
                     } else {
                         Toast.makeText(context, "Password must contain atleast one number,special character, lower case and upper case", Toast.LENGTH_SHORT).show();
                     }
-
                 } else {
                     Toast.makeText(context, "Enter Valid Details", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        loginTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }
 
     public void registerServiceCall() {
+        ghUtil.showDialog(RegistrationActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         GeneralRequest generalRequest = new GeneralRequest();
         customer customerReq = new customer();
@@ -96,16 +103,16 @@ public class RegistrationActivity extends AppCompatActivity {
         loginResponseCall.enqueue(new Callback<GeneralResponse>() {
             @Override
             public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+                ghUtil.dismissDialog();
                 if (response.code() == 200) {
-                    if (response.body().getStatus().equalsIgnoreCase("200")) {
-                        Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(context, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(context, "Invalid Credentials", Toast.LENGTH_SHORT).show();
-                    }
+
+                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                } else if (response.code() == 400) {
+                    Toast.makeText(context, "User already exists", Toast.LENGTH_SHORT).show();
                 } else {
                     if (response.body().getMessage() != null) {
                         Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
@@ -117,6 +124,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<GeneralResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });

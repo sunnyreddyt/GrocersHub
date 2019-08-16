@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -82,12 +83,16 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (itemClickListener != null) {
-                    itemClickListener.onClick(position);
+                if (position != 0) {
+
+                    if (itemClickListener != null) {
+                        itemClickListener.onClick(position);
+                    }
+                    Intent intent = new Intent(mContext, CategoryProductsActivity.class);
+                    intent.putExtra("id", String.valueOf(categoryModelArrayList.get(position).getId()));
+                    intent.putExtra("name", categoryModelArrayList.get(position).getName());
+                    mContext.startActivity(intent);
                 }
-                Intent intent = new Intent(mContext, CategoryProductsActivity.class);
-                intent.putExtra("id", String.valueOf(categoryModelArrayList.get(position).getId()));
-                mContext.startActivity(intent);
             }
         });
 

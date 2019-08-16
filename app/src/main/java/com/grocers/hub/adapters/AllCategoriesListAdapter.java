@@ -26,7 +26,7 @@ public class AllCategoriesListAdapter extends RecyclerView.Adapter<AllCategories
     ItemClickListener itemClickListener;
 
     public AllCategoriesListAdapter(Context mContext,
-                                 ArrayList<CategoryModel> categoryModelArrayList) {
+                                    ArrayList<CategoryModel> categoryModelArrayList) {
         this.mContext = mContext;
         this.categoryModelArrayList = categoryModelArrayList;
     }
@@ -77,10 +77,9 @@ public class AllCategoriesListAdapter extends RecyclerView.Adapter<AllCategories
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*if (itemClickListener != null) {
-                    itemClickListener.onClick(position);
-                }*/
                 Intent intent = new Intent(mContext, CategoryProductsActivity.class);
+                intent.putExtra("id", String.valueOf(categoryModelArrayList.get(position).getId()));
+                intent.putExtra("name", categoryModelArrayList.get(position).getName());
                 mContext.startActivity(intent);
             }
         });

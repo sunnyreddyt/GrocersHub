@@ -9,10 +9,10 @@
         android:id="@+id/centerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/bottomLayout"
-        android:layout_centerInParent="true"
+        android:layout_below="@id/backImageView"
         android:layout_marginLeft="@dimen/_20sdp"
         android:layout_marginRight="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical">
@@ -81,7 +81,6 @@
                 android:hint="Email"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
-                android:maxLength="10"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/_8sdp"
                 android:textColor="@color/black"
@@ -116,7 +115,7 @@
 
 
         <TextView
-            android:id="@+id/loginTextView"
+            android:id="@+id/registerTextView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:layout_centerInParent="true"
@@ -138,7 +137,7 @@
         android:id="@+id/backImageView"
         android:layout_width="@dimen/_35sdp"
         android:layout_height="@dimen/_35sdp"
-        android:layout_marginLeft="@dimen/_15sdp"
+        android:layout_marginLeft="@dimen/_8sdp"
         android:layout_marginTop="@dimen/_20sdp"
         android:src="@drawable/chevron_left" />
 
@@ -151,7 +150,7 @@
         android:src="@drawable/bottom_background" />
 
     <TextView
-        android:id="@+id/registerTextView"
+        android:id="@+id/loginTextView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:layout_alignParentBottom="true"

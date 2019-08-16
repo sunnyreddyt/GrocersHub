@@ -98,7 +98,8 @@
                 android:gravity="center|right"
                 android:paddingLeft="@dimen/_3sdp"
                 android:text="₹ XXX"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/_10sdp"
+                android:visibility="invisible" />
 
         </RelativeLayout>
 
