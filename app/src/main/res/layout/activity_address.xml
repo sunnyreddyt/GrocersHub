@@ -75,7 +75,7 @@
                 android:layout_marginTop="@dimen/_15sdp">
 
                 <EditText
-                    android:id="@+id/firstNameEditText"
+                    android:id="@+id/addressEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_4sdp"
@@ -97,7 +97,7 @@
                 android:layout_marginTop="@dimen/_5sdp">
 
                 <EditText
-                    android:id="@+id/lastNameEditText"
+                    android:id="@+id/pincodeEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Pincode"
@@ -179,6 +179,8 @@
                     android:hint="Phone"
                     android:imeOptions="actionDone"
                     android:inputType="phone"
+                    android:maxEms="10"
+                    android:maxLength="10"
                     android:maxLines="1"
                     android:paddingLeft="@dimen/_8sdp"
                     android:textColor="@color/black"

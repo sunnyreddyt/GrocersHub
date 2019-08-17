@@ -144,6 +144,16 @@ public class Shared extends Application {
         editor.commit();
     }
 
+    public String getUserID() {
+        return preference.getString("UserID", "");
+    }
+
+    public void setUserID(String UserID) {
+        editor = preference.edit();
+        editor.putString("UserID", UserID);
+        editor.commit();
+    }
+
     public String getUserLastName() {
         return preference.getString("UserLastName", "");
     }

@@ -53,8 +53,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        userNameEditText.setText("saketshiv@gmail.com");
-        passwordEditText.setText("saket.123");
+        userNameEditText.setText("sunnyreddyt@gmail.com");
+        passwordEditText.setText("$Sunny12");
 
         Intent intent = getIntent();
         mobile_numberString = intent.getStringExtra("mobile_number");
@@ -72,8 +72,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (userNameEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
-                  //  if (ghUtil.isPasswordValid(passwordEditText.getText().toString().trim())) {
-                        loginServiceCall();
+                    //  if (ghUtil.isPasswordValid(passwordEditText.getText().toString().trim())) {
+                    loginServiceCall();
                    /* } else {
                         Toast.makeText(context, "Inavlid Password", Toast.LENGTH_SHORT).show();
                     }*/
@@ -127,6 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                 ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
+                    shared.setUserID(String.valueOf(response.body().getId()));
                     shared.setUserFirstName(response.body().getFirstname());
                     shared.setUserLastName(response.body().getLastname());
                     shared.setUserName(shared.getUserFirstName() + " " + shared.getUserLastName());

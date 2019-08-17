@@ -98,8 +98,8 @@
                 android:gravity="center|right"
                 android:paddingLeft="@dimen/_3sdp"
                 android:text="₹420"
-                android:visibility="gone"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/_10sdp"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -113,7 +113,8 @@
             android:gravity="center"
             android:text="ADD"
             android:textColor="@color/white"
-            android:textSize="@dimen/_12sdp" />
+            android:textSize="@dimen/_12sdp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

@@ -113,7 +113,8 @@
             android:gravity="center"
             android:text="ADD"
             android:textColor="@color/white"
-            android:textSize="@dimen/_12sdp" />
+            android:textSize="@dimen/_12sdp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

@@ -81,13 +81,8 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         cartLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shared.getUserEmail().length() > 0) {
-                    Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(ProductDetailActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -98,11 +93,20 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
             }
         });
 
-
         cartTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getQuoteIDServiceCall();
+                if (shared.getUserEmail().length() > 0) {
+                    if (cartTextView.getText().equals("Continue to payment")) {
+                        Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
+                        startActivity(intent);
+                    } else {
+                        getQuoteIDServiceCall();
+                    }
+                } else {
+                    Intent intent = new Intent(ProductDetailActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -187,12 +191,13 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     }
 
     public void getQuoteIDServiceCall() {
+        ghUtil.showDialog(ProductDetailActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<QuoteIDResponse> loginResponseCall = service.getQuoteID(shared.getToken(), "123");
+        Call<QuoteIDResponse> loginResponseCall = service.getQuoteID(shared.getToken(), shared.getUserID());
         loginResponseCall.enqueue(new Callback<QuoteIDResponse>() {
             @Override
             public void onResponse(Call<QuoteIDResponse> call, Response<QuoteIDResponse> response) {
-
+                ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     if (response.body().getStatus() == 200) {
                         if (response.body().getStatus() == 200) {
@@ -208,24 +213,31 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
             @Override
             public void onFailure(Call<QuoteIDResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void addToCartServiceCall() {
+        ghUtil.showDialog(ProductDetailActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         AddToCartRequest addToCartRequest = new AddToCartRequest();
-        addToCartRequest.setQty(1);
-        addToCartRequest.setQuote_id(quoteID);
-        addToCartRequest.setSku(skuID);
+        AddToCartRequest cartItem = new AddToCartRequest();
+        cartItem.setQty(1);
+        cartItem.setQuote_id(quoteID);
+        cartItem.setSku(skuID);
+
+        addToCartRequest.setCartItem(cartItem);
         Call<AddToCartResponse> loginResponseCall = service.addToCart("Bearer " + shared.getToken(), addToCartRequest);
         loginResponseCall.enqueue(new Callback<AddToCartResponse>() {
             @Override
             public void onResponse(Call<AddToCartResponse> call, Response<AddToCartResponse> response) {
+                ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
-                    cartTextView.setText("Added");
+                    cartTextView.setText("Continue to payment");
+
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -233,6 +245,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
             @Override
             public void onFailure(Call<AddToCartResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
