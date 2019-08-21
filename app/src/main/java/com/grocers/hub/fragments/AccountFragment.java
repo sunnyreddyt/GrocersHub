@@ -73,7 +73,7 @@ public class AccountFragment extends Fragment implements ItemClickListener {
         changeLocationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                selectCity();
             }
         });
 

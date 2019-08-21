@@ -4,6 +4,7 @@ import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.models.DeleteCartResponse;
 import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.models.HomeResponse;
@@ -14,9 +15,11 @@ import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.models.ShippingAddressRequest;
 import com.grocers.hub.models.ShippingResponse;
 import com.grocers.hub.models.SimilarProductsResponse;
+import com.grocers.hub.models.UpdateCartRequest;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -82,5 +85,18 @@ public interface APIInterface {
     @Headers({"Accept: application/json"})
     @GET("homeapi/listorders?")
     Call<GeneralResponse> getOrderHistory(@Query("customer_id") String customer_id/*@Header("Authorization") String auth*/);
+
+    @Headers({"Accept: application/json"})
+    @POST("rest/V1/carts/mine/items")
+    Call<AddToCartResponse> updateCart(@Header("Authorization") String auth, @Body UpdateCartRequest updateCartRequest);
+
+    @Headers({"Accept: application/json"})
+    @DELETE("homeapi/deletecart?")
+    Call<DeleteCartResponse> deleteCartItem(@Query("itemId") String itemId, @Query("token") String token);
+
+    @Headers({"Accept: application/json"})
+    @GET("homeapi/Searchapi?")
+    Call<ProductsResponse> search(@Query("key") String key, @Query("zipcode") String zipcode);
+
 
 }

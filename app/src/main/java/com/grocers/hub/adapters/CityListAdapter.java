@@ -22,6 +22,8 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.MyView
     private Context mContext;
     ArrayList<City> cityArrayList;
     ItemClickListener itemClickListener;
+    int[] citiesImages = new int[]{R.drawable.cone, R.drawable.ctwo, R.drawable.cthree, R.drawable.cfour,
+            R.drawable.cfive, R.drawable.csix, R.drawable.cseven, R.drawable.ceight, R.drawable.cnine, R.drawable.cthree};
 
     public CityListAdapter(Context mContext,
                            ArrayList<City> cityArrayList) {
@@ -38,11 +40,13 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.MyView
 
         LinearLayout itemLayout;
         TextView cityNameTextView;
+        ImageView cityImageView;
 
         public MyViewHolder(View view) {
             super(view);
             itemLayout = (LinearLayout) view.findViewById(R.id.itemLayout);
             cityNameTextView = (TextView) view.findViewById(R.id.cityNameTextView);
+            cityImageView = (ImageView) view.findViewById(R.id.cityImageView);
         }
     }
 
@@ -58,7 +62,7 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.MyView
     public void onBindViewHolder(final CityListAdapter.MyViewHolder holder, final int position) {
 
         holder.cityNameTextView.setText(cityArrayList.get(position).getCity_name());
-
+        holder.cityImageView.setImageResource(citiesImages[position]);
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

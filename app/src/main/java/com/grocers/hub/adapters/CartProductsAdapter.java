@@ -35,9 +35,13 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
     private Context mContext;
     ArrayList<CartResponse> cartResponseArrayList;
     Shared shared;
+    OnCartUpdateListener onCartUpdateListener;
+
+    public void setItemClickListener(OnCartUpdateListener onCartUpdateListener) {
+        this.onCartUpdateListener = onCartUpdateListener;
+    }
 
     public CartProductsAdapter(Context mContext, ArrayList<CartResponse> cartResponseArrayList) {
-
         this.mContext = mContext;
         this.cartResponseArrayList = cartResponseArrayList;
         shared = new Shared(mContext);
@@ -45,7 +49,7 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView productImageView;
+        ImageView productImageView, deleteImageView;
         CardView itemLayout;
         TextView costTextView, addTextView, countTextView, deleteTextView, productNameTextView, productQuantityTextView, offerCostTextView;
 
@@ -55,6 +59,7 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
             productImageView = (ImageView) view.findViewById(R.id.productImageView);
             addTextView = (TextView) view.findViewById(R.id.addTextView);
             itemLayout = (CardView) view.findViewById(R.id.itemLayout);
+            deleteImageView = (ImageView) view.findViewById(R.id.deleteImageView);
             countTextView = (TextView) view.findViewById(R.id.countTextView);
             deleteTextView = (TextView) view.findViewById(R.id.deleteTextView);
             productNameTextView = (TextView) view.findViewById(R.id.productNameTextView);
@@ -81,6 +86,7 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
         Picasso.get().load(Constants.PRODUCT_IMAGE__BASE_URL + cartResponseArrayList.get(position).getImage()).into(holder.productImageView);
         holder.offerCostTextView.setText(String.valueOf(cartResponseArrayList.get(position).getPrice()));
         holder.costTextView.setVisibility(View.INVISIBLE);
+        holder.countTextView.setText(String.valueOf(cartResponseArrayList.get(position).getQty()));
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +105,9 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                 int count = Integer.parseInt(holder.countTextView.getText().toString());
                 count++;
                 holder.countTextView.setText(String.valueOf(count));
+                if (onCartUpdateListener != null) {
+                    onCartUpdateListener.onCartUpdate(cartResponseArrayList.get(position), "add", count);
+                }
             }
         });
 
@@ -107,14 +116,24 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
             public void onClick(View view) {
 
                 int count = Integer.parseInt(holder.countTextView.getText().toString());
-                if (count > 0) {
+                if (count > 1) {
                     count--;
                     holder.countTextView.setText(String.valueOf(count));
+                    if (onCartUpdateListener != null) {
+                        onCartUpdateListener.onCartUpdate(cartResponseArrayList.get(position), "remove", count);
+                    }
                 }
-
             }
         });
 
+        holder.deleteImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onCartUpdateListener != null) {
+                    onCartUpdateListener.onCartUpdate(cartResponseArrayList.get(position), "delete", 1);
+                }
+            }
+        });
 
     }
 
