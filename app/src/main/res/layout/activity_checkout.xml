@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -16,6 +17,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/_6sdp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -23,7 +25,7 @@
                 android:id="@+id/backImageView"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="@dimen/_30sdp"
-                android:padding="@dimen/_4sdp"
+                android:padding="@dimen/_6sdp"
                 android:src="@drawable/ic_back_arrow" />
 
             <TextView
@@ -31,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_8sdp"
                 android:gravity="center"
-                android:text="Payment Methods"
+                android:text="Order Details"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_13sdp"
                 app:fontFamily="@font/poppins_medium" />
@@ -40,48 +42,220 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomLayout"
-        android:layout_below="@+id/topLayout"
-        android:orientation="vertical">
+        android:layout_below="@+id/topLayout">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/paymentMethodsRecyclerView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:orientation="vertical">
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_20sdp"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:layout_marginRight="@dimen/_20sdp"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <RadioButton
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:fontFamily="@font/poppins"
-                android:paddingLeft="@dimen/_6sdp"
-                android:text="NetBanking"
-                android:textSize="@dimen/_12sdp" />
+                android:layout_marginLeft="@dimen/_4sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Products:"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13sdp" />
 
-            <RadioButton
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/productsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:fontFamily="@font/poppins"
-                android:paddingLeft="@dimen/_6sdp"
-                android:text="Cash on Delivery"
-                android:textSize="@dimen/_12sdp" />
+                android:layout_above="@+id/paymentTextView"
+                android:layout_below="@+id/topLayout"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:visibility="visible"></androidx.recyclerview.widget.RecyclerView>
 
-        </RadioGroup>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:weightSum="1">
 
-    </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:text="Discount"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.1"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:text=":"
+                    android:textSize="@dimen/_10sdp" />
+
+                <TextView
+                    android:id="@+id/discountTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:gravity="center|right"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:textSize="@dimen/_10sdp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:text="Shipping"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.1"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:text=":"
+                    android:textSize="@dimen/_10sdp" />
+
+                <TextView
+                    android:id="@+id/shippingTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:gravity="center|right"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:textSize="@dimen/_10sdp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:text="Tax"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.1"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:text=":"
+                    android:textSize="@dimen/_10sdp" />
+
+                <TextView
+                    android:id="@+id/taxTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:gravity="center|right"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:textSize="@dimen/_10sdp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:text="Grand Total"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_13sdp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.1"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:text=":"
+                    android:textSize="@dimen/_10sdp" />
+
+                <TextView
+                    android:id="@+id/grandTotalTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:gravity="center|right"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:background="@color/background_color"></View>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_4sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Payment Method:"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13sdp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/paymentMethodsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_8sdp"></androidx.recyclerview.widget.RecyclerView>
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -96,23 +270,10 @@
             android:layout_centerInParent="true"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center"
-            android:text="Order"
+            android:text="Confirm Order"
             android:textColor="@color/white"
             android:textSize="@dimen/_13sdp" />
 
-        <!--<TextView
-            android:id="@+id/amountTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_38sdp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/_20sdp"
-            android:gravity="center"
-            android:text="(₹. 443)"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13sdp" />-->
-
-
     </RelativeLayout>
-
 
 </RelativeLayout>

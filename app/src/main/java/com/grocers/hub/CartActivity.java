@@ -16,16 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.adapters.CartProductsAdapter;
-import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OnCartUpdateListener;
-import com.grocers.hub.adapters.SimilarProductsAdapter;
 import com.grocers.hub.constants.Shared;
-import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.DeleteCartResponse;
-import com.grocers.hub.models.QuoteIDResponse;
-import com.grocers.hub.models.SimilarProductsResponse;
 import com.grocers.hub.models.UpdateCartRequest;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
@@ -59,7 +54,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
         paymentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CartActivity.this, AddressActivity.class);
+                Intent intent = new Intent(CartActivity.this, ShippingAddressActivity.class);
                 startActivity(intent);
             }
         });

@@ -75,8 +75,8 @@ public interface APIInterface {
     Call<CartResponse> getCartProducts(@Header("Authorization") String auth);
 
     @Headers({"Accept: application/json"})
-    @POST("rest/V1/carts/mine/items")
-    Call<ShippingResponse> setShipping(@Header("Authorization") String auth, @Body ShippingAddressRequest shippingAddressRequest);
+    @POST("homeapi/shippinginfo?")
+    Call<ShippingResponse> setShipping(@Query("token") String token, @Body ShippingAddressRequest shippingAddressRequest);
 
     @Headers({"Accept: application/json"})
     @POST("rest/V1/carts/mine/items")
