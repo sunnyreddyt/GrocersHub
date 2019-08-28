@@ -122,7 +122,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else if (response.code() == 400) {
-                    Toast.makeText(context, "User already exists", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "User already exists with this email", Toast.LENGTH_SHORT).show();
                 } else {
                     if (response.body().getMessage() != null) {
                         Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();

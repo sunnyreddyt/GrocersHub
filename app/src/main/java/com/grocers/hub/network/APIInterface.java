@@ -9,6 +9,7 @@ import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.models.HomeResponse;
 import com.grocers.hub.models.LocationsModel;
+import com.grocers.hub.models.OrdersResponse;
 import com.grocers.hub.models.PaymentRequest;
 import com.grocers.hub.models.ProductDetailsResponse;
 import com.grocers.hub.models.ProductsResponse;
@@ -94,7 +95,7 @@ public interface APIInterface {
 
     @Headers({"Accept: application/json"})
     @GET("homeapi/listorders?")
-    Call<GeneralResponse> getOrderHistory(@Query("customer_id") String customer_id/*@Header("Authorization") String auth*/);
+    Call<OrdersResponse> getOrderHistory(@Query("customer_id") String customer_id);
 
     @Headers({"Accept: application/json"})
     @POST("rest/V1/carts/mine/items")
