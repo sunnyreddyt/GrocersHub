@@ -1,7 +1,6 @@
 package com.grocers.hub.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +10,21 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
-import com.grocers.hub.models.City;
+import com.grocers.hub.models.LocationsModel;
 
 import java.util.ArrayList;
 
 public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.MyViewHolder> {
 
     private Context mContext;
-    ArrayList<City> cityArrayList;
+    ArrayList<LocationsModel> cityArrayList;
     ItemClickListener itemClickListener;
     int[] citiesImages = new int[]{R.drawable.cone, R.drawable.ctwo, R.drawable.cthree, R.drawable.cfour,
             R.drawable.cfive, R.drawable.csix, R.drawable.cseven, R.drawable.ceight, R.drawable.cnine, R.drawable.cthree};
 
     public CityListAdapter(Context mContext,
-                           ArrayList<City> cityArrayList) {
+                           ArrayList<LocationsModel> cityArrayList) {
         this.mContext = mContext;
         this.cityArrayList = cityArrayList;
     }
@@ -61,7 +59,7 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.MyView
     @Override
     public void onBindViewHolder(final CityListAdapter.MyViewHolder holder, final int position) {
 
-        holder.cityNameTextView.setText(cityArrayList.get(position).getCity_name());
+        holder.cityNameTextView.setText(cityArrayList.get(position).getCity());
         holder.cityImageView.setImageResource(citiesImages[position]);
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign Up"
+            android:text="Edit Profle"
             android:textColor="@color/black"
             android:textSize="@dimen/_15sdp" />
 
@@ -112,30 +112,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_layout_empid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_8sdp">
-
-            <EditText
-                android:id="@+id/passwordEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="password"
-                android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:paddingLeft="@dimen/_8sdp"
-                android:password="true"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/_12sdp"
-                app:fontFamily="@font/poppins" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-
         <TextView
             android:id="@+id/registerTextView"
             android:layout_width="match_parent"
@@ -148,7 +124,7 @@
             android:paddingTop="@dimen/_5sdp"
             android:paddingRight="@dimen/_20sdp"
             android:paddingBottom="@dimen/_5sdp"
-            android:text="Register"
+            android:text="Update"
             android:textColor="@color/white"
             android:textSize="@dimen/_12sdp"
             app:fontFamily="@font/poppins_medium" />

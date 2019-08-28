@@ -23,11 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.grocers.hub.LoginActivity;
 import com.grocers.hub.OrderHistoryActivity;
 import com.grocers.hub.R;
-import com.grocers.hub.SplashActivity;
 import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.constants.Shared;
-import com.grocers.hub.models.City;
 
 import java.util.ArrayList;
 

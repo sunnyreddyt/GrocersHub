@@ -8,6 +8,7 @@ import com.grocers.hub.models.DeleteCartResponse;
 import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.models.HomeResponse;
+import com.grocers.hub.models.LocationsModel;
 import com.grocers.hub.models.PaymentRequest;
 import com.grocers.hub.models.ProductDetailsResponse;
 import com.grocers.hub.models.ProductsResponse;
@@ -16,6 +17,7 @@ import com.grocers.hub.models.ShippingAddressRequest;
 import com.grocers.hub.models.ShippingResponse;
 import com.grocers.hub.models.SimilarProductsResponse;
 import com.grocers.hub.models.UpdateCartRequest;
+import com.grocers.hub.models.UpdateProfileRequest;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -31,12 +33,20 @@ import retrofit2.http.Query;
 public interface APIInterface {
 
     @Headers({"Accept: application/json"})
+    @GET("homeapi/sellerpincode")
+    Call<LocationsModel> getLocations();
+
+    @Headers({"Accept: application/json"})
     @POST("homeapi/customerlogin")
     Call<GeneralResponse> userLogin(@Body GeneralRequest generalRequest);
 
     @Headers({"Accept: application/json"})
     @POST("rest/V1/customers")
     Call<GeneralResponse> userRegistration(@Body GeneralRequest generalRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("rest/V1/customers")
+    Call<GeneralResponse> updateProfile(@Body UpdateProfileRequest updateProfileRequest);
 
     @Headers({"Accept: application/json"})
     @GET("rest//V1/customers/me")

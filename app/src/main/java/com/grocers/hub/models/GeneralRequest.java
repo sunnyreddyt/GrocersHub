@@ -1,5 +1,7 @@
 package com.grocers.hub.models;
 
+import java.util.ArrayList;
+
 public class GeneralRequest {
 
     private String username;

@@ -1,6 +1,7 @@
 package com.grocers.hub;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,9 +27,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.constants.Shared;
-import com.grocers.hub.models.City;
+import com.grocers.hub.models.LocationsModel;
+import com.grocers.hub.network.APIInterface;
+import com.grocers.hub.network.ApiClient;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by sunnyreddy on 26/06/19.
@@ -42,8 +50,9 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
     PermissionUtils permissionUtils;
     Shared shared;
     String[] cities = {"Hyderabad", "Khammam", "Mahabubnagar", "Karimnagar", "Secunderabad", "Kurnool", "Tirupathi", "Adilabad", "Vijayawada", "Vizag"};
-    ArrayList<City> cityArrayList;
+    ArrayList<LocationsModel> cityArrayList;
     Dialog citiesDialog;
+    Context context;
 
     @Override
     public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
@@ -90,7 +99,7 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        context = SplashActivity.this;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -151,27 +160,19 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
             startActivity(intent);
             finish();
         } else {
-            selectCity();
+            getLocations();
         }
     }
 
-    public void selectCity() {
+    public void selectCity(ArrayList<LocationsModel> tempCityArrayList) {
         citiesDialog = new Dialog(SplashActivity.this);
         citiesDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         citiesDialog.setContentView(R.layout.dialog_cities);
 
-        cityArrayList = new ArrayList<City>();
-        for (int p = 0; p < cities.length; p++) {
-            City city = new City();
-            city.setId(p);
-            city.setCity_name(cities[p]);
-            cityArrayList.add(city);
-        }
-
         RecyclerView citiesRecyclerView = citiesDialog.findViewById(R.id.citiesRecyclerView);
         LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(SplashActivity.this, RecyclerView.VERTICAL, false);
         citiesRecyclerView.setLayoutManager(mLayoutManager1);
-        CityListAdapter cityListAdapter = new CityListAdapter(SplashActivity.this, cityArrayList);
+        CityListAdapter cityListAdapter = new CityListAdapter(SplashActivity.this, tempCityArrayList);
         citiesRecyclerView.setAdapter(cityListAdapter);
         cityListAdapter.setClickListener(this);
         citiesDialog.show();
@@ -179,10 +180,41 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
 
     @Override
     public void onClick(int position) {
-        shared.setCity(cityArrayList.get(position).getCity_name());
+        shared.setCity(cityArrayList.get(position).getCity());
         if (citiesDialog != null) {
             citiesDialog.dismiss();
         }
         mainCode();
+    }
+
+
+    public void getLocations() {
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<LocationsModel> loginResponseCall = service.getLocations();
+        loginResponseCall.enqueue(new Callback<LocationsModel>() {
+            @Override
+            public void onResponse(Call<LocationsModel> call, Response<LocationsModel> response) {
+                if (response.code() == 200) {
+                    cityArrayList = new ArrayList<LocationsModel>();
+
+                    for (int p = 0; p < response.body().getData().size(); p++) {
+                        LocationsModel locationsModel = new LocationsModel();
+                        locationsModel.setCity(response.body().getData().get(p).getCity());
+                        locationsModel.setPostcode(response.body().getData().get(p).getPostcode());
+                        cityArrayList.add(locationsModel);
+                    }
+                    if (cityArrayList.size() > 0)
+                        selectCity(cityArrayList);
+
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LocationsModel> call, Throwable t) {
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

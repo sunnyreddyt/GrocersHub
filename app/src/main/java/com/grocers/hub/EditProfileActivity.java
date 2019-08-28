@@ -16,6 +16,7 @@ import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CustomAttributes;
 import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
+import com.grocers.hub.models.UpdateProfileRequest;
 import com.grocers.hub.models.customer;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
@@ -27,25 +28,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by sunnyreddy on 27/02/18.
- */
+public class EditProfileActivity extends AppCompatActivity {
 
-public class RegistrationActivity extends AppCompatActivity {
-
-    EditText firstNameEditText, lastNameEditText, emailEditText, passwordEditText, mobileEditText;
+    EditText firstNameEditText, lastNameEditText, emailEditText, mobileEditText;
     TextView registerTextView, loginTextView;
     GHUtil ghUtil;
     Shared shared;
     ImageView backImageView;
+    String mobile_numberString;
     Context context;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
+        setContentView(R.layout.activity_edit_profile);
 
-        context = RegistrationActivity.this;
+        context = EditProfileActivity.this;
 
         ghUtil = GHUtil.getInstance(context);
         shared = new Shared(context);
@@ -55,8 +53,14 @@ public class RegistrationActivity extends AppCompatActivity {
         lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
         backImageView = (ImageView) findViewById(R.id.backImageView);
         emailEditText = (EditText) findViewById(R.id.emailEditText);
-        passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         registerTextView = (TextView) findViewById(R.id.registerTextView);
+
+        mobileEditText.setText(shared.getUserMobile());
+        firstNameEditText.setText(shared.getUserFirstName());
+        lastNameEditText.setText(shared.getUserLastName());
+        emailEditText.setText(shared.getUserEmail());
+
+        emailEditText.setEnabled(false);
 
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,12 +72,8 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (mobileEditText.getText().toString().length() > 0 && firstNameEditText.getText().toString().length() > 0 && lastNameEditText.getText().toString().length() > 0 && emailEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
-                    if (ghUtil.isPasswordValid(passwordEditText.getText().toString().trim())) {
-                        registerServiceCall();
-                    } else {
-                        Toast.makeText(context, "Password must contain atleast one number,special character, lower case and upper case", Toast.LENGTH_SHORT).show();
-                    }
+                if (mobileEditText.getText().toString().length() > 0 && firstNameEditText.getText().toString().length() > 0 && lastNameEditText.getText().toString().length() > 0 && emailEditText.getText().toString().length() > 0) {
+                    updateProfileServiceCall();
                 } else {
                     Toast.makeText(context, "Enter Valid Details", Toast.LENGTH_SHORT).show();
                 }
@@ -89,27 +89,30 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
-    public void registerServiceCall() {
-        ghUtil.showDialog(RegistrationActivity.this);
+    public void updateProfileServiceCall() {
+        ghUtil.showDialog(EditProfileActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        GeneralRequest generalRequest = new GeneralRequest();
-        customer customerReq = new customer();
-        customerReq.setEmail(emailEditText.getText().toString().trim());
-        customerReq.setFirstname(firstNameEditText.getText().toString().trim());
-        customerReq.setLastname(lastNameEditText.getText().toString().trim());
-        customerReq.setMobile(mobileEditText.getText().toString().trim());
-        generalRequest.setPassword(passwordEditText.getText().toString().trim());
+        UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
+        UpdateProfileRequest.UpdateCustomer updateCustomer = new UpdateProfileRequest.UpdateCustomer();
+        updateCustomer.setEmail(emailEditText.getText().toString().trim());
+        updateCustomer.setFirstname(firstNameEditText.getText().toString().trim());
+        updateCustomer.setLastname(lastNameEditText.getText().toString().trim());
+        updateCustomer.setMobile(mobileEditText.getText().toString().trim());
+        updateCustomer.setId(Integer.parseInt(shared.getUserID()));
+        updateCustomer.setDob("");
+        updateCustomer.setMiddlename("");
+        updateCustomer.setWebsite_id(1);
 
         ArrayList<CustomAttributes> customAttributesArrayList = new ArrayList<CustomAttributes>();
         CustomAttributes customAttributes = new CustomAttributes();
         customAttributes.setAttribute_code("mobile");
-        customAttributes.setValue("");
+        customAttributes.setValue(mobileEditText.getText().toString().trim());
         customAttributesArrayList.add(customAttributes);
+        updateCustomer.setCustom_attributes(customAttributesArrayList);
 
-        customerReq.setCustom_attributes(customAttributesArrayList);
-        generalRequest.setCustomer(customerReq);
+        updateProfileRequest.setCustomer(updateCustomer);
 
-        Call<GeneralResponse> loginResponseCall = service.userRegistration(generalRequest);
+        Call<GeneralResponse> loginResponseCall = service.updateProfile(updateProfileRequest);
         loginResponseCall.enqueue(new Callback<GeneralResponse>() {
             @Override
             public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
@@ -142,3 +145,4 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
 }
+
