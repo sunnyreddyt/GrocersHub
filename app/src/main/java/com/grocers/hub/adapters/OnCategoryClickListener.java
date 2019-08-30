@@ -6,6 +6,6 @@ import android.view.View;
  * Created by sunnyreddy on 05/03/18.
  */
 
-public interface ItemClickListenerTwo {
-    void onClickTwo(View view);
+public interface OnCategoryClickListener {
+    void onCategoryClick(int position);
 }

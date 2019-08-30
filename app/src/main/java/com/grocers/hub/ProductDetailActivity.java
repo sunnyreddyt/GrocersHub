@@ -81,8 +81,17 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         cartLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
-                startActivity(intent);
+                cartLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (shared.getUserID().length() > 0) {
+                            Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(ProductDetailActivity.this, "Please login to view cart", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 
@@ -236,7 +245,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
-                    cartTextView.setText("Continue to payment");
+                    cartTextView.setText("Proceed to Cart");
 
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();

@@ -1,5 +1,6 @@
 package com.grocers.hub.fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -24,12 +26,15 @@ import com.grocers.hub.CartActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.ViewPagerAdapter;
 import com.grocers.hub.adapters.CategoriesListAdapter;
+import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.HomeAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OfferProductsListAdapter;
+import com.grocers.hub.adapters.OnCategoryClickListener;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.HomeResponse;
+import com.grocers.hub.models.LocationsModel;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
@@ -44,7 +49,7 @@ import retrofit2.Response;
  * Created by ctel-cpu-78 on 4/20/2017.
  */
 
-public class HomeFragment extends Fragment implements ItemClickListener {
+public class HomeFragment extends Fragment implements ItemClickListener, OnCategoryClickListener {
 
     RecyclerView categoriesRecyclerView, homeRecyclerView;
     public static ImageView recyclerLayout;
@@ -57,11 +62,12 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     ArrayList<CategoryModel> categoryModelArrayList;
     ViewPager viewPager;
     Context context;
-
-    LinearLayout sliderDotspanel;
+    ArrayList<LocationsModel> cityArrayList;
+    LinearLayout sliderDotspanel, locationLayout;
     private int dotscount;
     private ImageView[] dots;
     ViewPagerAdapter viewPagerAdapter;
+    Dialog citiesDialog;
 
     @Nullable
     @Override
@@ -69,19 +75,27 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         init(view);
 
-        locationTextView.setOnClickListener(new View.OnClickListener() {
+        if (shared.getCity().length() > 0) {
+            locationTextView.setText(shared.getCity().substring(0, 1).toUpperCase() + shared.getCity().substring(1, shared.getCity().toString().length()));
+        }
+
+
+        locationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = new Intent(getActivity(), LocationChangeActivity.class);
-                startActivityForResult(intent, 1);*/
+                getLocations();
             }
         });
 
         cartLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CartActivity.class);
-                startActivity(intent);
+                if (shared.getUserID().length() > 0) {
+                    Intent intent = new Intent(getActivity(), CartActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Please login to view cart", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -97,6 +111,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         locationTextView = (TextView) view.findViewById(R.id.locationTextView);
         cartLayout = (RelativeLayout) view.findViewById(R.id.cartLayout);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+        locationLayout = (LinearLayout) view.findViewById(R.id.locationLayout);
 
         sliderDotspanel = (LinearLayout) view.findViewById(R.id.SliderDots);
         shared = new Shared(getActivity());
@@ -126,18 +141,12 @@ public class HomeFragment extends Fragment implements ItemClickListener {
 
     @Override
     public void onClick(int position) {
-        for (int p = 0; p < categoryModelArrayList.size(); p++) {
-            CategoryModel categoryModel = categoryModelArrayList.get(p);
-            if (p == position) {
-                categoryModel.setCategoryBackground(true);
-            } else {
-                categoryModel.setCategoryBackground(false);
-            }
-            categoryModelArrayList.set(p, categoryModel);
+        shared.setCity(cityArrayList.get(position).getCity());
+        shared.setZipCode(cityArrayList.get(position).getPostcode());
+        if (citiesDialog != null) {
+            citiesDialog.dismiss();
         }
-        categoriesListAdapter.notifyDataSetChanged();
     }
-
 
     public void getCategoriesServiceCall() {
         ghUtil.showDialog(getActivity());
@@ -251,4 +260,64 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         });
     }
 
+    public void getLocations() {
+        ghUtil.showDialog(getActivity());
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<LocationsModel> loginResponseCall = service.getLocations();
+        loginResponseCall.enqueue(new Callback<LocationsModel>() {
+            @Override
+            public void onResponse(Call<LocationsModel> call, Response<LocationsModel> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    cityArrayList = new ArrayList<LocationsModel>();
+
+                    for (int p = 0; p < response.body().getData().size(); p++) {
+                        LocationsModel locationsModel = new LocationsModel();
+                        locationsModel.setCity(response.body().getData().get(p).getCity());
+                        locationsModel.setPostcode(response.body().getData().get(p).getPostcode());
+                        cityArrayList.add(locationsModel);
+                    }
+                    if (cityArrayList.size() > 0)
+                        selectCity(cityArrayList);
+
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LocationsModel> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void selectCity(ArrayList<LocationsModel> tempCityArrayList) {
+        citiesDialog = new Dialog(getActivity());
+        citiesDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        citiesDialog.setContentView(R.layout.dialog_cities);
+
+        RecyclerView citiesRecyclerView = citiesDialog.findViewById(R.id.citiesRecyclerView);
+        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
+        citiesRecyclerView.setLayoutManager(mLayoutManager1);
+        CityListAdapter cityListAdapter = new CityListAdapter(context, tempCityArrayList);
+        citiesRecyclerView.setAdapter(cityListAdapter);
+        cityListAdapter.setClickListener(this);
+        citiesDialog.show();
+    }
+
+    @Override
+    public void onCategoryClick(int position) {
+        for (int p = 0; p < categoryModelArrayList.size(); p++) {
+            CategoryModel categoryModel = categoryModelArrayList.get(p);
+            if (p == position) {
+                categoryModel.setCategoryBackground(true);
+            } else {
+                categoryModel.setCategoryBackground(false);
+            }
+            categoryModelArrayList.set(p, categoryModel);
+        }
+        categoriesListAdapter.notifyDataSetChanged();
+    }
 }

@@ -1,9 +1,11 @@
 package com.grocers.hub.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
@@ -13,10 +15,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.CartActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.AllCategoriesListAdapter;
 import com.grocers.hub.adapters.CategoriesListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
+import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
@@ -41,6 +45,8 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
             R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs};
     String categories[] = {"All Categories", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household"};
     AllCategoriesListAdapter allCategoriesListAdapter;
+    RelativeLayout cartLayout;
+    Shared shared;
 
     @Nullable
     @Override
@@ -48,12 +54,27 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         init(view);
 
+        cartLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (shared.getUserID().length() > 0) {
+                    Intent intent = new Intent(getActivity(), CartActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Please login to view cart", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
         getCategoriesServiceCall();
         return view;
     }
 
     public void init(View view) {
         categoriesRecyclerView = (RecyclerView) view.findViewById(R.id.categoriesRecyclerView);
+        cartLayout = (RelativeLayout) view.findViewById(R.id.cartLayout);
+        shared = new Shared(getActivity());
         ghUtil = GHUtil.getInstance(getActivity());
         /*// categories ArrayList
         categoryModelArrayList = new ArrayList<CategoryModel>();

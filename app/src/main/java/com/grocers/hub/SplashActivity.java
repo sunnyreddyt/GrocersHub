@@ -30,6 +30,7 @@ import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.LocationsModel;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
+import com.grocers.hub.utils.GHUtil;
 
 import java.util.ArrayList;
 
@@ -53,6 +54,7 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
     ArrayList<LocationsModel> cityArrayList;
     Dialog citiesDialog;
     Context context;
+    GHUtil ghUtil;
 
     @Override
     public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
@@ -104,6 +106,7 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
+        ghUtil = GHUtil.getInstance(SplashActivity.this);
         shared = new Shared(SplashActivity.this);
         permissionUtils = new PermissionUtils(SplashActivity.this);
         permissions.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
@@ -181,6 +184,7 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
     @Override
     public void onClick(int position) {
         shared.setCity(cityArrayList.get(position).getCity());
+        shared.setZipCode(cityArrayList.get(position).getPostcode());
         if (citiesDialog != null) {
             citiesDialog.dismiss();
         }
@@ -189,11 +193,13 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
 
 
     public void getLocations() {
+        ghUtil.showDialog(SplashActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<LocationsModel> loginResponseCall = service.getLocations();
         loginResponseCall.enqueue(new Callback<LocationsModel>() {
             @Override
             public void onResponse(Call<LocationsModel> call, Response<LocationsModel> response) {
+                ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     cityArrayList = new ArrayList<LocationsModel>();
 
@@ -213,6 +219,7 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
 
             @Override
             public void onFailure(Call<LocationsModel> call, Throwable t) {
+                ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });

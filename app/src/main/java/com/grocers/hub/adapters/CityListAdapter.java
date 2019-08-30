@@ -20,7 +20,7 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.MyView
     private Context mContext;
     ArrayList<LocationsModel> cityArrayList;
     ItemClickListener itemClickListener;
-    int[] citiesImages = new int[]{R.drawable.cone, R.drawable.ctwo, R.drawable.cthree, R.drawable.cfour,
+    int[] citiesImages = new int[]{R.drawable.cone, R.drawable.ctwo, R.drawable.cfour, R.drawable.cthree,
             R.drawable.cfive, R.drawable.csix, R.drawable.cseven, R.drawable.ceight, R.drawable.cnine, R.drawable.cthree};
 
     public CityListAdapter(Context mContext,

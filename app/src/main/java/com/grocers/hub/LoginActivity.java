@@ -132,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                     shared.setUserLastName(response.body().getLastname());
                     shared.setUserName(shared.getUserFirstName() + " " + shared.getUserLastName());
                     shared.setUserUserEmail(response.body().getEmail());
+                    shared.setUserMobile(response.body().getCustom_attributes().get(0).getValue());
                     Intent intent = new Intent(context, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

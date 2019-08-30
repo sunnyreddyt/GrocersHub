@@ -175,5 +175,15 @@ public class Shared extends Application {
         editor.commit();
     }
 
+    public String getZipCode() {
+        return preference.getString("ZipCode", "");
+    }
+
+    public void setZipCode(String ZipCode) {
+        editor = preference.edit();
+        editor.putString("ZipCode", ZipCode);
+        editor.commit();
+    }
+
 }
 

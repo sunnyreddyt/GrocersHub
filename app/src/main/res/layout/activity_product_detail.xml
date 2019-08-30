@@ -364,23 +364,11 @@
 
         <TextView
             android:id="@+id/cartTextView"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
             android:background="#17435C"
             android:gravity="center"
             android:text="Add to Cart"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_12sdp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:background="@color/green"
-            android:gravity="center"
-            android:text="Buy Now"
             android:textColor="@color/white"
             android:textSize="@dimen/_12sdp"
             android:textStyle="bold" />

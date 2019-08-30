@@ -13,6 +13,33 @@ public class GeneralResponse {
     private String message;
     private String name;
     ArrayList<GeneralResponse> children_data;
+    ArrayList<GeneralResponse> custom_attributes;
+    private String attribute_code;
+    private String value;
+
+    public ArrayList<GeneralResponse> getCustom_attributes() {
+        return custom_attributes;
+    }
+
+    public void setCustom_attributes(ArrayList<GeneralResponse> custom_attributes) {
+        this.custom_attributes = custom_attributes;
+    }
+
+    public String getAttribute_code() {
+        return attribute_code;
+    }
+
+    public void setAttribute_code(String attribute_code) {
+        this.attribute_code = attribute_code;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 
     public String getName() {
         return name;

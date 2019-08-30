@@ -53,7 +53,8 @@ public class ShippingAddressActivity extends AppCompatActivity {
 
         nameEditText.setText(shared.getUserName());
         emailEditText.setText(shared.getUserEmail());
-
+        phoneEditText.setText(shared.getUserMobile());
+        pincodeEditText.setText(shared.getZipCode());
 
         paymentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +110,7 @@ public class ShippingAddressActivity extends AppCompatActivity {
                     intent.putExtra("email", emailEditText.getText().toString());
                     intent.putExtra("phone", phoneEditText.getText().toString());
                     intent.putExtra("postcode", pincodeEditText.getText().toString());
+                    intent.putExtra("address", addressEditText.getText().toString());
                     startActivity(intent);
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();

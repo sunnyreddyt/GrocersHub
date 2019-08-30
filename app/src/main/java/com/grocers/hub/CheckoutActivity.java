@@ -19,6 +19,7 @@ import com.grocers.hub.adapters.PaymentAdapter;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.models.PaymentRequest;
+import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.models.ShippingAddressRequest;
 import com.grocers.hub.models.ShippingResponse;
 import com.grocers.hub.network.APIInterface;
@@ -37,6 +38,8 @@ public class CheckoutActivity extends AppCompatActivity {
     TextView orderTextView, discountTextView, shippingTextView, taxTextView, grandTotalTextView;
     Context context;
     Shared shared;
+    String quoteID = "";
+    String email, phone, postcode, address;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +58,13 @@ public class CheckoutActivity extends AppCompatActivity {
         shippingTextView = (TextView) findViewById(R.id.shippingTextView);
         taxTextView = (TextView) findViewById(R.id.taxTextView);
         grandTotalTextView = (TextView) findViewById(R.id.grandTotalTextView);
+
+        Intent intent = getIntent();
+        email = intent.getStringExtra("email");
+        phone = intent.getStringExtra("email");
+        postcode = intent.getStringExtra("email");
+        address = intent.getStringExtra("email");
+
 
         ShippingResponse shippingResponse = ghUtil.getShippingResponse();
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
@@ -81,18 +91,39 @@ public class CheckoutActivity extends AppCompatActivity {
         orderTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setPaymentServiceCall();
+                if (quoteID.length() > 0) {
+                    setPaymentServiceCall();
+                } else {
+                    getQuoteIDServiceCall();
+                    Toast.makeText(context, "Something went wrong,Please try again", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+        getQuoteIDServiceCall();
 
     }
 
     public void setPaymentServiceCall() {
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setCartId(Integer.parseInt(quoteID));
+
+        PaymentRequest.PaymentMethod paymentMethod = new PaymentRequest.PaymentMethod();
+        paymentMethod.setMethod("cashondelivery");
 
         PaymentRequest.BillingAddress billingAddress = new PaymentRequest.BillingAddress();
-        billingAddress.setEmail(shared.getUserEmail());
+        billingAddress.setEmail(email);
+        billingAddress.setRegion("Telangana");
+        billingAddress.setRegion_id(564);
+        billingAddress.setRegion_code("TG");
+        billingAddress.setCountry_id("IN");
+        billingAddress.setStreet(address);
+        billingAddress.setPostcode(postcode);
+        billingAddress.setCity(shared.getCity());
+        billingAddress.setTelephone(phone);
+        billingAddress.setFirstname(shared.getUserFirstName());
+        billingAddress.setLastname(shared.getUserLastName());
 
         Call<GeneralResponse> loginResponseCall = service.setPayment("Bearer " + shared.getToken(), paymentRequest);
         loginResponseCall.enqueue(new Callback<GeneralResponse>() {
@@ -113,4 +144,30 @@ public class CheckoutActivity extends AppCompatActivity {
         });
     }
 
+    public void getQuoteIDServiceCall() {
+        ghUtil.showDialog(CheckoutActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<QuoteIDResponse> loginResponseCall = service.getQuoteID(shared.getToken(), shared.getUserID());
+        loginResponseCall.enqueue(new Callback<QuoteIDResponse>() {
+            @Override
+            public void onResponse(Call<QuoteIDResponse> call, Response<QuoteIDResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    if (response.body().getStatus() == 200) {
+                        if (response.body().getStatus() == 200) {
+                            quoteID = String.valueOf(response.body().getQuote_id());
+                        }
+                    }
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QuoteIDResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

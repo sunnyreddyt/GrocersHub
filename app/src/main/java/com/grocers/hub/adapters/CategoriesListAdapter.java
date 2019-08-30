@@ -29,7 +29,7 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
 
     private Context mContext;
     ArrayList<CategoryModel> categoryModelArrayList;
-    ItemClickListener itemClickListener;
+    OnCategoryClickListener onCategoryClickListener;
 
     public CategoriesListAdapter(Context mContext,
                                  ArrayList<CategoryModel> categoryModelArrayList) {
@@ -38,8 +38,8 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
     }
 
 
-    public void setClickListener(ItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    public void setClickListener(OnCategoryClickListener onCategoryClickListener) {
+        this.onCategoryClickListener = onCategoryClickListener;
     }
 
 
@@ -85,8 +85,8 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
             public void onClick(View view) {
                 if (position != 0) {
 
-                    if (itemClickListener != null) {
-                        itemClickListener.onClick(position);
+                    if (onCategoryClickListener != null) {
+                        onCategoryClickListener.onCategoryClick(position);
                     }
                     Intent intent = new Intent(mContext, CategoryProductsActivity.class);
                     intent.putExtra("id", String.valueOf(categoryModelArrayList.get(position).getId()));
