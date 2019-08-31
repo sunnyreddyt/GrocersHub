@@ -20,7 +20,9 @@ import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OfferProductsListAdapter;
 import com.grocers.hub.adapters.ProductsAdapter;
 import com.grocers.hub.adapters.SubCategoriesAdapter;
+import com.grocers.hub.constants.Shared;
 import com.grocers.hub.fragments.HomeFragment;
+import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.ProductsResponse;
 import com.grocers.hub.network.APIInterface;
@@ -43,6 +45,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     CategoryModel categoryModel;
     String categoryID;
     GHUtil ghUtil;
+    Shared shared;
     ArrayList<CategoryModel> categoryModelArrayList;
     ArrayList<ProductsResponse> productsResponseArrayList;
     RecyclerView subCategoriesRecyclerView;
@@ -50,16 +53,18 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     String selectedSubCategoryId = "";
     Context context;
     String categoryName = "";
-    TextView categoryNameTextView;
+    TextView categoryNameTextView, cartCountTextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_products);
         context = CategoryProductsActivity.this;
+        shared = new Shared(CategoryProductsActivity.this);
         ghUtil = GHUtil.getInstance(CategoryProductsActivity.this);
         backImageView = (ImageView) findViewById(R.id.backImageView);
         categoryNameTextView = (TextView) findViewById(R.id.categoryNameTextView);
+        cartCountTextView = (TextView) findViewById(R.id.cartCountTextView);
         productsRecyclerView = (RecyclerView) findViewById(R.id.productsRecyclerView);
         subCategoriesRecyclerView = (RecyclerView) findViewById(R.id.subCategoriesRecyclerView);
         cartLayout = (RelativeLayout) findViewById(R.id.cartLayout);
@@ -147,6 +152,11 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
                     } else {
                         Toast.makeText(context, "No products available", Toast.LENGTH_SHORT).show();
                     }
+
+                    if (shared.getUserID().length() > 0) {
+                        getCartProductsServiceCall();
+                    }
+
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -154,6 +164,37 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
 
             @Override
             public void onFailure(Call<ProductsResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    public void getCartProductsServiceCall() {
+        ghUtil.showDialog(CategoryProductsActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
+        loginResponseCall.enqueue(new Callback<CartResponse>() {
+            @Override
+            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+
+                    int cartCount = response.body().getItems().size();
+                    if (cartCount > 0) {
+                        cartCountTextView.setText(String.valueOf(cartCount));
+                    } else {
+                        cartCountTextView.setText("0");
+                    }
+
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }

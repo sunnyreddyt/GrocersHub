@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.adapters.CartProductsAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.ProductImagesListAdapter;
 import com.grocers.hub.adapters.ProductsAdapter;
@@ -24,6 +25,7 @@ import com.grocers.hub.constants.Constants;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
+import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.ProductDetailsResponse;
 import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.models.SimilarProductsResponse;
@@ -44,7 +46,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     RelativeLayout cartLayout;
     ImageView backImageView, productImageView;
     String skuID;
-    TextView productNameTextView, productPriceTextView, cartTextView;
+    TextView productNameTextView, productPriceTextView, cartTextView, cartCountTextView;
     ProductDetailsResponse productDetailsResponse;
     Context context;
     Shared shared;
@@ -57,6 +59,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         setContentView(R.layout.activity_product_detail);
         ghUtil = GHUtil.getInstance(ProductDetailActivity.this);
         shared = new Shared(ProductDetailActivity.this);
+        cartCountTextView = (TextView) findViewById(R.id.cartCountTextView);
         backImageView = (ImageView) findViewById(R.id.backImageView);
         productImagesRecyclerView = (RecyclerView) findViewById(R.id.productImagesRecyclerView);
         // productUnitsRecyclerView = (RecyclerView) findViewById(R.id.productUnitsRecyclerView);
@@ -106,7 +109,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
             @Override
             public void onClick(View view) {
                 if (shared.getUserEmail().length() > 0) {
-                    if (cartTextView.getText().equals("Continue to payment")) {
+                    if (cartTextView.getText().equals("Proceed to Cart")) {
                         Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
                         startActivity(intent);
                     } else {
@@ -189,12 +192,17 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 } else {
                     Toast.makeText(context, "No similar products available", Toast.LENGTH_LONG).show();
                 }
+
+                if (shared.getUserID().length()>0) {
+                    getCartProductsServiceCall();
+                }
             }
 
             @Override
             public void onFailure(Call<SimilarProductsResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+                getCartProductsServiceCall();
             }
         });
     }
@@ -246,7 +254,6 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 if (response.code() == 200) {
                     Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
                     cartTextView.setText("Proceed to Cart");
-
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -254,6 +261,42 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
             @Override
             public void onFailure(Call<AddToCartResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getCartProductsServiceCall() {
+        ghUtil.showDialog(ProductDetailActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
+        loginResponseCall.enqueue(new Callback<CartResponse>() {
+            @Override
+            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+
+                    int cartCount = response.body().getItems().size();
+                    if (cartCount > 0) {
+                        cartCountTextView.setText(String.valueOf(cartCount));
+                    } else {
+                        cartCountTextView.setText("0");
+                    }
+
+                    for (int o = 0; o < response.body().getItems().size(); o++) {
+                        if (response.body().getItems().get(o).getSku().equalsIgnoreCase(skuID)) {
+                            cartTextView.setText("Proceed to Cart");
+                        }
+                    }
+
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }

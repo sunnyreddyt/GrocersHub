@@ -1,9 +1,12 @@
 package com.grocers.hub;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,10 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.adapters.CartProductsAdapter;
+import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.OrderProductsAdapter;
 import com.grocers.hub.adapters.PaymentAdapter;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.models.DeleteCartResponse;
 import com.grocers.hub.models.GeneralResponse;
+import com.grocers.hub.models.LocationsModel;
 import com.grocers.hub.models.PaymentRequest;
 import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.models.ShippingAddressRequest;
@@ -25,6 +31,8 @@ import com.grocers.hub.models.ShippingResponse;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +48,7 @@ public class CheckoutActivity extends AppCompatActivity {
     Shared shared;
     String quoteID = "";
     String email, phone, postcode, address;
+    Dialog couponDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +73,6 @@ public class CheckoutActivity extends AppCompatActivity {
         phone = intent.getStringExtra("email");
         postcode = intent.getStringExtra("email");
         address = intent.getStringExtra("email");
-
 
         ShippingResponse shippingResponse = ghUtil.getShippingResponse();
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
@@ -105,6 +113,7 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     public void setPaymentServiceCall() {
+        ghUtil.dismissDialog();
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         PaymentRequest paymentRequest = new PaymentRequest();
         paymentRequest.setCartId(Integer.parseInt(quoteID));
@@ -129,7 +138,7 @@ public class CheckoutActivity extends AppCompatActivity {
         loginResponseCall.enqueue(new Callback<GeneralResponse>() {
             @Override
             public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
-
+                ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     Toast.makeText(context, "Order Places Successfully", Toast.LENGTH_SHORT).show();
                 } else {
@@ -139,6 +148,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<GeneralResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
@@ -170,4 +180,60 @@ public class CheckoutActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void couponDialog() {
+        couponDialog = new Dialog(CheckoutActivity.this);
+        couponDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        couponDialog.setContentView(R.layout.dialog_coupon);
+
+        final EditText couponCodeEditText = (EditText) couponDialog.findViewById(R.id.couponCodeEditText);
+        TextView skipTextView = (TextView) couponDialog.findViewById(R.id.skipTextView);
+        TextView applyTextView = (TextView) couponDialog.findViewById(R.id.applyTextView);
+
+
+        skipTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                couponDialog.dismiss();
+            }
+        });
+
+        applyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String couponCode = couponCodeEditText.getText().toString();
+                if (couponCode.length() > 0) {
+                    applyCouponServiceCall(couponCode);
+                }
+            }
+        });
+
+        couponDialog.show();
+    }
+
+    public void applyCouponServiceCall(String couponCode) {
+        ghUtil.showDialog(CheckoutActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+
+        Call<DeleteCartResponse> loginResponseCall = service.applyCoupon(quoteID, couponCode);
+        loginResponseCall.enqueue(new Callback<DeleteCartResponse>() {
+            @Override
+            public void onResponse(Call<DeleteCartResponse> call, Response<DeleteCartResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200 && response.body().getStatus() == 200) {
+
+                    couponDialog.dismiss();
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeleteCartResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

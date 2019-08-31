@@ -70,11 +70,11 @@
                     android:src="@drawable/circle_filled_green" />
 
                 <TextView
+                    android:id="@+id/cartCountTextView"
                     android:layout_width="@dimen/_12sdp"
                     android:layout_height="@dimen/_12sdp"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
-                    android:text="1"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_8sdp"
                     android:textStyle="bold" />
@@ -120,9 +120,9 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/quicksand_medium"
                     android:gravity="left|center"
+                    android:inputType="textCapWords"
                     android:maxEms="30"
                     android:maxLines="1"
-                    android:inputType="textCapWords"
                     android:text="Madhapur Petrol Pump..."
                     android:textColor="#33383f"
                     android:textSize="@dimen/_11sdp"

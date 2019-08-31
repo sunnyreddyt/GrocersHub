@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.grocers.hub.CartActivity;
+import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.ViewPagerAdapter;
 import com.grocers.hub.adapters.CategoriesListAdapter;
@@ -32,6 +33,7 @@ import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OfferProductsListAdapter;
 import com.grocers.hub.adapters.OnCategoryClickListener;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.HomeResponse;
 import com.grocers.hub.models.LocationsModel;
@@ -53,7 +55,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
 
     RecyclerView categoriesRecyclerView, homeRecyclerView;
     public static ImageView recyclerLayout;
-    TextView locationTextView;
+    TextView locationTextView, cartCountTextView;
     GHUtil ghUtil;
     Shared shared;
     RelativeLayout cartLayout;
@@ -111,6 +113,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
         locationTextView = (TextView) view.findViewById(R.id.locationTextView);
         cartLayout = (RelativeLayout) view.findViewById(R.id.cartLayout);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+        cartCountTextView = (TextView) view.findViewById(R.id.cartCountTextView);
         locationLayout = (LinearLayout) view.findViewById(R.id.locationLayout);
 
         sliderDotspanel = (LinearLayout) view.findViewById(R.id.SliderDots);
@@ -210,6 +213,10 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
                     homeRecyclerView.setLayoutManager(mLayoutManager1);
                     HomeAdapter homeAdapter = new HomeAdapter(getActivity(), response.body().getCategoryProducts());
                     homeRecyclerView.setAdapter(homeAdapter);
+
+                    if (shared.getUserID().length() > 0) {
+                        getCartProductsServiceCall();
+                    }
 
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -320,4 +327,35 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
         }
         categoriesListAdapter.notifyDataSetChanged();
     }
+
+    public void getCartProductsServiceCall() {
+        ghUtil.showDialog(getActivity());
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
+        loginResponseCall.enqueue(new Callback<CartResponse>() {
+            @Override
+            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+
+                    int cartCount = response.body().getItems().size();
+                    if (cartCount > 0) {
+                        cartCountTextView.setText(String.valueOf(cartCount));
+                    } else {
+                        cartCountTextView.setText("0");
+                    }
+
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

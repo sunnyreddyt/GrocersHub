@@ -109,5 +109,8 @@ public interface APIInterface {
     @GET("homeapi/Searchapi?")
     Call<ProductsResponse> search(@Query("key") String key, @Query("zipcode") String zipcode);
 
+    @Headers({"Accept: application/json"})
+    @GET("homeapi/applycoupon?")
+    Call<DeleteCartResponse> applyCoupon(@Query("cartId") String cartId, @Query("couponCode") String couponCode);
 
 }
