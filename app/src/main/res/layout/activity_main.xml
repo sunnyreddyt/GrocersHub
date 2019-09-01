@@ -49,8 +49,8 @@
                     <ImageView
                         android:id="@+id/homeImageView"
                         android:layout_width="@dimen/_25sdp"
-                        android:layout_height="30dp"
-                        android:padding="@dimen/_2sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:padding="@dimen/_4sdp"
                         android:src="@drawable/ic_home" />
 
                     <TextView
@@ -58,9 +58,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Home"
+                        android:text="HOME"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_9sdp"
+                        android:textSize="@dimen/_8sdp"
                         app:fontFamily="@font/poppins_medium" />
 
 
@@ -79,7 +79,7 @@
                         android:id="@+id/searchImageView"
                         android:layout_width="@dimen/_25sdp"
                         android:layout_height="@dimen/_25sdp"
-                        android:padding="@dimen/_3sdp"
+                        android:padding="@dimen/_4sdp"
                         android:src="@drawable/ic_search_black" />
 
                     <TextView
@@ -87,9 +87,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Search"
+                        android:text="SEARCH"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_9sdp"
+                        android:textSize="@dimen/_8sdp"
                         app:fontFamily="@font/poppins_medium" />
 
                 </LinearLayout>
@@ -109,7 +109,7 @@
                         android:layout_width="@dimen/_25sdp"
                         android:layout_height="@dimen/_25sdp"
                         android:clickable="false"
-                        android:padding="@dimen/_3sdp"
+                        android:padding="@dimen/_4sdp"
                         android:src="@drawable/ic_categories_black" />
 
 
@@ -119,9 +119,9 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:gravity="center"
-                        android:text="Categories"
+                        android:text="CATEGORIES"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_9sdp"
+                        android:textSize="@dimen/_8sdp"
                         app:fontFamily="@font/poppins_medium" />
 
 
@@ -141,7 +141,7 @@
                         android:id="@+id/offersImageView"
                         android:layout_width="@dimen/_25sdp"
                         android:layout_height="@dimen/_25sdp"
-                        android:padding="@dimen/_2sdp"
+                        android:padding="@dimen/_4sdp"
                         android:src="@drawable/ic_offers_black" />
 
 
@@ -150,9 +150,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Offers"
+                        android:text="OFFERS"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_9sdp"
+                        android:textSize="@dimen/_8sdp"
                         app:fontFamily="@font/poppins_medium" />
 
 
@@ -172,18 +172,17 @@
                         android:id="@+id/accountImageView"
                         android:layout_width="@dimen/_25sdp"
                         android:layout_height="@dimen/_25sdp"
-                        android:padding="@dimen/_2sdp"
+                        android:padding="@dimen/_4sdp"
                         android:src="@drawable/ic_account_black" />
-
 
                     <TextView
                         android:id="@+id/accountTextview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Account"
+                        android:text="ACCOUNT"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_9sdp"
+                        android:textSize="@dimen/_8sdp"
                         app:fontFamily="@font/poppins_medium" />
 
 

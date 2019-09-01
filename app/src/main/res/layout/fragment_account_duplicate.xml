@@ -56,10 +56,10 @@
                     android:layout_width="@dimen/_18sdp"
                     android:layout_height="@dimen/_18sdp"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:src="@drawable/ic_edit" />
+                    android:src="@drawable/ic_edit"
+                    android:tint="#989898" />
 
             </RelativeLayout>
-
 
         </LinearLayout>
 
@@ -96,7 +96,7 @@
                     android:id="@+id/userNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto"
+                    android:fontFamily="@font/poppins_medium"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp"
                     app:fontFamily="@font/poppins" />
@@ -118,7 +118,7 @@
                         android:id="@+id/userMailTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/poppins_medium"
                         android:textSize="@dimen/_10sdp" />
 
                 </LinearLayout>
@@ -136,10 +136,10 @@
                         android:src="@drawable/call_icon" />
 
                     <TextView
-                        android:id="@+id/userNumberTextView"
+                        android:id="@+id/userMobileTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/poppins_medium"
                         android:text="xxxxxxxxxx"
                         android:textSize="@dimen/_10sdp" />
 
@@ -163,18 +163,18 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:padding="@dimen/_6sdp"
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:padding="@dimen/_3sdp"
                         android:src="@drawable/order_requested_icon"
-                        android:tint="@color/black" />
+                        android:tint="#989898" />
                     <!--6ea4e6-->
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/quicksand"
+                        android:fontFamily="@font/poppins"
                         android:text="My Orders"
                         android:textColor="@color/black" />
 
@@ -194,17 +194,18 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:padding="@dimen/_5sdp"
-                        android:src="@drawable/ic_location_duplicate" />
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:padding="@dimen/_3sdp"
+                        android:src="@drawable/ic_location"
+                        android:tint="#989898" />
 
                     <TextView
                         android:id="@+id/selectedLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/quicksand"
+                        android:fontFamily="@font/poppins"
                         android:text="My Addresses"
                         android:textColor="@color/black" />
 
@@ -220,7 +221,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right"
-                            android:fontFamily="@font/poppins"
+                            android:fontFamily="@font/poppins_medium"
                             android:text="Change Location"
                             android:textColor="#343E83"
                             android:textStyle="bold" />
@@ -243,17 +244,17 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:padding="@dimen/_7sdp"
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:padding="@dimen/_3sdp"
                         android:src="@drawable/notification_icon"
-                        android:tint="@color/black" />
+                        android:tint="#989898" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/quicksand"
+                        android:fontFamily="@font/poppins"
                         android:text="Notifications"
                         android:textColor="@color/black" />
 
@@ -273,17 +274,17 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:padding="@dimen/_5sdp"
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:padding="@dimen/_3sdp"
                         android:src="@drawable/feedback_icon"
-                        android:tint="@color/black" />
+                        android:tint="#989898" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/quicksand"
+                        android:fontFamily="@font/poppins"
                         android:text="Feedback"
                         android:textColor="@color/black" />
 
@@ -303,18 +304,18 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:padding="@dimen/_7sdp"
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:padding="@dimen/_4sdp"
                         android:src="@drawable/rate_icon"
-                        android:tint="@color/black" />
+                        android:tint="#989898" />
 
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/quicksand"
+                        android:fontFamily="@font/poppins"
                         android:text="Rate Us"
                         android:textColor="@color/black" />
 
@@ -334,17 +335,17 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:padding="@dimen/_5sdp"
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:padding="@dimen/_3sdp"
                         android:src="@drawable/about_us_icon"
-                        android:tint="@color/black" />
+                        android:tint="#989898" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/quicksand"
+                        android:fontFamily="@font/poppins"
                         android:text="About Us"
                         android:textColor="@color/black" />
 
@@ -365,16 +366,17 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:padding="@dimen/_5sdp"
-                        android:src="@drawable/ic_logout" />
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:padding="@dimen/_3sdp"
+                        android:src="@drawable/ic_logout"
+                        android:tint="#989898" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/quicksand"
+                        android:fontFamily="@font/poppins"
                         android:text="Sign Out"
                         android:textColor="@color/black" />
 

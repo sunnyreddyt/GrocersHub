@@ -80,8 +80,10 @@ public class ShippingAddressActivity extends AppCompatActivity {
         shipping_address.setRegion_id(43);
         shipping_address.setRegion_code("TN");
         shipping_address.setCountry_id("IN");
+        shipping_address.setCity(shared.getCity());
         shipping_address.setPostcode(pincodeEditText.getText().toString());
         shipping_address.setFirstname(nameEditText.getText().toString());
+        shipping_address.setLastname("");
         shipping_address.setEmail(emailEditText.getText().toString());
         shipping_address.setTelephone(phoneEditText.getText().toString());
         shipping_address.setSame_as_billing(1);

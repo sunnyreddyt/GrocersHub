@@ -10,64 +10,99 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/_4sdp"
+        android:background="@color/white"
+        android:elevation="@dimen/_4sdp"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/_5sdp">
 
         <LinearLayout
             android:id="@+id/itemLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_1sdp"
+            android:layout_marginRight="@dimen/_15sdp"
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingTop="@dimen/_8sdp"
-            android:paddingBottom="@dimen/_8sdp"
+            android:paddingLeft="@dimen/_15sdp"
+            android:paddingTop="@dimen/_4sdp"
             android:weightSum="1">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto"
-                    android:paddingLeft="@dimen/_15sdp"
+                    android:fontFamily="@font/poppins_medium"
                     android:text="Order ID:"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_11sdp" />
 
                 <TextView
                     android:id="@+id/orderIDTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto"
+                    android:fontFamily="@font/poppins"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/_10sdp"
                     android:text="189653"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textColor="#353434"
+                    android:textSize="@dimen/_11sdp" />
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/orderAmountTextView"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:fontFamily="@font/roboto"
-                android:paddingLeft="@dimen/_15sdp"
-                android:text="Total: ₹ 550"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:layout_weight="0.5"
+                android:gravity="right"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:paddingLeft="@dimen/_15sdp"
+                    android:text="Total: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_11sdp" />
+
+                <TextView
+                    android:id="@+id/orderAmountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins"
+                    android:paddingLeft="@dimen/_15sdp"
+                    android:text="₹ 550"
+                    android:textColor="#353434"
+                    android:textSize="@dimen/_10sdp" />
+
+            </LinearLayout>
 
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:paddingLeft="@dimen/_15sdp"
+            android:text="Products:"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_11sdp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/productsRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_15sdp"
+            android:layout_marginRight="@dimen/_15sdp">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
     </LinearLayout>
 
 </RelativeLayout>

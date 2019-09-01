@@ -11,7 +11,6 @@
         android:id="@+id/itemLayout"
         android:layout_width="@dimen/_110sdp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_6sdp"
         android:layout_marginRight="@dimen/_4sdp"
         android:background="@color/white"
         android:orientation="vertical"
@@ -34,7 +33,8 @@
                 android:layout_height="@dimen/_22sdp"
                 android:layout_alignParentLeft="true"
                 android:layout_margin="@dimen/_2sdp"
-                android:background="@drawable/circle_filled_red">
+                android:background="@drawable/circle_filled_red"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="@dimen/_22sdp"
@@ -55,7 +55,6 @@
                 android:layout_margin="@dimen/_2sdp"
                 android:padding="@dimen/_4sdp"
                 android:src="@drawable/ic_fav_select" />
-
 
         </RelativeLayout>
 

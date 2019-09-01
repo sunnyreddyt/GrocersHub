@@ -53,7 +53,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
     public void onBindViewHolder(final OrderAdapter.MyViewHolder holder, final int position) {
 
         holder.orderIDTextView.setText(ordersResponseArrayList.get(position).getOrderId());
-        holder.orderAmountTextView.setText("Total: ₹ " + ordersResponseArrayList.get(position).getGrandTotal());
+        int totalAmount = Integer.parseInt(ordersResponseArrayList.get(position).getGrandTotal());
+        holder.orderAmountTextView.setText("₹ " + totalAmount);
 
         LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         holder.productsRecyclerView.setLayoutManager(mLayoutManager1);

@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.EditProfileActivity;
 import com.grocers.hub.LoginActivity;
 import com.grocers.hub.MainActivity;
 import com.grocers.hub.OrderHistoryActivity;
@@ -59,7 +60,7 @@ public class AccountFragment extends Fragment implements ItemClickListener {
     Dialog citiesDialog;
     Context context;
     GHUtil ghUtil;
-    TextView userNameTextView, loginTextView, userNumberTextView, userMailTextView, changeLocationTextView, selectedLocation;
+    TextView userNameTextView, loginTextView, userMobileTextView, userMailTextView, changeLocationTextView, selectedLocation;
 
     @Nullable
     @Override
@@ -70,7 +71,7 @@ public class AccountFragment extends Fragment implements ItemClickListener {
         signOutLayout = (LinearLayout) view.findViewById(R.id.signOutLayout);
         userNameTextView = (TextView) view.findViewById(R.id.userNameTextView);
         loginTextView = (TextView) view.findViewById(R.id.loginTextView);
-        userNumberTextView = (TextView) view.findViewById(R.id.userNumberTextView);
+        userMobileTextView = (TextView) view.findViewById(R.id.userMobileTextView);
         changeLocationTextView = (TextView) view.findViewById(R.id.changeLocationTextView);
         editLayout = (RelativeLayout) view.findViewById(R.id.editLayout);
         userMailTextView = (TextView) view.findViewById(R.id.userMailTextView);
@@ -81,7 +82,6 @@ public class AccountFragment extends Fragment implements ItemClickListener {
         context = getActivity();
         shared = new Shared(getActivity());
 
-        selectedLocation.setText(shared.getCity());
 
         changeLocationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,6 +146,14 @@ public class AccountFragment extends Fragment implements ItemClickListener {
             }
         });
 
+        editLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -164,6 +172,10 @@ public class AccountFragment extends Fragment implements ItemClickListener {
 
         userNameTextView.setText(shared.getUserName());
         userMailTextView.setText(shared.getUserEmail());
+        if (shared.getCity().length() > 0) {
+            selectedLocation.setText(shared.getCity().substring(0, 1).toUpperCase() + shared.getCity().substring(1, shared.getCity().toString().length()));
+        }
+        userMobileTextView.setText(shared.getUserMobile());
     }
 
     public void getLocations() {
@@ -221,6 +233,8 @@ public class AccountFragment extends Fragment implements ItemClickListener {
         if (citiesDialog != null) {
             citiesDialog.dismiss();
         }
-        selectedLocation.setText(shared.getCity());
+        if (shared.getCity().length() > 0) {
+            selectedLocation.setText(shared.getCity().substring(0, 1).toUpperCase() + shared.getCity().substring(1, shared.getCity().toString().length()));
+        }
     }
 }

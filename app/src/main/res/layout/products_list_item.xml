@@ -36,7 +36,8 @@
                 android:layout_height="@dimen/_22sdp"
                 android:layout_alignParentLeft="true"
                 android:layout_margin="@dimen/_2sdp"
-                android:background="@drawable/circle_filled_red">
+                android:background="@drawable/circle_filled_red"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/categoryImageView"
@@ -70,6 +71,7 @@
             android:layout_marginRight="@dimen/_2sdp"
             android:paddingLeft="@dimen/_3sdp"
             android:text="Freedom Refined Sunflower"
+            android:textColor="@color/black"
             android:textSize="@dimen/_11sdp" />
 
         <RelativeLayout
@@ -104,17 +106,17 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/addImageView"
+            android:id="@+id/addTextView"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_22sdp"
             android:layout_marginLeft="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/green"
+            android:background="@drawable/green_square_rounded"
             android:gravity="center"
             android:text="ADD"
             android:textColor="@color/white"
-            android:textSize="@dimen/_12sdp"
-            android:visibility="gone" />
+            android:textSize="@dimen/_10sdp"
+            android:visibility="visible" />
 
     </LinearLayout>
 

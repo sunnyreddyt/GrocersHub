@@ -137,6 +137,7 @@
         android:layout_height="@dimen/_35sdp"
         android:layout_marginLeft="@dimen/_8sdp"
         android:layout_marginTop="@dimen/_20sdp"
+        android:padding="@dimen/_4sdp"
         android:src="@drawable/chevron_left" />
 
     <ImageView

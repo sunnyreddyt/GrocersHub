@@ -59,7 +59,10 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.MyView
     @Override
     public void onBindViewHolder(final CityListAdapter.MyViewHolder holder, final int position) {
 
-        holder.cityNameTextView.setText(cityArrayList.get(position).getCity());
+
+        if (cityArrayList.get(position).getCity().length() > 0) {
+            holder.cityNameTextView.setText(cityArrayList.get(position).getCity().substring(0, 1).toUpperCase() + cityArrayList.get(position).getCity().substring(1, cityArrayList.get(position).getCity().toString().length()));
+        }
         holder.cityImageView.setImageResource(citiesImages[position]);
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override

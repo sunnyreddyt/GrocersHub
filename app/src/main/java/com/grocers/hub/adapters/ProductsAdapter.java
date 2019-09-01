@@ -26,18 +26,24 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
     private Context mContext;
     Shared shared;
     ArrayList<ProductsResponse> productsResponseArrayList;
+    OnProductClickListener onProductClickListener;
+    ArrayList<String> productIsAddedCartArrayList;
 
-    public ProductsAdapter(Context mContext,
-                           ArrayList<ProductsResponse> productsResponseArrayList) {
+    public ProductsAdapter(Context mContext, ArrayList<ProductsResponse> productsResponseArrayList, ArrayList<String> productIsAddedCartArrayList) {
         this.mContext = mContext;
         this.shared = new Shared(mContext);
         this.productsResponseArrayList = productsResponseArrayList;
+        this.productIsAddedCartArrayList = productIsAddedCartArrayList;
+    }
+
+    public void setClickListener(OnProductClickListener onProductClickListener) {
+        this.onProductClickListener = onProductClickListener;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout itemLayout;
-        TextView productNameTextView, offerCostTextView, costTextView, addImageView;
+        TextView productNameTextView, offerCostTextView, costTextView, addTextView;
         ImageView productImageView;
 
         public MyViewHolder(View view) {
@@ -47,7 +53,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
             offerCostTextView = (TextView) view.findViewById(R.id.offerCostTextView);
             costTextView = (TextView) view.findViewById(R.id.costTextView);
             productImageView = (ImageView) view.findViewById(R.id.productImageView);
-            addImageView = (TextView) view.findViewById(R.id.addImageView);
+            addTextView = (TextView) view.findViewById(R.id.addTextView);
         }
     }
 
@@ -63,8 +69,15 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
     public void onBindViewHolder(final ProductsAdapter.MyViewHolder holder, final int position) {
 
         holder.productNameTextView.setText(productsResponseArrayList.get(position).getName());
-        holder.offerCostTextView.setText(String.valueOf(productsResponseArrayList.get(position).getPrice()));
+        holder.offerCostTextView.setText("₹ " + String.valueOf(productsResponseArrayList.get(position).getPrice()));
         Picasso.get().load(productsResponseArrayList.get(position).getImage()).into(holder.productImageView);
+
+        if (productIsAddedCartArrayList.get(position).equalsIgnoreCase("yes")) {
+            holder.addTextView.setText("ADDED");
+        } else {
+            holder.addTextView.setText("ADD");
+        }
+
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,11 +88,17 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
             }
         });
 
-        holder.addImageView.setOnClickListener(new View.OnClickListener() {
+        holder.addTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (shared.getUserName().length() > 0) {
-
+                    if (holder.addTextView.getText().toString().equalsIgnoreCase("ADD")) {
+                        if (onProductClickListener != null) {
+                            onProductClickListener.onProductClick(position);
+                        }
+                    } else {
+                        Toast.makeText(mContext, "Product is already in Cart", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(mContext, "Please login to add", Toast.LENGTH_SHORT).show();
                 }

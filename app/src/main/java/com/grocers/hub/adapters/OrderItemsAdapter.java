@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.R;
+import com.grocers.hub.constants.Constants;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.OrdersResponse;
 import com.squareup.picasso.Picasso;
@@ -36,19 +37,15 @@ public class OrderItemsAdapter extends RecyclerView.Adapter<OrderItemsAdapter.My
 
         LinearLayout itemLayout;
         ImageView productImageView;
-        TextView productNameTextView, addImageView, offerCostTextView;
+        TextView productNameTextView, offerCostTextView;
 
 
         public MyViewHolder(View view) {
             super(view);
             itemLayout = (LinearLayout) view.findViewById(R.id.itemLayout);
-            /*
-            categoryBackgroundImageView = (ImageView) view.findViewById(R.id.categoryBackgroundImageView);
-            */
             productImageView = (ImageView) view.findViewById(R.id.productImageView);
             productNameTextView = (TextView) view.findViewById(R.id.productNameTextView);
             offerCostTextView = (TextView) view.findViewById(R.id.offerCostTextView);
-            addImageView = (TextView) view.findViewById(R.id.addImageView);
         }
     }
 
@@ -63,30 +60,9 @@ public class OrderItemsAdapter extends RecyclerView.Adapter<OrderItemsAdapter.My
     @Override
     public void onBindViewHolder(final OrderItemsAdapter.MyViewHolder holder, final int position) {
 
-        Picasso.get().load(ordersResponseArrayList.get(position).getImage()).into(holder.productImageView);
+        Picasso.get().load(Constants.PRODUCT_IMAGE__BASE_URL + ordersResponseArrayList.get(position).getImage()).into(holder.productImageView);
         holder.offerCostTextView.setText("₹ " + String.valueOf(ordersResponseArrayList.get(position).getPrice()));
         holder.productNameTextView.setText(String.valueOf(ordersResponseArrayList.get(position).getName()));
-
-        /*holder.itemLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, ProductDetailActivity.class);
-                String skuID = ordersResponseArrayList.get(position).getSku();
-                intent.putExtra("skuID", skuID);
-                mContext.startActivity(intent);
-            }
-        });*/
-
-        holder.addImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (shared.getUserName().length() > 0) {
-
-                } else {
-                    Toast.makeText(mContext, "Please login to add", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
     }
 

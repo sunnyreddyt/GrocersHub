@@ -120,9 +120,14 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (response.code() == 200) {
 
                     Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context, MainActivity.class);
+
+                    shared.setUserFirstName(response.body().getFirstname());
+                    shared.setUserLastName(response.body().getLastname());
+                    shared.setUserName(response.body().getFirstname() + " " + response.body().getLastname());
+                    shared.setUserMobile(response.body().getCustom_attributes().get(0).getValue());
+                    /*Intent intent = new Intent(context, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
+                    startActivity(intent);*/
                     finish();
                 } else if (response.code() == 400) {
                     Toast.makeText(context, "User already exists", Toast.LENGTH_SHORT).show();
