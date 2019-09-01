@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/productImageView"
-            android:layout_width="@dimen/_60sdp"
-            android:layout_height="@dimen/_60sdp"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
             android:layout_centerInParent="true"
             android:background="#989898"
             android:src="#989898" />
