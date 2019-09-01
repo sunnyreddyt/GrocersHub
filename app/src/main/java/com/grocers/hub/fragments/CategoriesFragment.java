@@ -116,7 +116,7 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
     public void getCategoriesServiceCall() {
         ghUtil.showDialog(getActivity());
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<CategoryModel> loginResponseCall = service.getCategories();
+        Call<CategoryModel> loginResponseCall = service.getCategories("Bearer 34s77aiqvcmc84v65s1tpnwip9dtvtqk");
         loginResponseCall.enqueue(new Callback<CategoryModel>() {
             @Override
             public void onResponse(Call<CategoryModel> call, Response<CategoryModel> response) {

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.CartActivity;
 import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.constants.Constants;
@@ -87,6 +88,15 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
         holder.offerCostTextView.setText(String.valueOf(cartResponseArrayList.get(position).getPrice()));
         holder.costTextView.setVisibility(View.INVISIBLE);
         holder.countTextView.setText(String.valueOf(cartResponseArrayList.get(position).getQty()));
+
+        if (position == 0) {
+            CartActivity.totalAmount = 0;
+        }
+
+        int price = cartResponseArrayList.get(position).getPrice();
+        int quantity = cartResponseArrayList.get(position).getQty();
+        int productPrice = price * quantity;
+        CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override

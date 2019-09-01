@@ -76,6 +76,10 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        if (!(ghUtil.isConnectingToInternet())) {
+            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+        }
+
         return view;
     }
 

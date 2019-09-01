@@ -2,10 +2,12 @@ package com.grocers.hub;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +35,7 @@ public class ShippingAddressActivity extends AppCompatActivity {
     Shared shared;
     GHUtil ghUtil;
     Context context;
+    ImageView backImageView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class ShippingAddressActivity extends AppCompatActivity {
         ghUtil = GHUtil.getInstance(ShippingAddressActivity.this);
 
         paymentTextView = (TextView) findViewById(R.id.paymentTextView);
+        backImageView = (ImageView) findViewById(R.id.backImageView);
         nameEditText = (EditText) findViewById(R.id.nameEditText);
         emailEditText = (EditText) findViewById(R.id.emailEditText);
         phoneEditText = (EditText) findViewById(R.id.phoneEditText);
@@ -68,6 +72,13 @@ public class ShippingAddressActivity extends AppCompatActivity {
                 }
             }
         });
+
+        backImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     public void setChippingAddressServiceCall() {
@@ -77,13 +88,13 @@ public class ShippingAddressActivity extends AppCompatActivity {
 
         ShippingAddressRequest.Shipping_address shipping_address = new ShippingAddressRequest.Shipping_address();
         shipping_address.setRegion("Telangana");
-        shipping_address.setRegion_id(43);
+        shipping_address.setRegion_id(564);
         shipping_address.setRegion_code("TN");
         shipping_address.setCountry_id("IN");
         shipping_address.setCity(shared.getCity());
         shipping_address.setPostcode(pincodeEditText.getText().toString());
         shipping_address.setFirstname(nameEditText.getText().toString());
-        shipping_address.setLastname("");
+        shipping_address.setLastname(nameEditText.getText().toString());
         shipping_address.setEmail(emailEditText.getText().toString());
         shipping_address.setTelephone(phoneEditText.getText().toString());
         shipping_address.setSame_as_billing(1);
@@ -113,6 +124,7 @@ public class ShippingAddressActivity extends AppCompatActivity {
                     intent.putExtra("phone", phoneEditText.getText().toString());
                     intent.putExtra("postcode", pincodeEditText.getText().toString());
                     intent.putExtra("address", addressEditText.getText().toString());
+                    intent.putExtra("name", nameEditText.getText().toString());
                     startActivity(intent);
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();

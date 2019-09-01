@@ -84,7 +84,7 @@ public class Shared extends Application {
         return preference.getString("UserEmail", "");
     }
 
-    public void setUserUserEmail(String UserEmail) {
+    public void setUserEmail(String UserEmail) {
         editor = preference.edit();
         editor.putString("UserEmail", UserEmail);
         editor.commit();

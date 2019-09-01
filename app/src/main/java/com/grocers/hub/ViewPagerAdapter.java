@@ -46,7 +46,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.viewpager_item, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
 
-        Picasso.get().load(Constants.PRODUCT_IMAGE__BASE_URL + categoryProducts.get(position).getBannerimage()).into(imageView);
+        Picasso.get().load(Constants.BANNER_IMAGE__BASE_URL + categoryProducts.get(position).getBannerimage()).into(imageView);
 
         ViewPager vp = (ViewPager) container;
         vp.addView(view, 0);

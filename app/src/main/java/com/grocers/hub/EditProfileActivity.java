@@ -31,7 +31,7 @@ import retrofit2.Response;
 public class EditProfileActivity extends AppCompatActivity {
 
     EditText firstNameEditText, lastNameEditText, emailEditText, mobileEditText;
-    TextView registerTextView, loginTextView;
+    TextView registerTextView;
     GHUtil ghUtil;
     Shared shared;
     ImageView backImageView;
@@ -49,7 +49,6 @@ public class EditProfileActivity extends AppCompatActivity {
         shared = new Shared(context);
         mobileEditText = (EditText) findViewById(R.id.mobileEditText);
         firstNameEditText = (EditText) findViewById(R.id.firstNameEditText);
-        loginTextView = (TextView) findViewById(R.id.loginTextView);
         lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
         backImageView = (ImageView) findViewById(R.id.backImageView);
         emailEditText = (EditText) findViewById(R.id.emailEditText);
@@ -80,13 +79,6 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-        loginTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
     }
 
     public void updateProfileServiceCall() {
@@ -112,14 +104,14 @@ public class EditProfileActivity extends AppCompatActivity {
 
         updateProfileRequest.setCustomer(updateCustomer);
 
-        Call<GeneralResponse> loginResponseCall = service.updateProfile(updateProfileRequest);
+        Call<GeneralResponse> loginResponseCall = service.updateProfile(shared.getUserID(), updateProfileRequest);
         loginResponseCall.enqueue(new Callback<GeneralResponse>() {
             @Override
             public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
                 ghUtil.dismissDialog();
                 if (response.code() == 200) {
 
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Successfully Updated", Toast.LENGTH_SHORT).show();
 
                     shared.setUserFirstName(response.body().getFirstname());
                     shared.setUserLastName(response.body().getLastname());

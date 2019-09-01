@@ -204,8 +204,9 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
 
             @Override
             public void onFailure(Call<CartResponse> call, Throwable t) {
+                cartCountTextView.setText("0");
                 ghUtil.dismissDialog();
-                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -233,8 +234,9 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
 
             @Override
             public void onFailure(Call<QuoteIDResponse> call, Throwable t) {
+                cartCountTextView.setText("0");
                 ghUtil.dismissDialog();
-                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -258,6 +260,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
                     Toast.makeText(CategoryProductsActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
                     productIsAddedCartArrayList.set(addedPosition, "yes");
                     productsAdapter.notifyItemChanged(addedPosition);
+                    getCartProductsServiceCall();
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -265,8 +268,9 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
 
             @Override
             public void onFailure(Call<AddToCartResponse> call, Throwable t) {
+                cartCountTextView.setText("0");
                 ghUtil.dismissDialog();
-                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }

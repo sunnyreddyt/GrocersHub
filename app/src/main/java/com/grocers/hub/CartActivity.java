@@ -38,6 +38,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
     Shared shared;
     Context context;
     GHUtil ghUtil;
+    public static int totalAmount = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,15 +52,26 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
         cartRecyclerView = (RecyclerView) findViewById(R.id.cartRecyclerView);
         paymentTextView = (TextView) findViewById(R.id.paymentTextView);
 
+        totalAmount = 0;
+
         paymentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CartActivity.this, ShippingAddressActivity.class);
-                startActivity(intent);
+                if (totalAmount > 300) {
+                    Intent intent = new Intent(CartActivity.this, ShippingAddressActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(context, "Minimum order should be greater than Rs.300", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
-        getCartProductsServiceCall();
+
+        if (ghUtil.isConnectingToInternet()) {
+            getCartProductsServiceCall();
+        } else {
+            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+        }
 
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,14 +108,14 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                     }
 
                 } else {
-                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "No products added to cart", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<CartResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
-                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "No products added to cart", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.CategoryProductsActivity;
 import com.grocers.hub.R;
+import com.grocers.hub.constants.Constants;
 import com.grocers.hub.models.CategoryModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -64,15 +67,18 @@ public class AllCategoriesListAdapter extends RecyclerView.Adapter<AllCategories
     public void onBindViewHolder(final AllCategoriesListAdapter.MyViewHolder holder, final int position) {
 
         CategoryModel categoryModel = categoryModelArrayList.get(position);
-        holder.categoryImageView.setImageResource(R.drawable.ic_categories_black);
+//        holder.categoryImageView.setImageResource(R.drawable.ic_categories_black);
+        Log.v("image_path", Constants.CATEGORY_IMAGE__BASE_URL + categoryModel.getImage());
+        Picasso.get().load(Constants.CATEGORY_IMAGE__BASE_URL + categoryModel.getImage()).into(holder.categoryImageView);
+
         holder.categoryNameTextView.setText(categoryModel.getName());
-        if (categoryModel.isCategoryBackground()) {
+        /*if (categoryModel.isCategoryBackground()) {
             holder.categoryBackgroundImageView.setImageResource(R.drawable.circle_filled_green);
             holder.categoryImageView.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
         } else {
             holder.categoryBackgroundImageView.setImageResource(R.drawable.circle_border);
             holder.categoryImageView.setImageTintList(ColorStateList.valueOf(Color.parseColor("#8b8b8b")));
-        }
+        }*/
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override

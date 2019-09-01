@@ -11,7 +11,9 @@ public class Constants {
 
     //Live url
     //public static String BASE_URL = "http://192.168.0.11:12/SunnyProjects/Pricer/public/";
-    public static String PRODUCT_IMAGE__BASE_URL = "https://www.grocershub.in/pub/media/catalog/product";
+    public static String PRODUCT_IMAGE__BASE_URL = "https://www.grocershub.in/pub/media/catalog/product/";
+    public static String BANNER_IMAGE__BASE_URL = "https://www.grocershub.in/pub/media/";
+    public static String CATEGORY_IMAGE__BASE_URL = "https://www.grocershub.in/pub/media/catalog/category/";
 
     // public static String BASE_URL = "http://183.82.106.234:9999/";
 

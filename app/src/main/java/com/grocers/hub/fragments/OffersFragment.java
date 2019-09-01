@@ -45,7 +45,12 @@ public class OffersFragment extends Fragment {
         ghUtil = GHUtil.getInstance(getActivity());
         shared = new Shared(getActivity());
         context = getActivity();
-        getHomeDetailsServiceCall();
+
+        if ((ghUtil.isConnectingToInternet())) {
+            getHomeDetailsServiceCall();
+        } else {
+            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+        }
 
         return view;
     }
@@ -78,7 +83,6 @@ public class OffersFragment extends Fragment {
             }
         });
     }
-
 
 
 }

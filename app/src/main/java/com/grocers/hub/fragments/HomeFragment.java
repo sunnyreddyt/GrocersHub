@@ -81,7 +81,6 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
             locationTextView.setText(shared.getCity().substring(0, 1).toUpperCase() + shared.getCity().substring(1, shared.getCity().toString().length()));
         }
 
-
         locationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,7 +100,12 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
             }
         });
 
-        getCategoriesServiceCall();
+        if (ghUtil.isConnectingToInternet()) {
+            getCategoriesServiceCall();
+        } else {
+            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+        }
+
 
         return view;
     }
@@ -154,7 +158,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
     public void getCategoriesServiceCall() {
         ghUtil.showDialog(getActivity());
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<CategoryModel> loginResponseCall = service.getCategories();
+        Call<CategoryModel> loginResponseCall = service.getCategories("Bearer 34s77aiqvcmc84v65s1tpnwip9dtvtqk");
         loginResponseCall.enqueue(new Callback<CategoryModel>() {
             @Override
             public void onResponse(Call<CategoryModel> call, Response<CategoryModel> response) {
@@ -352,8 +356,9 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
 
             @Override
             public void onFailure(Call<CartResponse> call, Throwable t) {
+                cartCountTextView.setText("0");
                 ghUtil.dismissDialog();
-                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }

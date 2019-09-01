@@ -105,7 +105,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -172,13 +173,13 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/deleteImageView"
                 android:layout_width="@dimen/_28sdp"
                 android:layout_height="@dimen/_28sdp"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:id="@+id/deleteImageView"
                 android:layout_marginRight="@dimen/_8sdp"
-                android:padding="@dimen/_3sdp"
+                android:padding="@dimen/_4sdp"
                 android:src="@drawable/delete_outline"
                 android:tint="#5E5D5D" />
 

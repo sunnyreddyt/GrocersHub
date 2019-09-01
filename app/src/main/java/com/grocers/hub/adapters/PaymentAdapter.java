@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,22 +21,29 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.MyViewHo
 
     private Context mContext;
     ArrayList<ShippingResponse> shippingResponseArrayList;
+    ItemClickListener itemClickListener;
+    int selectedPaymentPosition;
+
+    public void setCLickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 
     public PaymentAdapter(Context mContext,
-                          ArrayList<ShippingResponse> shippingResponseArrayList) {
+                          ArrayList<ShippingResponse> shippingResponseArrayList, int selectedPaymentPosition) {
         this.mContext = mContext;
         this.shippingResponseArrayList = shippingResponseArrayList;
+        this.selectedPaymentPosition = selectedPaymentPosition;
     }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView paymentTypeTextView;
+        RadioButton paymentTypeRadioButton;
 
         public MyViewHolder(View view) {
             super(view);
 
-            paymentTypeTextView = (TextView) view.findViewById(R.id.paymentTypeTextView);
+            paymentTypeRadioButton = (RadioButton) view.findViewById(R.id.paymentTypeRadioButton);
         }
     }
 
@@ -50,7 +58,23 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.MyViewHo
     @Override
     public void onBindViewHolder(final PaymentAdapter.MyViewHolder holder, final int position) {
 
-        holder.paymentTypeTextView.setText(shippingResponseArrayList.get(position).getTitle());
+        holder.paymentTypeRadioButton.setText(shippingResponseArrayList.get(position).getTitle());
+
+        if (position == selectedPaymentPosition) {
+            holder.paymentTypeRadioButton.setChecked(true);
+        } else {
+            holder.paymentTypeRadioButton.setChecked(false);
+        }
+
+        holder.paymentTypeRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (itemClickListener != null) {
+                    itemClickListener.onClick(position);
+                }
+            }
+        });
+
     }
 
     @Override

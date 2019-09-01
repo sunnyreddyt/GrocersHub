@@ -193,7 +193,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                     Toast.makeText(context, "No similar products available", Toast.LENGTH_LONG).show();
                 }
 
-                if (shared.getUserID().length()>0) {
+                if (shared.getUserID().length() > 0) {
                     getCartProductsServiceCall();
                 }
             }
@@ -201,8 +201,10 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
             @Override
             public void onFailure(Call<SimilarProductsResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
-                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
-                getCartProductsServiceCall();
+                // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+                if (shared.getUserID().length() > 0) {
+                    getCartProductsServiceCall();
+                }
             }
         });
     }
@@ -254,6 +256,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 if (response.code() == 200) {
                     Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
                     cartTextView.setText("Proceed to Cart");
+                    getCartProductsServiceCall();
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -297,8 +300,9 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
             @Override
             public void onFailure(Call<CartResponse> call, Throwable t) {
+                cartCountTextView.setText("0");
                 ghUtil.dismissDialog();
-                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -2,6 +2,8 @@ package com.grocers.hub;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -31,6 +33,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
     GHUtil ghUtil;
     Context context;
     ArrayList<OrdersResponse> ordersResponseArrayList;
+    ImageView backImageView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,8 +43,20 @@ public class OrderHistoryActivity extends AppCompatActivity {
         ghUtil = GHUtil.getInstance(OrderHistoryActivity.this);
         shared = new Shared(OrderHistoryActivity.this);
         ordersListRecyclerView = (RecyclerView) findViewById(R.id.ordersListRecyclerView);
+        backImageView = (ImageView) findViewById(R.id.backImageView);
 
-        getOrdersServiceCall();
+        backImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        if (ghUtil.isConnectingToInternet()) {
+            getOrdersServiceCall();
+        } else {
+            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void getOrdersServiceCall() {

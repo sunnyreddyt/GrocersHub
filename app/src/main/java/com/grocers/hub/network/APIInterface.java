@@ -5,6 +5,7 @@ import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.DeleteCartResponse;
+import com.grocers.hub.models.FinalOrderResponse;
 import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.models.HomeResponse;
@@ -46,16 +47,16 @@ public interface APIInterface {
     Call<GeneralResponse> userRegistration(@Body GeneralRequest generalRequest);
 
     @Headers({"Accept: application/json"})
-    @POST("rest/V1/customers")
-    Call<GeneralResponse> updateProfile(@Body UpdateProfileRequest updateProfileRequest);
+    @POST("homeapi/Updatecustomer?")
+    Call<GeneralResponse> updateProfile(@Query("cusId") String cusId, @Body UpdateProfileRequest updateProfileRequest);
 
     @Headers({"Accept: application/json"})
     @GET("rest//V1/customers/me")
     Call<GeneralResponse> customerDetails(@Header("Authorization") String auth);
 
     @Headers({"Accept: application/json"})
-    @GET("rest//V1/categories")
-    Call<CategoryModel> getCategories();
+    @GET("rest/default/V1/mma/categories")
+    Call<CategoryModel> getCategories(@Header("Authorization") String auth);
 
     @Headers({"Accept: application/json"})
     @GET("homeapi?")
@@ -90,8 +91,8 @@ public interface APIInterface {
     Call<ShippingResponse> setShipping(@Query("token") String token, @Body ShippingAddressRequest shippingAddressRequest);
 
     @Headers({"Accept: application/json"})
-    @POST("rest/V1/carts/mine/items")
-    Call<GeneralResponse> setPayment(@Header("Authorization") String auth, @Body PaymentRequest paymentRequest);
+    @POST("homeapi/placeorder?")
+    Call<FinalOrderResponse> setPayment(@Query("token") String token, @Body PaymentRequest paymentRequest);
 
     @Headers({"Accept: application/json"})
     @GET("homeapi/listorders?")

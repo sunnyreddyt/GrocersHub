@@ -15,7 +15,7 @@
         android:paddingBottom="@dimen/_4sdp">
 
         <RadioButton
-            android:id="@+id/paymentTypeTextView"
+            android:id="@+id/paymentTypeRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"

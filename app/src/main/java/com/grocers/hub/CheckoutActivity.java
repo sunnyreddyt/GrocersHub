@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -16,12 +17,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.grocers.hub.adapters.CartProductsAdapter;
 import com.grocers.hub.adapters.CityListAdapter;
+import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OrderProductsAdapter;
 import com.grocers.hub.adapters.PaymentAdapter;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.DeleteCartResponse;
+import com.grocers.hub.models.FinalOrderResponse;
 import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.models.LocationsModel;
 import com.grocers.hub.models.PaymentRequest;
@@ -38,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CheckoutActivity extends AppCompatActivity {
+public class CheckoutActivity extends AppCompatActivity implements ItemClickListener {
 
     ImageView backImageView;
     RecyclerView paymentMethodsRecyclerView, productsRecyclerView;
@@ -47,8 +51,12 @@ public class CheckoutActivity extends AppCompatActivity {
     Context context;
     Shared shared;
     String quoteID = "";
-    String email, phone, postcode, address;
-    Dialog couponDialog;
+    String email, phone, postcode, address, name;
+    Dialog couponDialog, orderSuccessDialog;
+    String selectedPaymentMethod = "";
+    int selectedPaymentPosition = -1;
+    PaymentAdapter paymentAdapter;
+    ShippingResponse shippingResponse;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,15 +78,17 @@ public class CheckoutActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         email = intent.getStringExtra("email");
-        phone = intent.getStringExtra("email");
-        postcode = intent.getStringExtra("email");
-        address = intent.getStringExtra("email");
+        phone = intent.getStringExtra("phone");
+        postcode = intent.getStringExtra("postcode");
+        address = intent.getStringExtra("address");
+        name = intent.getStringExtra("name");
 
-        ShippingResponse shippingResponse = ghUtil.getShippingResponse();
+        shippingResponse = ghUtil.getShippingResponse();
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
         paymentMethodsRecyclerView.setLayoutManager(mLayoutManager);
-        PaymentAdapter paymentAdapter = new PaymentAdapter(context, shippingResponse.getPayment_methods());
+        paymentAdapter = new PaymentAdapter(context, shippingResponse.getPayment_methods(), selectedPaymentPosition);
         paymentMethodsRecyclerView.setAdapter(paymentAdapter);
+        paymentAdapter.setCLickListener(this);
 
         productsRecyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         OrderProductsAdapter orderProductsAdapter = new OrderProductsAdapter(CheckoutActivity.this, shippingResponse.getTotals().getItems());
@@ -99,27 +109,41 @@ public class CheckoutActivity extends AppCompatActivity {
         orderTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (quoteID.length() > 0) {
-                    setPaymentServiceCall();
+                if (selectedPaymentPosition != -1) {
+                    if (quoteID.length() > 0) {
+                        if (ghUtil.isConnectingToInternet()) {
+                            setPaymentServiceCall();
+                        } else {
+                            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        getQuoteIDServiceCall();
+                        Toast.makeText(context, "Something went wrong,Please try again", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    getQuoteIDServiceCall();
-                    Toast.makeText(context, "Something went wrong,Please try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Please select payment method", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        getQuoteIDServiceCall();
+
+        if (ghUtil.isConnectingToInternet()) {
+            getQuoteIDServiceCall();
+        } else {
+            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 
     public void setPaymentServiceCall() {
-        ghUtil.dismissDialog();
+        ghUtil.showDialog(CheckoutActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         PaymentRequest paymentRequest = new PaymentRequest();
         paymentRequest.setCartId(Integer.parseInt(quoteID));
 
         PaymentRequest.PaymentMethod paymentMethod = new PaymentRequest.PaymentMethod();
-        paymentMethod.setMethod("cashondelivery");
+        paymentMethod.setMethod(selectedPaymentMethod);
 
         PaymentRequest.BillingAddress billingAddress = new PaymentRequest.BillingAddress();
         billingAddress.setEmail(email);
@@ -131,23 +155,29 @@ public class CheckoutActivity extends AppCompatActivity {
         billingAddress.setPostcode(postcode);
         billingAddress.setCity(shared.getCity());
         billingAddress.setTelephone(phone);
-        billingAddress.setFirstname(shared.getUserFirstName());
-        billingAddress.setLastname(shared.getUserLastName());
+        billingAddress.setFirstname(name);
+        billingAddress.setLastname(name);
 
-        Call<GeneralResponse> loginResponseCall = service.setPayment("Bearer " + shared.getToken(), paymentRequest);
-        loginResponseCall.enqueue(new Callback<GeneralResponse>() {
+        paymentRequest.setBilling_address(billingAddress);
+        paymentRequest.setPaymentMethod(paymentMethod);
+
+        Gson gson = new Gson();
+        Log.v("paymentRequest", gson.toJson(paymentRequest));
+
+        Call<FinalOrderResponse> loginResponseCall = service.setPayment(shared.getToken(), paymentRequest);
+        loginResponseCall.enqueue(new Callback<FinalOrderResponse>() {
             @Override
-            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+            public void onResponse(Call<FinalOrderResponse> call, Response<FinalOrderResponse> response) {
                 ghUtil.dismissDialog();
                 if (response.code() == 200) {
-                    Toast.makeText(context, "Order Places Successfully", Toast.LENGTH_SHORT).show();
+                    orderSuccessDialog();
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<GeneralResponse> call, Throwable t) {
+            public void onFailure(Call<FinalOrderResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
@@ -211,6 +241,29 @@ public class CheckoutActivity extends AppCompatActivity {
         couponDialog.show();
     }
 
+    public void orderSuccessDialog() {
+        orderSuccessDialog = new Dialog(CheckoutActivity.this);
+        orderSuccessDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        orderSuccessDialog.setContentView(R.layout.dialog_order_success);
+
+        TextView titleTextView = (TextView) orderSuccessDialog.findViewById(R.id.titleTextView);
+        TextView okTextView = (TextView) orderSuccessDialog.findViewById(R.id.okTextView);
+
+        titleTextView.setText("Hi " + shared.getUserFirstName() + ", ");
+
+        okTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                orderSuccessDialog.dismiss();
+                Intent intent = new Intent(CheckoutActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
+        orderSuccessDialog.show();
+    }
+
     public void applyCouponServiceCall(String couponCode) {
         ghUtil.showDialog(CheckoutActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
@@ -236,4 +289,10 @@ public class CheckoutActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onClick(int position) {
+        selectedPaymentPosition = position;
+        selectedPaymentMethod = shippingResponse.getPayment_methods().get(position).getCode();
+        paymentAdapter.notifyDataSetChanged();
+    }
 }

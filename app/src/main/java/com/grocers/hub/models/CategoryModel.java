@@ -10,6 +10,7 @@ public class CategoryModel {
     private String name;
     private int position;
     private int level;
+    private String image;
     private int product_count;
     private boolean categoryBackground;
     private ArrayList<CategoryModel> children_data;
@@ -85,5 +86,13 @@ public class CategoryModel {
 
     public void setProduct_count(int product_count) {
         this.product_count = product_count;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
