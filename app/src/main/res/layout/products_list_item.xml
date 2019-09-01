@@ -86,8 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/_2sdp"
                 android:gravity="left|center_vertical"
-                android:paddingLeft="@dimen/_3sdp"
-                android:text="₹350"
+                android:paddingLeft="@dimen/_5sdp"
                 android:textSize="@dimen/_10sdp" />
 
             <TextView
@@ -110,7 +109,7 @@
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_22sdp"
             android:layout_marginLeft="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:background="@drawable/green_square_rounded"
             android:gravity="center"
             android:text="ADD"
