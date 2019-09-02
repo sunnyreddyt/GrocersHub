@@ -201,7 +201,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
     public void getHomeDetailsServiceCall() {
         ghUtil.showDialog(getActivity());
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<HomeResponse> loginResponseCall = service.getHomeDetails("hyderabad");
+        Call<HomeResponse> loginResponseCall = service.getHomeDetails(shared.getZipCode());
         loginResponseCall.enqueue(new Callback<HomeResponse>() {
             @Override
             public void onResponse(Call<HomeResponse> call, Response<HomeResponse> response) {

@@ -143,7 +143,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     public void getProductsServiceCall() {
         ghUtil.showDialog(CategoryProductsActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<ProductsResponse> loginResponseCall = service.getProducts(Integer.parseInt(selectedSubCategoryId), "500081");
+        Call<ProductsResponse> loginResponseCall = service.getProducts(Integer.parseInt(selectedSubCategoryId), shared.getZipCode());
         loginResponseCall.enqueue(new Callback<ProductsResponse>() {
             @Override
             public void onResponse(Call<ProductsResponse> call, Response<ProductsResponse> response) {

@@ -148,9 +148,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="₹"
-                            android:textColor="@color/green"
+                            android:textColor="@color/black"
                             android:textSize="@dimen/_13sdp"
-                            android:textStyle="bold"
                             app:fontFamily="@font/poppins_medium" />
 
                         <TextView
@@ -158,7 +157,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:textColor="@color/green"
+                            android:textColor="@color/black"
                             android:textSize="@dimen/_13sdp"
                             android:textStyle="bold"
                             app:fontFamily="@font/poppins_medium" />
@@ -228,7 +227,8 @@
                         android:gravity="center"
                         android:text="20%"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_8sdp" />
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone" />
 
                 </RelativeLayout>
 
@@ -344,12 +344,29 @@
                 android:textSize="@dimen/_13sdp"
                 app:fontFamily="@font/poppins_medium" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/similarProductsRecyclerView"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp"></androidx.recyclerview.widget.RecyclerView>
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/similarProductsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"></androidx.recyclerview.widget.RecyclerView>
+
+                <TextView
+                    android:id="@+id/noSimilarProductsTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_40sdp"
+                    android:gravity="center"
+                    android:text="No Similar products available"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="italic"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 

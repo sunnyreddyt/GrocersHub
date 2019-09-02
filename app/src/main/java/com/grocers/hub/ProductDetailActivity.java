@@ -46,12 +46,13 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     RelativeLayout cartLayout;
     ImageView backImageView, productImageView;
     String skuID;
-    TextView productNameTextView, productPriceTextView, cartTextView, cartCountTextView;
+    TextView productNameTextView, productPriceTextView, cartTextView, cartCountTextView, noSimilarProductsTextView;
     ProductDetailsResponse productDetailsResponse;
     Context context;
     Shared shared;
     String quoteID = "";
     GHUtil ghUtil;
+    int activityCount = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         shared = new Shared(ProductDetailActivity.this);
         cartCountTextView = (TextView) findViewById(R.id.cartCountTextView);
         backImageView = (ImageView) findViewById(R.id.backImageView);
+        noSimilarProductsTextView = (TextView) findViewById(R.id.noSimilarProductsTextView);
         productImagesRecyclerView = (RecyclerView) findViewById(R.id.productImagesRecyclerView);
         // productUnitsRecyclerView = (RecyclerView) findViewById(R.id.productUnitsRecyclerView);
         cartLayout = (RelativeLayout) findViewById(R.id.cartLayout);
@@ -124,6 +126,16 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (activityCount > 0 && shared.getUserID().length() > 0) {
+            getCartProductsServiceCall();
+        } else {
+            activityCount++;
+        }
+    }
+
     public void getProductDetailServiceCall() {
         ghUtil.showDialog(ProductDetailActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
@@ -182,15 +194,26 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     if (response.body().getStatus() == 200) {
-                        LinearLayoutManager mLayoutManager = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
-                        similarProductsRecyclerView.setLayoutManager(mLayoutManager);
-                        SimilarProductsAdapter similarProductsAdapter = new SimilarProductsAdapter(context, response.body().getData());
-                        similarProductsRecyclerView.setAdapter(similarProductsAdapter);
+                        if (response.body().getData().size() > 0) {
+                            similarProductsRecyclerView.setVisibility(View.VISIBLE);
+                            noSimilarProductsTextView.setVisibility(View.GONE);
+                            LinearLayoutManager mLayoutManager = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
+                            similarProductsRecyclerView.setLayoutManager(mLayoutManager);
+                            SimilarProductsAdapter similarProductsAdapter = new SimilarProductsAdapter(context, response.body().getData());
+                            similarProductsRecyclerView.setAdapter(similarProductsAdapter);
+                        } else {
+                            similarProductsRecyclerView.setVisibility(View.GONE);
+                            noSimilarProductsTextView.setVisibility(View.VISIBLE);
+                        }
                     } else if (response.body().getStatus() == 400) {
-                        Toast.makeText(context, "No similar products available", Toast.LENGTH_SHORT);
+                        similarProductsRecyclerView.setVisibility(View.GONE);
+                        noSimilarProductsTextView.setVisibility(View.VISIBLE);
+                        //Toast.makeText(context, "No similar products available", Toast.LENGTH_SHORT);
                     }
                 } else {
-                    Toast.makeText(context, "No similar products available", Toast.LENGTH_LONG).show();
+                    similarProductsRecyclerView.setVisibility(View.GONE);
+                    noSimilarProductsTextView.setVisibility(View.VISIBLE);
+                    // Toast.makeText(context, "No similar products available", Toast.LENGTH_LONG).show();
                 }
 
                 if (shared.getUserID().length() > 0) {
@@ -201,6 +224,8 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
             @Override
             public void onFailure(Call<SimilarProductsResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
+                similarProductsRecyclerView.setVisibility(View.GONE);
+                noSimilarProductsTextView.setVisibility(View.VISIBLE);
                 // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
                 if (shared.getUserID().length() > 0) {
                     getCartProductsServiceCall();

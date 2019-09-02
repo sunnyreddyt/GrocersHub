@@ -124,11 +124,11 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
                 if (response.code() == 200) {
 
                     categoryModelArrayList = new ArrayList<CategoryModel>();
-                    CategoryModel categoryModel = new CategoryModel();
+                    /*CategoryModel categoryModel = new CategoryModel();
                     categoryModel.setId(0);
                     categoryModel.setCategoryBackground(true);
                     categoryModel.setName("All Categories");
-                    categoryModelArrayList.add(categoryModel);
+                    categoryModelArrayList.add(categoryModel);*/
 
                     for (int p = 0; p < response.body().getChildren_data().size(); p++) {
                         categoryModelArrayList.add(response.body().getChildren_data().get(p));

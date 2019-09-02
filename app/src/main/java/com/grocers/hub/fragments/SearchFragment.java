@@ -7,7 +7,9 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -42,6 +44,7 @@ public class SearchFragment extends Fragment {
     RecyclerView productsRecyclerView;
     SearchProductsAdapter searchProductsAdapter;
     ArrayList<ProductsResponse> productsResponseArrayList;
+    ImageView closeImageView, backImageView;
 
     @Nullable
     @Override
@@ -53,6 +56,24 @@ public class SearchFragment extends Fragment {
         ghUtil = GHUtil.getInstance(getActivity());
         productsRecyclerView = (RecyclerView) view.findViewById(R.id.productsRecyclerView);
         searchEditText = (EditText) view.findViewById(R.id.searchEditText);
+        backImageView = (ImageView) view.findViewById(R.id.backImageView);
+        closeImageView = (ImageView) view.findViewById(R.id.closeImageView);
+
+        closeImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchEditText.setText("");
+            }
+        });
+
+        backImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (searchEditText.hasFocus()) {
+                    ghUtil.hideKeyboard(getActivity());
+                }
+            }
+        });
 
         searchEditText.addTextChangedListener(new TextWatcher() {
 
@@ -69,6 +90,7 @@ public class SearchFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 if (s.length() > 1 && s.length() % 2 == 0) {
+                    ghUtil.hideKeyboard(getActivity());
                     getProductsServiceCall(s.toString());
                 } else if (s.length() == 0) {
                     productsRecyclerView.setVisibility(View.GONE);
@@ -80,6 +102,9 @@ public class SearchFragment extends Fragment {
             Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
         }
 
+        searchEditText.requestFocus();
+        showKeyboard(searchEditText);
+
         return view;
     }
 
@@ -87,7 +112,7 @@ public class SearchFragment extends Fragment {
     public void getProductsServiceCall(String key) {
         ghUtil.showDialog(getActivity());
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<ProductsResponse> loginResponseCall = service.search(key, "500081");
+        Call<ProductsResponse> loginResponseCall = service.search(key, shared.getZipCode());
         loginResponseCall.enqueue(new Callback<ProductsResponse>() {
             @Override
             public void onResponse(Call<ProductsResponse> call, Response<ProductsResponse> response) {
@@ -100,6 +125,10 @@ public class SearchFragment extends Fragment {
                         productsRecyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
                         searchProductsAdapter = new SearchProductsAdapter(context, productsResponseArrayList);
                         productsRecyclerView.setAdapter(searchProductsAdapter);
+
+                        searchEditText.requestFocus();
+                        showKeyboard(searchEditText);
+                        // searchEditText.setSelection(searchEditText.getText().toString().length());
                     } else {
                         Toast.makeText(context, "No products available", Toast.LENGTH_SHORT).show();
                     }
@@ -116,4 +145,13 @@ public class SearchFragment extends Fragment {
         });
     }
 
+
+    public void showKeyboard(View view) {
+        if (view.requestFocus()) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            // inputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
 }

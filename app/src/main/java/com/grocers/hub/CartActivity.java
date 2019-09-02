@@ -163,7 +163,8 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                 if (response.code() == 200) {
                     getCartProductsServiceCall();
                 } else {
-                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                    getCartProductsServiceCall();
+                    Toast.makeText(context, "more Products are not available at store", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -188,6 +189,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                     Toast.makeText(context, "Deleted from cart", Toast.LENGTH_SHORT).show();
                     getCartProductsServiceCall();
                 } else {
+                    getCartProductsServiceCall();
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
             }
