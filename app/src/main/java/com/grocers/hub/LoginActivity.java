@@ -53,8 +53,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        userNameEditText.setText("sunnyreddythumukuntla@gmail.com");
-        passwordEditText.setText("$Sunny12");
+       /* userNameEditText.setText("sunnyreddythumukuntla@gmail.com");
+        passwordEditText.setText("$Sunny12");*/
 
         Intent intent = getIntent();
         mobile_numberString = intent.getStringExtra("mobile_number");
@@ -133,9 +133,6 @@ public class LoginActivity extends AppCompatActivity {
                     shared.setUserName(shared.getUserFirstName() + " " + shared.getUserLastName());
                     shared.setUserEmail(response.body().getEmail());
                     shared.setUserMobile(response.body().getCustom_attributes().get(0).getValue());
-                    /*Intent intent = new Intent(context, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);*/
                     finish();
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();

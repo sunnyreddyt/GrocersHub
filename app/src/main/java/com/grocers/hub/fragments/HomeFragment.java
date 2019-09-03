@@ -31,6 +31,7 @@ import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.HomeAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OfferProductsListAdapter;
+import com.grocers.hub.adapters.OnCartChangeListener;
 import com.grocers.hub.adapters.OnCategoryClickListener;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CartResponse;
@@ -51,7 +52,7 @@ import retrofit2.Response;
  * Created by ctel-cpu-78 on 4/20/2017.
  */
 
-public class HomeFragment extends Fragment implements ItemClickListener, OnCategoryClickListener {
+public class HomeFragment extends Fragment implements ItemClickListener, OnCategoryClickListener, OnCartChangeListener {
 
     RecyclerView categoriesRecyclerView, homeRecyclerView;
     public static ImageView recyclerLayout;
@@ -70,12 +71,15 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
     private ImageView[] dots;
     ViewPagerAdapter viewPagerAdapter;
     Dialog citiesDialog;
+    ArrayList<CartResponse> cartResponseArrayList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         init(view);
+
+        cartCountTextView.setText("0");
 
         if (shared.getCity().length() > 0) {
             locationTextView.setText(shared.getCity().substring(0, 1).toUpperCase() + shared.getCity().substring(1, shared.getCity().toString().length()));
@@ -183,7 +187,11 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
 
                     ghUtil.setcategoryModel(response.body());
 
-                    getHomeDetailsServiceCall();
+                    if (shared.getUserID().length() > 0) {
+                        getCartProductsServiceCall();
+                    } else {
+                        getHomeDetailsServiceCall();
+                    }
 
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -215,12 +223,9 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
 
                     LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
                     homeRecyclerView.setLayoutManager(mLayoutManager1);
-                    HomeAdapter homeAdapter = new HomeAdapter(getActivity(), response.body().getCategoryProducts());
+                    HomeAdapter homeAdapter = new HomeAdapter(getActivity(), response.body().getCategoryProducts(), cartResponseArrayList);
                     homeRecyclerView.setAdapter(homeAdapter);
-
-                    if (shared.getUserID().length() > 0) {
-                        getCartProductsServiceCall();
-                    }
+                    homeAdapter.setCartListener(HomeFragment.this);
 
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -244,7 +249,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
             dots[i] = new ImageView(getActivity());
             dots[i].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.non_active_dot));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(8, 0, 8, 0);
+            params.setMargins(4, 0, 4, 0);
             sliderDotspanel.addView(dots[i], params);
         }
 
@@ -340,27 +345,36 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
             @Override
             public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
                 ghUtil.dismissDialog();
+                cartResponseArrayList = new ArrayList<CartResponse>();
                 if (response.code() == 200) {
 
                     int cartCount = response.body().getItems().size();
                     if (cartCount > 0) {
+                        cartResponseArrayList = response.body().getItems();
                         cartCountTextView.setText(String.valueOf(cartCount));
                     } else {
                         cartCountTextView.setText("0");
                     }
-
                 } else {
-                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                    //  Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
+                getHomeDetailsServiceCall();
             }
 
             @Override
             public void onFailure(Call<CartResponse> call, Throwable t) {
                 cartCountTextView.setText("0");
                 ghUtil.dismissDialog();
+                cartResponseArrayList = new ArrayList<CartResponse>();
+                getHomeDetailsServiceCall();
+
                 //  Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    @Override
+    public void onCartChange(int count) {
+        cartCountTextView.setText(String.valueOf(count));
+    }
 }

@@ -43,7 +43,7 @@ public interface APIInterface {
     Call<GeneralResponse> userLogin(@Body GeneralRequest generalRequest);
 
     @Headers({"Accept: application/json"})
-    @POST("rest/V1/customers")
+    @POST("homeapi/customerregistration")
     Call<GeneralResponse> userRegistration(@Body GeneralRequest generalRequest);
 
     @Headers({"Accept: application/json"})
@@ -64,7 +64,7 @@ public interface APIInterface {
 
     @Headers({"Accept: application/json"})
     @GET("homeapi/Categoryproducts?")
-    Call<ProductsResponse> getProducts(@Query("categoryId") int categoryId, @Query("zipcode") String zipcode);
+    Call<ProductsResponse> getProducts(@Query("categoryId") int categoryId, @Query("zipcode") String zipcode, @Query("p") int p, @Query("limit") int limit);
 
     @Headers({"Accept: application/json"})
     @GET("/rest/V1/products/{id}")

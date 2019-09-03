@@ -46,7 +46,6 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         context = RegistrationActivity.this;
-
         ghUtil = GHUtil.getInstance(context);
         shared = new Shared(context);
         mobileEditText = (EditText) findViewById(R.id.mobileEditText);
@@ -113,22 +112,34 @@ public class RegistrationActivity extends AppCompatActivity {
         loginResponseCall.enqueue(new Callback<GeneralResponse>() {
             @Override
             public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
-                ghUtil.dismissDialog();
-                if (response.code() == 200) {
+                try {
+                    ghUtil.dismissDialog();
+                    if (response.code() == 200) {
 
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(context, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
-                } else if (response.code() == 400) {
-                    Toast.makeText(context, "User already exists with this email", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (response.body().getMessage() != null) {
-                        Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                        shared.setUserID(String.valueOf(response.body().getResult().getId()));
+                        shared.setUserFirstName(response.body().getResult().getFirstname());
+                        shared.setUserLastName(response.body().getResult().getLastname());
+                        shared.setUserName(shared.getUserFirstName() + " " + shared.getUserLastName());
+                        shared.setUserEmail(response.body().getResult().getEmail());
+                        shared.setUserMobile(response.body().getResult().getCustom_attributes().get(0).getValue());
+
+                        Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(context, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else if (response.code() == 400) {
+                        Toast.makeText(context, "User already exists with this email", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                        if (response.body().getMessage() != null) {
+                            Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 

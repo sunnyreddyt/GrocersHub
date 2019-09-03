@@ -149,8 +149,7 @@
                             android:gravity="center"
                             android:text="₹"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_13sdp"
-                            app:fontFamily="@font/poppins_medium" />
+                            android:textSize="@dimen/_13sdp" />
 
                         <TextView
                             android:id="@+id/productPriceTextView"
@@ -217,7 +216,8 @@
                     android:layout_height="@dimen/_22sdp"
                     android:layout_alignParentLeft="true"
                     android:layout_margin="@dimen/_2sdp"
-                    android:background="@drawable/circle_filled_red">
+                    android:background="@drawable/circle_filled_red"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/categoryImageView"

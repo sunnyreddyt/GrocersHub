@@ -11,21 +11,25 @@
         android:id="@+id/itemLayout"
         android:layout_width="@dimen/_110sdp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/_4sdp"
+        android:layout_marginRight="@dimen/_6sdp"
         android:background="@color/white"
+        android:elevation="@dimen/_3sdp"
         android:orientation="vertical"
         android:paddingBottom="@dimen/_8sdp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:gravity="center">
 
             <ImageView
                 android:id="@+id/productImageView"
                 android:layout_width="@dimen/_110sdp"
-                android:layout_height="@dimen/_100sdp"
+                android:layout_height="@dimen/_115sdp"
                 android:layout_centerInParent="true"
+                android:padding="@dimen/_4sdp"
+                android:scaleType="fitXY"
                 android:src="#989898" />
 
             <RelativeLayout
@@ -52,28 +56,37 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_alignParentRight="true"
-                android:layout_margin="@dimen/_2sdp"
+                android:layout_margin="@dimen/_5sdp"
                 android:padding="@dimen/_4sdp"
                 android:src="@drawable/ic_fav_select" />
 
         </RelativeLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:background="@drawable/strike_through"></View>
+
         <TextView
             android:id="@+id/productNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:layout_marginRight="@dimen/_2sdp"
             android:maxLines="2"
             android:minHeight="@dimen/_35sdp"
-            android:paddingLeft="@dimen/_3sdp"
             android:text="Freedom Refined Sunflower"
+            android:textColor="@color/black"
             android:textSize="@dimen/_11sdp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
             android:orientation="horizontal">
 
             <TextView
@@ -84,7 +97,7 @@
                 android:gravity="left|center_vertical"
                 android:paddingLeft="@dimen/_3sdp"
                 android:text="₹350"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/_11sdp" />
 
             <TextView
                 android:id="@+id/costTextView"
@@ -102,17 +115,21 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/addImageView"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_22sdp"
-            android:layout_marginLeft="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/green"
+            android:id="@+id/addTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:background="@drawable/green_square_rounded"
             android:gravity="center"
+            android:paddingLeft="@dimen/_13sdp"
+            android:paddingTop="@dimen/_3sdp"
+            android:paddingRight="@dimen/_13sdp"
+            android:paddingBottom="@dimen/_3sdp"
             android:text="ADD"
             android:textColor="@color/white"
-            android:textSize="@dimen/_12sdp"
-            android:visibility="gone" />
+            android:textSize="@dimen/_10sdp"
+            android:visibility="visible" />
 
     </LinearLayout>
 

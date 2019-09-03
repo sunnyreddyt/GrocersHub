@@ -143,7 +143,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     public void getProductsServiceCall() {
         ghUtil.showDialog(CategoryProductsActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<ProductsResponse> loginResponseCall = service.getProducts(Integer.parseInt(selectedSubCategoryId), shared.getZipCode());
+        Call<ProductsResponse> loginResponseCall = service.getProducts(Integer.parseInt(selectedSubCategoryId), shared.getZipCode(), 1, 200);
         loginResponseCall.enqueue(new Callback<ProductsResponse>() {
             @Override
             public void onResponse(Call<ProductsResponse> call, Response<ProductsResponse> response) {
@@ -236,7 +236,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
             public void onFailure(Call<QuoteIDResponse> call, Throwable t) {
                 cartCountTextView.setText("0");
                 ghUtil.dismissDialog();
-               // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -270,7 +270,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
             public void onFailure(Call<AddToCartResponse> call, Throwable t) {
                 cartCountTextView.setText("0");
                 ghUtil.dismissDialog();
-               // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -65,8 +65,8 @@ public class SubCategoriesAdapter extends RecyclerView.Adapter<SubCategoriesAdap
             holder.itemLayout.setBackgroundColor(Color.parseColor("#01d365"));
             holder.categoryNameTextView.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
         } else {
-            holder.itemLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
-            holder.categoryNameTextView.setTextColor(ColorStateList.valueOf(Color.parseColor("#01d365")));
+            holder.itemLayout.setBackgroundColor(Color.parseColor("#8b8b8b"));
+            holder.categoryNameTextView.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
         }
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {

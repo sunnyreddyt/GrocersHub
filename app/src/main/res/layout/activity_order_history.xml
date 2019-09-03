@@ -32,9 +32,9 @@
                 android:layout_marginLeft="@dimen/_6sdp"
                 android:fontFamily="@font/poppins_medium"
                 android:gravity="center_vertical"
-                android:text="Orders"
+                android:text="My Orders"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_14sdp" />
+                android:textSize="@dimen/_13sdp" />
 
         </LinearLayout>
 

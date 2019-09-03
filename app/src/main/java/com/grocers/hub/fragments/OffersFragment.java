@@ -17,10 +17,13 @@ import com.grocers.hub.R;
 import com.grocers.hub.ViewPagerAdapter;
 import com.grocers.hub.adapters.HomeAdapter;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.HomeResponse;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +39,7 @@ public class OffersFragment extends Fragment {
     Context context;
     Shared shared;
     GHUtil ghUtil;
+    ArrayList<CartResponse> cartResponseArrayList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -47,7 +51,11 @@ public class OffersFragment extends Fragment {
         context = getActivity();
 
         if ((ghUtil.isConnectingToInternet())) {
-            getHomeDetailsServiceCall();
+            if (shared.getUserID().length() > 0) {
+                getCartProductsServiceCall();
+            } else {
+                getHomeDetailsServiceCall();
+            }
         } else {
             Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
         }
@@ -68,7 +76,7 @@ public class OffersFragment extends Fragment {
 
                     LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
                     homeRecyclerView.setLayoutManager(mLayoutManager1);
-                    HomeAdapter homeAdapter = new HomeAdapter(getActivity(), response.body().getCategoryProducts());
+                    HomeAdapter homeAdapter = new HomeAdapter(getActivity(), response.body().getCategoryProducts(), cartResponseArrayList);
                     homeRecyclerView.setAdapter(homeAdapter);
 
                 } else {
@@ -84,5 +92,32 @@ public class OffersFragment extends Fragment {
         });
     }
 
+    public void getCartProductsServiceCall() {
+        ghUtil.showDialog(getActivity());
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
+        loginResponseCall.enqueue(new Callback<CartResponse>() {
+            @Override
+            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
+                ghUtil.dismissDialog();
+                cartResponseArrayList = new ArrayList<CartResponse>();
+                if (response.code() == 200) {
+                    cartResponseArrayList = response.body().getItems();
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+                getHomeDetailsServiceCall();
+            }
+
+            @Override
+            public void onFailure(Call<CartResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                cartResponseArrayList = new ArrayList<CartResponse>();
+                getHomeDetailsServiceCall();
+
+                //  Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 }

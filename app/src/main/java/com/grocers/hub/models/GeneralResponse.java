@@ -16,6 +16,15 @@ public class GeneralResponse {
     ArrayList<GeneralResponse> custom_attributes;
     private String attribute_code;
     private String value;
+    private GeneralResponse result;
+
+    public GeneralResponse getResult() {
+        return result;
+    }
+
+    public void setResult(GeneralResponse result) {
+        this.result = result;
+    }
 
     public ArrayList<GeneralResponse> getCustom_attributes() {
         return custom_attributes;

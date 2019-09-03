@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/categoryBackgroundImageView"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
                 android:layout_centerInParent="true"
                 android:src="@drawable/circle_border" />
 
@@ -38,7 +38,7 @@
             android:id="@+id/categoryNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/_3sdp"
+            android:layout_marginRight="@dimen/_2sdp"
             android:gravity="center"
             android:paddingLeft="@dimen/_3sdp"
             android:text="All Categories" />

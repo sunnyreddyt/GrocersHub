@@ -36,17 +36,12 @@ public class SearchProductsAdapter extends RecyclerView.Adapter<SearchProductsAd
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout itemLayout;
-        TextView productNameTextView, offerCostTextView, costTextView, addImageView;
-        ImageView productImageView;
+        TextView productNameTextView;
 
         public MyViewHolder(View view) {
             super(view);
             itemLayout = (LinearLayout) view.findViewById(R.id.itemLayout);
             productNameTextView = (TextView) view.findViewById(R.id.productNameTextView);
-            offerCostTextView = (TextView) view.findViewById(R.id.offerCostTextView);
-            costTextView = (TextView) view.findViewById(R.id.costTextView);
-            productImageView = (ImageView) view.findViewById(R.id.productImageView);
-            addImageView = (TextView) view.findViewById(R.id.addImageView);
         }
     }
 

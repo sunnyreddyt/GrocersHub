@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.HomeResponse;
 import com.squareup.picasso.Picasso;
@@ -28,21 +29,28 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
 
     private Context mContext;
     ArrayList<HomeResponse> homeResponseArrayList;
+    OnOfferProductClickListener itemClickListener;
     Shared shared;
+    int parentPosition;
+
 
     public OfferProductsListAdapter(Context mContext,
-                                    ArrayList<HomeResponse> homeResponseArrayList) {
+                                    ArrayList<HomeResponse> homeResponseArrayList, int parentPosition) {
         this.mContext = mContext;
         this.homeResponseArrayList = homeResponseArrayList;
         this.shared = new Shared(mContext);
+        this.parentPosition = parentPosition;
     }
 
+    public void setClickListener(OnOfferProductClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout itemLayout;
         ImageView productImageView;
-        TextView productNameTextView, addImageView, offerCostTextView;
+        TextView productNameTextView, addTextView, offerCostTextView;
 
 
         public MyViewHolder(View view) {
@@ -54,7 +62,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
             productImageView = (ImageView) view.findViewById(R.id.productImageView);
             productNameTextView = (TextView) view.findViewById(R.id.productNameTextView);
             offerCostTextView = (TextView) view.findViewById(R.id.offerCostTextView);
-            addImageView = (TextView) view.findViewById(R.id.addImageView);
+            addTextView = (TextView) view.findViewById(R.id.addTextView);
         }
     }
 
@@ -73,6 +81,12 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
         holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getPrice()));
         holder.productNameTextView.setText(String.valueOf(homeResponseArrayList.get(position).getName()));
 
+        for (int g = 0; g < HomeAdapter.cartResponseArrayList.size(); g++) {
+            if (HomeAdapter.cartResponseArrayList.get(g).getSku().equalsIgnoreCase(homeResponseArrayList.get(position).getSku())) {
+                holder.addTextView.setText("ADDED");
+            }
+        }
+
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,11 +97,13 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
             }
         });
 
-        holder.addImageView.setOnClickListener(new View.OnClickListener() {
+        holder.addTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (shared.getUserName().length() > 0) {
-
+                    if (itemClickListener != null && holder.addTextView.getText().toString().equalsIgnoreCase("ADD")) {
+                        itemClickListener.onOfferProductClick(parentPosition, position);
+                    }
                 } else {
                     Toast.makeText(mContext, "Please login to add", Toast.LENGTH_SHORT).show();
                 }
