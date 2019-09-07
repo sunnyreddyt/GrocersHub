@@ -4,6 +4,7 @@ import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.models.CouponListResponseModel;
 import com.grocers.hub.models.DeleteCartResponse;
 import com.grocers.hub.models.FinalOrderResponse;
 import com.grocers.hub.models.GeneralRequest;
@@ -114,4 +115,7 @@ public interface APIInterface {
     @GET("homeapi/applycoupon?")
     Call<DeleteCartResponse> applyCoupon(@Query("cartId") String cartId, @Query("couponCode") String couponCode);
 
+    @Headers({"Accept: application/json"})
+    @GET("rest/V1/coupons/search?")
+    Call<CouponListResponseModel> getCoupons(@Query("searchCriteria[sortOrders][0][field]") int field);
 }

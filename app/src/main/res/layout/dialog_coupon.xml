@@ -21,10 +21,14 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center"
-            android:text="Enter Coupon Code"
+            android:text="Enter/Select Coupon Code"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/couponListRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

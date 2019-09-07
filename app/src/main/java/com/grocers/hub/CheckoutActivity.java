@@ -20,10 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.grocers.hub.adapters.CartProductsAdapter;
 import com.grocers.hub.adapters.CityListAdapter;
+import com.grocers.hub.adapters.CouponListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
+import com.grocers.hub.adapters.OnCouponClick;
 import com.grocers.hub.adapters.OrderProductsAdapter;
 import com.grocers.hub.adapters.PaymentAdapter;
+import com.grocers.hub.adapters.SubCategoriesAdapter;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.models.CouponListResponseModel;
 import com.grocers.hub.models.DeleteCartResponse;
 import com.grocers.hub.models.FinalOrderResponse;
 import com.grocers.hub.models.GeneralResponse;
@@ -42,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CheckoutActivity extends AppCompatActivity implements ItemClickListener {
+public class CheckoutActivity extends AppCompatActivity implements ItemClickListener, OnCouponClick {
 
     ImageView backImageView;
     RecyclerView paymentMethodsRecyclerView, productsRecyclerView;
@@ -57,6 +61,8 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     int selectedPaymentPosition = -1;
     PaymentAdapter paymentAdapter;
     ShippingResponse shippingResponse;
+    ArrayList<CouponListResponseModel> couponListResponseModelArrayList;
+    EditText couponCodeEditText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,6 +135,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
 
         if (ghUtil.isConnectingToInternet()) {
             getQuoteIDServiceCall();
+            getCouponsServiceCall();
         } else {
             Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
         }
@@ -216,9 +223,17 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         couponDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         couponDialog.setContentView(R.layout.dialog_coupon);
 
-        final EditText couponCodeEditText = (EditText) couponDialog.findViewById(R.id.couponCodeEditText);
+        couponCodeEditText = (EditText) couponDialog.findViewById(R.id.couponCodeEditText);
         TextView skipTextView = (TextView) couponDialog.findViewById(R.id.skipTextView);
         TextView applyTextView = (TextView) couponDialog.findViewById(R.id.applyTextView);
+        RecyclerView couponListRecyclerView = (RecyclerView) couponDialog.findViewById(R.id.couponListRecyclerView);
+
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(CheckoutActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        couponListRecyclerView.setLayoutManager(mLayoutManager);
+        CouponListAdapter couponListAdapter = new CouponListAdapter(CheckoutActivity.this, couponListResponseModelArrayList);
+        couponListRecyclerView.setAdapter(couponListAdapter);
+        couponListAdapter.setClickListener(CheckoutActivity.this);
 
 
         skipTextView.setOnClickListener(new View.OnClickListener() {
@@ -294,5 +309,44 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         selectedPaymentPosition = position;
         selectedPaymentMethod = shippingResponse.getPayment_methods().get(position).getCode();
         paymentAdapter.notifyDataSetChanged();
+    }
+
+    public void getCouponsServiceCall() {
+        ghUtil.showDialog(CheckoutActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+
+        Call<CouponListResponseModel> loginResponseCall = service.getCoupons(1);
+        loginResponseCall.enqueue(new Callback<CouponListResponseModel>() {
+            @Override
+            public void onResponse(Call<CouponListResponseModel> call, Response<CouponListResponseModel> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    if (response.body().getItems() != null && response.body().getItems().size() > 0) {
+
+                        couponListResponseModelArrayList = new ArrayList<>();
+                        couponListResponseModelArrayList = response.body().getItems();
+
+                        couponDialog();
+
+                    } else {
+                        Toast.makeText(context, "No Coupons available", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CouponListResponseModel> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onCouponClick(int position) {
+        couponCodeEditText.setText(couponListResponseModelArrayList.get(position).getCode());
     }
 }
