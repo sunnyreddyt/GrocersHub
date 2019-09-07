@@ -1,5 +1,6 @@
 package com.grocers.hub.network;
 
+import com.grocers.hub.models.AddAddressRequest;
 import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
@@ -118,4 +119,14 @@ public interface APIInterface {
     @Headers({"Accept: application/json"})
     @GET("rest/V1/coupons/search?")
     Call<CouponListResponseModel> getCoupons(@Query("searchCriteria[sortOrders][0][field]") int field);
+
+    @Headers({"Accept: application/json"})
+    @POST("homeapi/Customeraddress?")
+    Call<GeneralResponse> addAddress(@Query("customer_id") String customer_id, @Body AddAddressRequest addAddressRequest);
+
+    @Headers({"Accept: application/json"})
+    @GET("homeapi/Forgotpassword?")
+    Call<GeneralResponse> forgotPassword(@Query("email") String email, @Query("token") String token);
+
+
 }

@@ -17,6 +17,15 @@ public class GeneralResponse {
     private String attribute_code;
     private String value;
     private GeneralResponse result;
+    private ArrayList<UserAddressListModel> addresses;
+
+    public ArrayList<UserAddressListModel> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(ArrayList<UserAddressListModel> addresses) {
+        this.addresses = addresses;
+    }
 
     public GeneralResponse getResult() {
         return result;
