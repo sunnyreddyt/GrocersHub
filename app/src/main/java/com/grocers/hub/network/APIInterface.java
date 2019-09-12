@@ -1,6 +1,7 @@
 package com.grocers.hub.network;
 
 import com.grocers.hub.models.AddAddressRequest;
+import com.grocers.hub.models.AddToCartOptionRequest;
 import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
@@ -83,6 +84,10 @@ public interface APIInterface {
     @Headers({"Accept: application/json"})
     @POST("rest/V1/carts/mine/items")
     Call<AddToCartResponse> addToCart(@Header("Authorization") String auth, @Body AddToCartRequest addToCartRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("rest/V1/carts/mine/items")
+    Call<AddToCartResponse> addToCartOption(@Header("Authorization") String auth, @Body AddToCartOptionRequest addToCartOptionRequest);
 
     @Headers({"Accept: application/json"})
     @GET("rest/V1/carts/mine")

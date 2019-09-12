@@ -1,6 +1,7 @@
 package com.grocers.hub.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,33 +13,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.R;
 import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.models.ProductDetailsResponse;
 
 import java.util.ArrayList;
 
 public class ProductsUnitsAdapter extends RecyclerView.Adapter<ProductsUnitsAdapter.MyViewHolder> {
 
     private Context mContext;
-    ArrayList<CategoryModel> categoryModelArrayList;
+    private ArrayList<ProductDetailsResponse> options;
+    int selectedUnitPosition = 0;
 
     public ProductsUnitsAdapter(Context mContext,
-                                ArrayList<CategoryModel> categoryModelArrayList) {
+                                ArrayList<ProductDetailsResponse> options, int selectedUnitPosition) {
         this.mContext = mContext;
-        this.categoryModelArrayList = categoryModelArrayList;
+        this.options = options;
+        this.selectedUnitPosition = selectedUnitPosition;
     }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout itemLayout;
-        TextView categoryNameTextView;
-        ImageView categoryBackgroundImageView, categoryImageView;
+        TextView productUnitTextView;
 
         public MyViewHolder(View view) {
             super(view);
-            /*itemLayout = (RelativeLayout) view.findViewById(R.id.itemLayout);
-            categoryNameTextView = (TextView) view.findViewById(R.id.categoryNameTextView);
-            categoryBackgroundImageView = (ImageView) view.findViewById(R.id.categoryBackgroundImageView);
-            categoryImageView = (ImageView) view.findViewById(R.id.categoryImageView);*/
+            productUnitTextView = (TextView) view.findViewById(R.id.productUnitTextView);
         }
     }
 
@@ -53,11 +52,19 @@ public class ProductsUnitsAdapter extends RecyclerView.Adapter<ProductsUnitsAdap
     @Override
     public void onBindViewHolder(final ProductsUnitsAdapter.MyViewHolder holder, final int position) {
 
+        if (selectedUnitPosition == position) {
+            holder.productUnitTextView.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.productUnitTextView.setBackgroundColor(Color.parseColor("#01d365"));
+        } else {
+            holder.productUnitTextView.setTextColor(Color.parseColor("#000000"));
+            holder.productUnitTextView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
+        holder.productUnitTextView.setText(options.get(position).getDefault_title());
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return options.size();
     }
 
 }

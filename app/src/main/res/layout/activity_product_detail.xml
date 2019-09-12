@@ -248,22 +248,32 @@
                  android:layout_marginTop="@dimen/_10sdp"
                  android:background="@drawable/strike_through" />
  -->
-            <!--<TextView
+            <LinearLayout
+                android:id="@+id/productUnitsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_15sdp"
-                android:text="Units"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_13sdp"
-                app:fontFamily="@font/poppins_medium" />
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/productUnitsRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp"></androidx.recyclerview.widget.RecyclerView>
--->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:text="Units"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_13sdp"
+                    app:fontFamily="@font/poppins_medium" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/productUnitsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"></androidx.recyclerview.widget.RecyclerView>
+
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,14 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.grocers.hub.adapters.CartProductsAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.ProductImagesListAdapter;
-import com.grocers.hub.adapters.ProductsAdapter;
 import com.grocers.hub.adapters.ProductsUnitsAdapter;
 import com.grocers.hub.adapters.SimilarProductsAdapter;
 import com.grocers.hub.constants.Constants;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.models.AddToCartOptionRequest;
 import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
@@ -34,6 +34,8 @@ import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,6 +46,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     ProductImagesListAdapter productImagesListAdapter;
     ProductsUnitsAdapter productsUnitsAdapter;
     RelativeLayout cartLayout;
+    LinearLayout productUnitsLayout;
     ImageView backImageView, productImageView;
     String skuID;
     TextView productNameTextView, productPriceTextView, cartTextView, cartCountTextView, noSimilarProductsTextView;
@@ -52,7 +55,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     Shared shared;
     String quoteID = "";
     GHUtil ghUtil;
-    int activityCount = 0;
+    int activityCount = 0, selectedUnitPosition = 0, productOptionValue = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +67,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         backImageView = (ImageView) findViewById(R.id.backImageView);
         noSimilarProductsTextView = (TextView) findViewById(R.id.noSimilarProductsTextView);
         productImagesRecyclerView = (RecyclerView) findViewById(R.id.productImagesRecyclerView);
-        // productUnitsRecyclerView = (RecyclerView) findViewById(R.id.productUnitsRecyclerView);
+        productUnitsRecyclerView = (RecyclerView) findViewById(R.id.productUnitsRecyclerView);
         cartLayout = (RelativeLayout) findViewById(R.id.cartLayout);
         similarProductsRecyclerView = (RecyclerView) findViewById(R.id.similarProductsRecyclerView);
         context = ProductDetailActivity.this;
@@ -72,16 +75,12 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         cartTextView = (TextView) findViewById(R.id.cartTextView);
         productNameTextView = (TextView) findViewById(R.id.productNameTextView);
         productImageView = (ImageView) findViewById(R.id.productImageView);
+        productUnitsLayout = (LinearLayout) findViewById(R.id.productUnitsLayout);
 
         Intent intent = getIntent();
         skuID = intent.getStringExtra("skuID");
         Log.v("skuID", skuID);
         getProductDetailServiceCall();
-
-  /*      LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
-        productUnitsRecyclerView.setLayoutManager(mLayoutManager1);
-        productsUnitsAdapter = new ProductsUnitsAdapter(ProductDetailActivity.this, null);
-        productUnitsRecyclerView.setAdapter(productsUnitsAdapter);*/
 
         cartLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,8 +148,9 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                     productDetailsResponse = response.body();
                     if (productDetailsResponse != null) {
                         String name = productDetailsResponse.getName();
-                        if (productDetailsResponse.getWeight() > 0) {
-                            name = name + " - " + String.valueOf(productDetailsResponse.getWeight());
+                        if (productDetailsResponse.getWeight().length() > 0) {
+                            //  int weight = Integer.parseInt(productDetailsResponse.getWeight());
+                            name = name + " - " + productDetailsResponse.getWeight();
                         }
                         productNameTextView.setText(name);
                         productPriceTextView.setText(String.valueOf(productDetailsResponse.getPrice()));
@@ -163,6 +163,19 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                         productImagesListAdapter = new ProductImagesListAdapter(ProductDetailActivity.this, productDetailsResponse.getMedia_gallery_entries());
                         productImagesRecyclerView.setAdapter(productImagesListAdapter);
                         productImagesListAdapter.setClickListener(ProductDetailActivity.this);
+
+
+                        if (productDetailsResponse.getOptions().size() > 0) {
+                            productUnitsLayout.setVisibility(View.VISIBLE);
+                            selectedUnitPosition = 0;
+                            productOptionValue = Integer.parseInt(productDetailsResponse.getOptions().get(0).getValue_index());
+                            LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
+                            productUnitsRecyclerView.setLayoutManager(mLayoutManager1);
+                            productsUnitsAdapter = new ProductsUnitsAdapter(ProductDetailActivity.this, productDetailsResponse.getOptions(), selectedUnitPosition);
+                            productUnitsRecyclerView.setAdapter(productsUnitsAdapter);
+                        } else {
+                            productUnitsLayout.setVisibility(View.GONE);
+                        }
                     }
 
                     getSimilarProductsServiceCall();
@@ -177,6 +190,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     @Override
@@ -246,7 +260,11 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                     if (response.body().getStatus() == 200) {
                         if (response.body().getStatus() == 200) {
                             quoteID = String.valueOf(response.body().getQuote_id());
-                            addToCartServiceCall();
+                            if (productDetailsResponse.getOptions().size() > 0) {
+                                addToCartOptionServiceCall();
+                            } else {
+                                addToCartServiceCall();
+                            }
                         }
                     }
 
@@ -274,6 +292,49 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
         addToCartRequest.setCartItem(cartItem);
         Call<AddToCartResponse> loginResponseCall = service.addToCart("Bearer " + shared.getToken(), addToCartRequest);
+        loginResponseCall.enqueue(new Callback<AddToCartResponse>() {
+            @Override
+            public void onResponse(Call<AddToCartResponse> call, Response<AddToCartResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
+                    cartTextView.setText("Proceed to Cart");
+                    getCartProductsServiceCall();
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddToCartResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void addToCartOptionServiceCall() {
+        ghUtil.showDialog(ProductDetailActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        AddToCartOptionRequest addToCartOptionRequest = new AddToCartOptionRequest();
+        AddToCartOptionRequest cartItem = new AddToCartOptionRequest();
+        cartItem.setQty(1);
+        cartItem.setQuote_id(Integer.parseInt(quoteID));
+        cartItem.setSku(skuID);
+
+        AddToCartOptionRequest product_option = new AddToCartOptionRequest();
+        AddToCartOptionRequest extension_attributes = new AddToCartOptionRequest();
+        ArrayList<AddToCartOptionRequest> configurable_item_options = new ArrayList<AddToCartOptionRequest>();
+        AddToCartOptionRequest obj = new AddToCartOptionRequest();
+        obj.setOption_id("140");
+        obj.setOption_value(productOptionValue);
+        configurable_item_options.add(obj);
+        extension_attributes.setConfigurable_item_options(configurable_item_options);
+        product_option.setExtension_attributes(extension_attributes);
+        cartItem.setProduct_option(product_option);
+
+        addToCartOptionRequest.setCartItem(cartItem);
+        Call<AddToCartResponse> loginResponseCall = service.addToCartOption("Bearer " + shared.getToken(), addToCartOptionRequest);
         loginResponseCall.enqueue(new Callback<AddToCartResponse>() {
             @Override
             public void onResponse(Call<AddToCartResponse> call, Response<AddToCartResponse> response) {
