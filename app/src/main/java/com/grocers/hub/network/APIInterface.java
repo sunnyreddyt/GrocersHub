@@ -70,8 +70,8 @@ public interface APIInterface {
     Call<ProductsResponse> getProducts(@Query("categoryId") int categoryId, @Query("zipcode") String zipcode, @Query("p") int p, @Query("limit") int limit);
 
     @Headers({"Accept: application/json"})
-    @GET("/rest/V1/products/{id}")
-    Call<ProductDetailsResponse> getProductDetails(@Path("id") String Id);
+    @GET("homeapi/Productsinfo?")
+    Call<ProductDetailsResponse> getProductDetails(@Query("sku") String sku);
 
     @Headers({"Accept: application/json"})
     @GET("homeapi/Similarproduct?")

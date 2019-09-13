@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.ProductDetailsResponse;
@@ -21,15 +22,19 @@ public class ProductsUnitsAdapter extends RecyclerView.Adapter<ProductsUnitsAdap
 
     private Context mContext;
     private ArrayList<ProductDetailsResponse> options;
-    int selectedUnitPosition = 0;
+    //int selectedUnitPosition;
+    private OnCouponClick onCouponClick;
 
     public ProductsUnitsAdapter(Context mContext,
-                                ArrayList<ProductDetailsResponse> options, int selectedUnitPosition) {
+                                ArrayList<ProductDetailsResponse> options/*, int selectedUnitPosition*/) {
         this.mContext = mContext;
         this.options = options;
-        this.selectedUnitPosition = selectedUnitPosition;
+        //this.selectedUnitPosition = selectedUnitPosition;
     }
 
+    public void setClickListener(OnCouponClick onCouponClick) {
+        this.onCouponClick = onCouponClick;
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -52,7 +57,7 @@ public class ProductsUnitsAdapter extends RecyclerView.Adapter<ProductsUnitsAdap
     @Override
     public void onBindViewHolder(final ProductsUnitsAdapter.MyViewHolder holder, final int position) {
 
-        if (selectedUnitPosition == position) {
+        if (ProductDetailActivity.selectedUnitPosition == position) {
             holder.productUnitTextView.setTextColor(Color.parseColor("#FFFFFF"));
             holder.productUnitTextView.setBackgroundColor(Color.parseColor("#01d365"));
         } else {
@@ -60,6 +65,17 @@ public class ProductsUnitsAdapter extends RecyclerView.Adapter<ProductsUnitsAdap
             holder.productUnitTextView.setBackgroundColor(Color.parseColor("#FFFFFF"));
         }
         holder.productUnitTextView.setText(options.get(position).getDefault_title());
+
+
+        holder.productUnitTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onCouponClick != null)
+                    onCouponClick.onCouponClick(position);
+                {
+                }
+            }
+        });
     }
 
     @Override

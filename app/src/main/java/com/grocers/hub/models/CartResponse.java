@@ -9,7 +9,7 @@ public class CartResponse {
     private String sku;
     private int qty;
     private String name;
-    private int price;
+    private double price;
     private String image;
     private String product_type;
     private String quote_id;
@@ -54,11 +54,11 @@ public class CartResponse {
         this.name = name;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

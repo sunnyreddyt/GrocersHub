@@ -18,12 +18,12 @@
             android:layout_margin="@dimen/_1sdp"
             android:gravity="center"
             android:minWidth="@dimen/_80sdp"
-            android:paddingLeft="@dimen/_12sdp"
-            android:paddingTop="@dimen/_3sdp"
-            android:paddingRight="@dimen/_12sdp"
-            android:paddingBottom="@dimen/_3sdp"
+            android:paddingLeft="@dimen/_4sdp"
+            android:paddingTop="@dimen/_2sdp"
+            android:paddingRight="@dimen/_4sdp"
+            android:paddingBottom="@dimen/_2sdp"
             android:text="1 Litre"
-            android:textSize="@dimen/_11sdp"
+            android:textSize="@dimen/_10sdp"
             app:fontFamily="@font/poppins_medium" />
 
 

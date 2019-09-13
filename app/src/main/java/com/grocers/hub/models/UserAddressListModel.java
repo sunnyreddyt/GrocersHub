@@ -2,15 +2,15 @@ package com.grocers.hub.models;
 
 public class UserAddressListModel {
 
-    private AddAddressRequest region;
+    private UserAddressListModel region;
     private int customer_id, region_id, id;
     private String region_code, country_id, street, telephone, postcode, city, firstname, lastname;
 
-    public AddAddressRequest getRegion() {
+    public UserAddressListModel getRegion() {
         return region;
     }
 
-    public void setRegion(AddAddressRequest region) {
+    public void setRegion(UserAddressListModel region) {
         this.region = region;
     }
 

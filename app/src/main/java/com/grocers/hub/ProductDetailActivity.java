@@ -2,6 +2,7 @@ package com.grocers.hub;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.grocers.hub.adapters.ItemClickListener;
+import com.grocers.hub.adapters.OnCouponClick;
 import com.grocers.hub.adapters.ProductImagesListAdapter;
 import com.grocers.hub.adapters.ProductsUnitsAdapter;
 import com.grocers.hub.adapters.SimilarProductsAdapter;
@@ -40,7 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductDetailActivity extends AppCompatActivity implements ItemClickListener {
+public class ProductDetailActivity extends AppCompatActivity implements ItemClickListener, OnCouponClick {
 
     RecyclerView productImagesRecyclerView, productUnitsRecyclerView, similarProductsRecyclerView;
     ProductImagesListAdapter productImagesListAdapter;
@@ -49,13 +52,14 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     LinearLayout productUnitsLayout;
     ImageView backImageView, productImageView;
     String skuID;
-    TextView productNameTextView, productPriceTextView, cartTextView, cartCountTextView, noSimilarProductsTextView;
+    TextView productNameTextView, stockQuantityTextView, productPriceTextView, cartTextView, cartCountTextView, noSimilarProductsTextView;
     ProductDetailsResponse productDetailsResponse;
     Context context;
     Shared shared;
     String quoteID = "";
     GHUtil ghUtil;
-    int activityCount = 0, selectedUnitPosition = 0, productOptionValue = 0;
+    int activityCount = 0, productOptionValue = 0, productQuantityAvailability = 0;
+    public static int selectedUnitPosition = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +78,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         productPriceTextView = (TextView) findViewById(R.id.productPriceTextView);
         cartTextView = (TextView) findViewById(R.id.cartTextView);
         productNameTextView = (TextView) findViewById(R.id.productNameTextView);
+        stockQuantityTextView = (TextView) findViewById(R.id.stockQuantityTextView);
         productImageView = (ImageView) findViewById(R.id.productImageView);
         productUnitsLayout = (LinearLayout) findViewById(R.id.productUnitsLayout);
 
@@ -110,11 +115,15 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
             @Override
             public void onClick(View view) {
                 if (shared.getUserEmail().length() > 0) {
-                    if (cartTextView.getText().equals("Proceed to Cart")) {
-                        Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
-                        startActivity(intent);
+                    if (productQuantityAvailability > 0) {
+                        if (cartTextView.getText().equals("Proceed to Cart")) {
+                            Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
+                            startActivity(intent);
+                        } else {
+                            getQuoteIDServiceCall();
+                        }
                     } else {
-                        getQuoteIDServiceCall();
+                        Toast.makeText(context, "Product is not available in stock", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Intent intent = new Intent(ProductDetailActivity.this, LoginActivity.class);
@@ -147,13 +156,10 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 if (response.code() == 200) {
                     productDetailsResponse = response.body();
                     if (productDetailsResponse != null) {
-                        String name = productDetailsResponse.getName();
-                        if (productDetailsResponse.getWeight().length() > 0) {
-                            //  int weight = Integer.parseInt(productDetailsResponse.getWeight());
-                            name = name + " - " + productDetailsResponse.getWeight();
-                        }
-                        productNameTextView.setText(name);
-                        productPriceTextView.setText(String.valueOf(productDetailsResponse.getPrice()));
+                        productNameTextView.setText(productDetailsResponse.getData().getName());
+                        productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getData().getPrice()));
+                        productQuantityAvailability = productDetailsResponse.getData().getQuantity_and_stock_status().getQty();
+                        productUpdate();
 
                         if (productDetailsResponse.getMedia_gallery_entries().size() > 0) {
                             Picasso.get().load(Constants.PRODUCT_IMAGE__BASE_URL + productDetailsResponse.getMedia_gallery_entries().get(0).getFile()).into(productImageView);
@@ -164,15 +170,18 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                         productImagesRecyclerView.setAdapter(productImagesListAdapter);
                         productImagesListAdapter.setClickListener(ProductDetailActivity.this);
 
-
-                        if (productDetailsResponse.getOptions().size() > 0) {
+                        if (productDetailsResponse.getOptions() != null && productDetailsResponse.getOptions().size() > 0) {
                             productUnitsLayout.setVisibility(View.VISIBLE);
                             selectedUnitPosition = 0;
+                            productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(0).getPrice()));
+                            productQuantityAvailability = productDetailsResponse.getOptions().get(0).getQty();
+                            productUpdate();
                             productOptionValue = Integer.parseInt(productDetailsResponse.getOptions().get(0).getValue_index());
                             LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
                             productUnitsRecyclerView.setLayoutManager(mLayoutManager1);
-                            productsUnitsAdapter = new ProductsUnitsAdapter(ProductDetailActivity.this, productDetailsResponse.getOptions(), selectedUnitPosition);
+                            productsUnitsAdapter = new ProductsUnitsAdapter(ProductDetailActivity.this, productDetailsResponse.getOptions());
                             productUnitsRecyclerView.setAdapter(productsUnitsAdapter);
+                            productsUnitsAdapter.setClickListener(ProductDetailActivity.this);
                         } else {
                             productUnitsLayout.setVisibility(View.GONE);
                         }
@@ -260,7 +269,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                     if (response.body().getStatus() == 200) {
                         if (response.body().getStatus() == 200) {
                             quoteID = String.valueOf(response.body().getQuote_id());
-                            if (productDetailsResponse.getOptions().size() > 0) {
+                            if (productDetailsResponse.getOptions() != null && productDetailsResponse.getOptions().size() > 0) {
                                 addToCartOptionServiceCall();
                             } else {
                                 addToCartServiceCall();
@@ -317,23 +326,27 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         ghUtil.showDialog(ProductDetailActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         AddToCartOptionRequest addToCartOptionRequest = new AddToCartOptionRequest();
-        AddToCartOptionRequest cartItem = new AddToCartOptionRequest();
+        AddToCartOptionRequest.CartItem cartItem = new AddToCartOptionRequest.CartItem();
         cartItem.setQty(1);
         cartItem.setQuote_id(Integer.parseInt(quoteID));
         cartItem.setSku(skuID);
 
-        AddToCartOptionRequest product_option = new AddToCartOptionRequest();
-        AddToCartOptionRequest extension_attributes = new AddToCartOptionRequest();
-        ArrayList<AddToCartOptionRequest> configurable_item_options = new ArrayList<AddToCartOptionRequest>();
-        AddToCartOptionRequest obj = new AddToCartOptionRequest();
+        AddToCartOptionRequest.ProductOption product_option = new AddToCartOptionRequest.ProductOption();
+        AddToCartOptionRequest.ExtensionAttributes extension_attributes = new AddToCartOptionRequest.ExtensionAttributes();
+        ArrayList<AddToCartOptionRequest.ConfigurableItemOptions> configurable_item_options = new ArrayList<AddToCartOptionRequest.ConfigurableItemOptions>();
+        AddToCartOptionRequest.ConfigurableItemOptions obj = new AddToCartOptionRequest.ConfigurableItemOptions();
         obj.setOption_id("140");
         obj.setOption_value(productOptionValue);
         configurable_item_options.add(obj);
         extension_attributes.setConfigurable_item_options(configurable_item_options);
         product_option.setExtension_attributes(extension_attributes);
         cartItem.setProduct_option(product_option);
+        cartItem.setProduct_type("configurable");
 
         addToCartOptionRequest.setCartItem(cartItem);
+
+        Gson gson = new Gson();
+        Log.v("addToCartOptionRequest", gson.toJson(addToCartOptionRequest));
         Call<AddToCartResponse> loginResponseCall = service.addToCartOption("Bearer " + shared.getToken(), addToCartOptionRequest);
         loginResponseCall.enqueue(new Callback<AddToCartResponse>() {
             @Override
@@ -357,13 +370,13 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     }
 
     public void getCartProductsServiceCall() {
-        ghUtil.showDialog(ProductDetailActivity.this);
+        // ghUtil.showDialog(ProductDetailActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
         loginResponseCall.enqueue(new Callback<CartResponse>() {
             @Override
             public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
-                ghUtil.dismissDialog();
+                // ghUtil.dismissDialog();
                 if (response.code() == 200) {
 
                     int cartCount = response.body().getItems().size();
@@ -387,9 +400,30 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
             @Override
             public void onFailure(Call<CartResponse> call, Throwable t) {
                 cartCountTextView.setText("0");
-                ghUtil.dismissDialog();
+                // ghUtil.dismissDialog();
                 //Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onCouponClick(int position) {
+        selectedUnitPosition = position;
+        productsUnitsAdapter.notifyDataSetChanged();
+        productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(position).getPrice()));
+        productQuantityAvailability = productDetailsResponse.getOptions().get(position).getQty();
+        productUpdate();
+    }
+
+    public void productUpdate() {
+        if (productQuantityAvailability == 0) {
+            cartTextView.setAlpha((float) 0.5);
+            stockQuantityTextView.setText("Not in stock");
+            stockQuantityTextView.setTextColor(Color.parseColor("#ff0013"));
+        } else {
+            cartTextView.setAlpha(1);
+            stockQuantityTextView.setText("(" + String.valueOf(productQuantityAvailability) + " qty available)");
+            stockQuantityTextView.setTextColor(Color.parseColor("#000000"));
+        }
     }
 }

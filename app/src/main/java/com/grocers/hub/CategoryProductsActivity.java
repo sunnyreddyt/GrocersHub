@@ -3,6 +3,7 @@ package com.grocers.hub;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.grocers.hub.adapters.CategoriesListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OfferProductsListAdapter;
@@ -23,6 +25,7 @@ import com.grocers.hub.adapters.ProductsAdapter;
 import com.grocers.hub.adapters.SubCategoriesAdapter;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.fragments.HomeFragment;
+import com.grocers.hub.models.AddToCartOptionRequest;
 import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
@@ -58,7 +61,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     Context context;
     String categoryName = "";
     String quoteID = "", skuID = "";
-    int addedPosition = 0;
+    int addedPosition = 0, optionPosition = 0;
     TextView categoryNameTextView, cartCountTextView;
     ArrayList<String> productIsAddedCartArrayList;
 
@@ -143,6 +146,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     public void getProductsServiceCall() {
         ghUtil.showDialog(CategoryProductsActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Log.v("selectedSubCategoryId", selectedSubCategoryId);
         Call<ProductsResponse> loginResponseCall = service.getProducts(Integer.parseInt(selectedSubCategoryId), shared.getZipCode(), 1, 200);
         loginResponseCall.enqueue(new Callback<ProductsResponse>() {
             @Override
@@ -181,13 +185,13 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     }
 
     public void getCartProductsServiceCall() {
-        ghUtil.showDialog(CategoryProductsActivity.this);
+        // ghUtil.showDialog(CategoryProductsActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
         loginResponseCall.enqueue(new Callback<CartResponse>() {
             @Override
             public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
-                ghUtil.dismissDialog();
+                //  ghUtil.dismissDialog();
                 if (response.code() == 200) {
 
                     int cartCount = response.body().getItems().size();
@@ -205,7 +209,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
             @Override
             public void onFailure(Call<CartResponse> call, Throwable t) {
                 cartCountTextView.setText("0");
-                ghUtil.dismissDialog();
+                // ghUtil.dismissDialog();
                 //Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
@@ -223,6 +227,12 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
                     if (response.body().getStatus() == 200) {
                         if (response.body().getStatus() == 200) {
                             quoteID = String.valueOf(response.body().getQuote_id());
+
+                            if (productsResponseArrayList.get(addedPosition).getOptions().size() > 0) {
+                                addToCartOptionServiceCall();
+                            } else {
+                                addToCartServiceCall();
+                            }
                             addToCartServiceCall();
                         }
                     }
@@ -275,10 +285,61 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
         });
     }
 
+    public void addToCartOptionServiceCall() {
+        ghUtil.showDialog(CategoryProductsActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+
+        AddToCartOptionRequest addToCartOptionRequest = new AddToCartOptionRequest();
+        AddToCartOptionRequest.CartItem cartItem = new AddToCartOptionRequest.CartItem();
+        cartItem.setQty(1);
+        cartItem.setQuote_id(Integer.parseInt(quoteID));
+        cartItem.setSku(skuID);
+
+        AddToCartOptionRequest.ProductOption product_option = new AddToCartOptionRequest.ProductOption();
+        AddToCartOptionRequest.ExtensionAttributes extension_attributes = new AddToCartOptionRequest.ExtensionAttributes();
+        ArrayList<AddToCartOptionRequest.ConfigurableItemOptions> configurable_item_options = new ArrayList<AddToCartOptionRequest.ConfigurableItemOptions>();
+        AddToCartOptionRequest.ConfigurableItemOptions obj = new AddToCartOptionRequest.ConfigurableItemOptions();
+        obj.setOption_id("140");
+        obj.setOption_value(Integer.parseInt(productsResponseArrayList.get(addedPosition).getOptions().get(optionPosition).getValue_index()));
+        configurable_item_options.add(obj);
+        extension_attributes.setConfigurable_item_options(configurable_item_options);
+        product_option.setExtension_attributes(extension_attributes);
+        cartItem.setProduct_option(product_option);
+        cartItem.setProduct_type("configurable");
+
+        addToCartOptionRequest.setCartItem(cartItem);
+
+        Gson gson = new Gson();
+        Log.v("addToCartOptionRequest", gson.toJson(addToCartOptionRequest));
+
+        Call<AddToCartResponse> loginResponseCall = service.addToCartOption("Bearer " + shared.getToken(), addToCartOptionRequest);
+        loginResponseCall.enqueue(new Callback<AddToCartResponse>() {
+            @Override
+            public void onResponse(Call<AddToCartResponse> call, Response<AddToCartResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    Toast.makeText(CategoryProductsActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
+                    productIsAddedCartArrayList.set(addedPosition, "yes");
+                    productsAdapter.notifyItemChanged(addedPosition);
+                    getCartProductsServiceCall();
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddToCartResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
-    public void onProductClick(int position) {
+    public void onProductClick(int position, int option) {
         skuID = productsResponseArrayList.get(position).getSku();
         addedPosition = position;
+        optionPosition = option;
         getQuoteIDServiceCall();
     }
 }

@@ -93,7 +93,8 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
             CartActivity.totalAmount = 0;
         }
 
-        int price = cartResponseArrayList.get(position).getPrice();
+        double priceDouble = cartResponseArrayList.get(position).getPrice();
+        int price = (int) priceDouble;
         int quantity = cartResponseArrayList.get(position).getQty();
         int productPrice = price * quantity;
         CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
