@@ -54,8 +54,8 @@ public interface APIInterface {
     Call<GeneralResponse> updateProfile(@Query("cusId") String cusId, @Body UpdateProfileRequest updateProfileRequest);
 
     @Headers({"Accept: application/json"})
-    @GET("rest//V1/customers/me")
-    Call<GeneralResponse> customerDetails(@Header("Authorization") String auth);
+    @GET("homeapi/Customerinfo?")
+    Call<GeneralResponse> customerDetails(@Query("token") String token);
 
     @Headers({"Accept: application/json"})
     @GET("rest/default/V1/mma/categories")
@@ -123,7 +123,7 @@ public interface APIInterface {
 
     @Headers({"Accept: application/json"})
     @GET("rest/V1/coupons/search?")
-    Call<CouponListResponseModel> getCoupons(@Query("searchCriteria[sortOrders][0][field]") int field);
+    Call<CouponListResponseModel> getCoupons(@Header("Authorization") String auth, @Query("searchCriteria[sortOrders][0][field]") int field);
 
     @Headers({"Accept: application/json"})
     @POST("homeapi/Customeraddress?")

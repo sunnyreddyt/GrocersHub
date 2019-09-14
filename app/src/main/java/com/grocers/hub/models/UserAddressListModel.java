@@ -2,16 +2,24 @@ package com.grocers.hub.models;
 
 public class UserAddressListModel {
 
-    private UserAddressListModel region;
     private int customer_id, region_id, id;
-    private String region_code, country_id, street, telephone, postcode, city, firstname, lastname;
+    private String regiocode, country_id, street, telephone, postcode, city, firstname, lastname, regionname;
 
-    public UserAddressListModel getRegion() {
-        return region;
+
+    public String getRegiocode() {
+        return regiocode;
     }
 
-    public void setRegion(UserAddressListModel region) {
-        this.region = region;
+    public void setRegiocode(String regiocode) {
+        this.regiocode = regiocode;
+    }
+
+    public String getRegionname() {
+        return regionname;
+    }
+
+    public void setRegionname(String regionname) {
+        this.regionname = regionname;
     }
 
     public int getCustomer_id() {
@@ -36,14 +44,6 @@ public class UserAddressListModel {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getRegion_code() {
-        return region_code;
-    }
-
-    public void setRegion_code(String region_code) {
-        this.region_code = region_code;
     }
 
     public String getCountry_id() {

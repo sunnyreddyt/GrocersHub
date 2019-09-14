@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.R;
+import com.grocers.hub.ShippingAddressActivity;
 import com.grocers.hub.models.ShippingResponse;
 import com.grocers.hub.models.UserAddressListModel;
 
@@ -21,17 +22,17 @@ public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.
     private Context mContext;
     ArrayList<UserAddressListModel> userAddressListModelArrayList;
     ItemClickListener itemClickListener;
-    int selectedPaymentPosition;
+    //int selectedPaymentPosition;
 
     public void setClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
     public AddressListAdapter(Context mContext,
-                              ArrayList<UserAddressListModel> userAddressListModelArrayList, int selectedPaymentPosition) {
+                              ArrayList<UserAddressListModel> userAddressListModelArrayList/*, int selectedPaymentPosition*/) {
         this.mContext = mContext;
         this.userAddressListModelArrayList = userAddressListModelArrayList;
-        this.selectedPaymentPosition = selectedPaymentPosition;
+        //this.selectedPaymentPosition = selectedPaymentPosition;
     }
 
 
@@ -54,7 +55,7 @@ public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.
     @Override
     public AddressListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.payments_item, parent, false);
+                .inflate(R.layout.address_list_item, parent, false);
 
         return new AddressListAdapter.MyViewHolder(itemView);
     }
@@ -64,13 +65,21 @@ public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.
 
         holder.contactTextView.setText(userAddressListModelArrayList.get(position).getFirstname() + " (" + userAddressListModelArrayList.get(position).getTelephone() + ")");
         holder.addressTextView.setText(userAddressListModelArrayList.get(position).getStreet());
-        if (position == selectedPaymentPosition) {
+        if (position == ShippingAddressActivity.selectedAddressPosition) {
             holder.paymentTypeRadioButton.setChecked(true);
         } else {
             holder.paymentTypeRadioButton.setChecked(false);
         }
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (itemClickListener != null) {
+                    itemClickListener.onClick(position);
+                }
+            }
+        });
+        holder.paymentTypeRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (itemClickListener != null) {

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.CheckoutActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.ShippingResponse;
@@ -22,17 +23,15 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.MyViewHo
     private Context mContext;
     ArrayList<ShippingResponse> shippingResponseArrayList;
     ItemClickListener itemClickListener;
-    int selectedPaymentPosition;
 
     public void setCLickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
     public PaymentAdapter(Context mContext,
-                          ArrayList<ShippingResponse> shippingResponseArrayList, int selectedPaymentPosition) {
+                          ArrayList<ShippingResponse> shippingResponseArrayList) {
         this.mContext = mContext;
         this.shippingResponseArrayList = shippingResponseArrayList;
-        this.selectedPaymentPosition = selectedPaymentPosition;
     }
 
 
@@ -60,7 +59,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.MyViewHo
 
         holder.paymentTypeRadioButton.setText(shippingResponseArrayList.get(position).getTitle());
 
-        if (position == selectedPaymentPosition) {
+        if (position == CheckoutActivity.selectedPaymentPosition) {
             holder.paymentTypeRadioButton.setChecked(true);
         } else {
             holder.paymentTypeRadioButton.setChecked(false);

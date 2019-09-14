@@ -39,6 +39,19 @@
             android:textSize="@dimen/_12sdp"
             app:fontFamily="@font/poppins" />
 
+        <TextView
+            android:id="@+id/orderIDEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:gravity="center"
+            android:paddingLeft="@dimen/_8sdp"
+            android:text="Order ID:"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textSize="@dimen/_12sdp"
+            app:fontFamily="@font/poppins" />
+
         <LinearLayout
             android:id="@+id/bottomLayout"
             android:layout_width="match_parent"

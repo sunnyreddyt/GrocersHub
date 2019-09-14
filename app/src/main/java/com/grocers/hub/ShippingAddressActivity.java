@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +48,7 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
     RecyclerView addressRecyclerView;
     String name = "", phone = "", pincode = "", address = "", city = "";
     ArrayList<UserAddressListModel> userAddressListModelArrayList;
-    int selectedAddressPosition = -1;
+    public static int selectedAddressPosition = -1;
     AddressListAdapter addressListAdapter;
 
     @Override
@@ -74,10 +75,14 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         paymentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (name.length() > 0 && phone.length() > 0 && pincode.length() > 0 && address.length() > 0 && city.length() > 0) {
-                    setShippingAddressServiceCall();
+                if (selectedAddressPosition == -1) {
+                    Toast.makeText(context, "Please select any address", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "Please choose one address", Toast.LENGTH_SHORT).show();
+                    if (name.length() > 0 && phone.length() > 0 && pincode.length() > 0 && address.length() > 0 && city.length() > 0) {
+                        setShippingAddressServiceCall();
+                    } else {
+                        Toast.makeText(context, "Please choose one address", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -157,6 +162,7 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
     public void addAddressDialog() {
         addAddressDialog = new Dialog(ShippingAddressActivity.this);
         addAddressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        addAddressDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         addAddressDialog.setContentView(R.layout.dialog_add_dialog);
 
         TextView addAddressTextView = (TextView) addAddressDialog.findViewById(R.id.addAddressTextView);
@@ -216,6 +222,11 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
                 if (response.code() == 200) {
                     addAddressDialog.dismiss();
                     Toast.makeText(ShippingAddressActivity.this, "Added", Toast.LENGTH_SHORT).show();
+                    if (ghUtil.isConnectingToInternet()) {
+                        customerDetailsServiceCall();
+                    } else {
+                        Toast.makeText(ShippingAddressActivity.this, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -232,7 +243,7 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
     public void customerDetailsServiceCall() {
         ghUtil.showDialog(ShippingAddressActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<GeneralResponse> loginResponseCall = service.customerDetails("Bearer " + shared.getToken());
+        Call<GeneralResponse> loginResponseCall = service.customerDetails(shared.getToken());
         loginResponseCall.enqueue(new Callback<GeneralResponse>() {
             @Override
             public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
@@ -243,7 +254,7 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
 
                     LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
                     addressRecyclerView.setLayoutManager(mLayoutManager);
-                    addressListAdapter = new AddressListAdapter(context, userAddressListModelArrayList, selectedAddressPosition);
+                    addressListAdapter = new AddressListAdapter(context, userAddressListModelArrayList);
                     addressRecyclerView.setAdapter(addressListAdapter);
                     addressListAdapter.setClickListener(ShippingAddressActivity.this);
                 } else {
@@ -265,6 +276,8 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         pincode = userAddressListModelArrayList.get(position).getPostcode();
         phone = userAddressListModelArrayList.get(position).getTelephone();
         address = userAddressListModelArrayList.get(position).getStreet();
+        city = userAddressListModelArrayList.get(position).getCity();
         selectedAddressPosition = position;
+        addressListAdapter.notifyDataSetChanged();
     }
 }
