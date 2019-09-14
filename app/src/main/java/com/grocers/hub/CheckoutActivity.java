@@ -24,6 +24,7 @@ import com.grocers.hub.adapters.OnCouponClick;
 import com.grocers.hub.adapters.OrderProductsAdapter;
 import com.grocers.hub.adapters.PaymentAdapter;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.models.ApplyCouponResponse;
 import com.grocers.hub.models.CouponListResponseModel;
 import com.grocers.hub.models.DeleteCartResponse;
 import com.grocers.hub.models.FinalOrderResponse;
@@ -45,7 +46,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     ImageView backImageView;
     RecyclerView paymentMethodsRecyclerView, productsRecyclerView;
     GHUtil ghUtil;
-    TextView orderTextView, discountTextView, shippingTextView, taxTextView, grandTotalTextView, applyCouponTextView;
+    TextView orderTextView, couponMessageTextView, discountTextView, shippingTextView, taxTextView, grandTotalTextView, applyCouponTextView;
     Context context;
     Shared shared;
     String quoteID = "";
@@ -76,6 +77,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         applyCouponTextView = (TextView) findViewById(R.id.applyCouponTextView);
         taxTextView = (TextView) findViewById(R.id.taxTextView);
         grandTotalTextView = (TextView) findViewById(R.id.grandTotalTextView);
+        couponMessageTextView = (TextView) findViewById(R.id.couponMessageTextView);
 
         Intent intent = getIntent();
         email = intent.getStringExtra("email");
@@ -96,7 +98,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         productsRecyclerView.setAdapter(orderProductsAdapter);
 
         discountTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getDiscount_amount()));
-        shippingTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getShipping_amount()));
+        shippingTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getBase_shipping_amount()));
         taxTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getTax_amount()));
         grandTotalTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getGrand_total()));
 
@@ -291,20 +293,30 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         ghUtil.showDialog(CheckoutActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
 
-        Call<DeleteCartResponse> loginResponseCall = service.applyCoupon(quoteID, couponCode);
-        loginResponseCall.enqueue(new Callback<DeleteCartResponse>() {
+        Log.v("quoteID", quoteID);
+        Call<ApplyCouponResponse> loginResponseCall = service.applyCoupon(quoteID, couponCode);
+        loginResponseCall.enqueue(new Callback<ApplyCouponResponse>() {
             @Override
-            public void onResponse(Call<DeleteCartResponse> call, Response<DeleteCartResponse> response) {
+            public void onResponse(Call<ApplyCouponResponse> call, Response<ApplyCouponResponse> response) {
                 ghUtil.dismissDialog();
-                if (response.code() == 200 && response.body().getStatus() == 200) {
+                if (response.code() == 200) {
                     couponDialog.dismiss();
+
+                    discountTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_discount_amount()));
+                    shippingTextView.setText("₹ " + String.valueOf(response.body().getTotals().getShipping_discount_amount()));
+                    taxTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_tax_amount()));
+                    grandTotalTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_subtotal_with_discount()));
+
+                    couponMessageTextView.setText("Coupon Applied: " + response.body().getTotals().getCoupon_code());
+                    couponMessageTextView.setVisibility(View.VISIBLE);
+
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<DeleteCartResponse> call, Throwable t) {
+            public void onFailure(Call<ApplyCouponResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }

@@ -247,6 +247,22 @@
                 android:textColor="@color/red"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/couponMessageTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:paddingLeft="@dimen/_6sdp"
+                android:paddingTop="@dimen/_3sdp"
+                android:paddingRight="@dimen/_6sdp"
+                android:paddingBottom="@dimen/_3sdp"
+                android:text="Successfully Coupon Applied:"
+                android:textColor="@color/green"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"

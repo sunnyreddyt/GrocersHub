@@ -89,7 +89,6 @@
         android:layout_above="@+id/paymentTextView"
         android:layout_below="@+id/topLayout"
         android:layout_marginLeft="@dimen/_6sdp"
-        android:layout_marginTop="-20dp"
         android:layout_marginRight="@dimen/_6sdp"
         android:visibility="visible"></androidx.recyclerview.widget.RecyclerView>
 
@@ -108,7 +107,6 @@
         android:textSize="@dimen/_12sdp"
         android:textStyle="italic"
         android:visibility="gone"></TextView>
-
 
     <TextView
         android:id="@+id/paymentTextView"

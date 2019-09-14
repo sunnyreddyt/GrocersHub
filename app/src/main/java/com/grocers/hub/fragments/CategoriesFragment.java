@@ -139,14 +139,14 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
                     categoriesRecyclerView.setAdapter(allCategoriesListAdapter);
                     allCategoriesListAdapter.setClickListener(CategoriesFragment.this);
                 } else {
-                    Toast.makeText(getActivity(), "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                    //  Toast.makeText(getActivity(), "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<CategoryModel> call, Throwable t) {
                 ghUtil.dismissDialog();
-                Toast.makeText(getActivity(), "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(getActivity(), "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }

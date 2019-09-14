@@ -136,6 +136,29 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            app:passwordToggleEnabled="true">
+
+            <EditText
+                android:id="@+id/confirmPasswordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="confirm password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/_8sdp"
+                android:password="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/_12sdp"
+                app:fontFamily="@font/poppins" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <TextView
             android:id="@+id/registerTextView"

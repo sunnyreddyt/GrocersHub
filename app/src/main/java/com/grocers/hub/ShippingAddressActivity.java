@@ -127,14 +127,16 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         addressInformation.setShipping_method_code("flatrate");
         shippingAddressRequest.setAddressInformation(addressInformation);
 
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
         Log.v("shippingAddressRequest", gson.toJson(shippingAddressRequest));
+        Log.v("token", shared.getToken());
 
         Call<ShippingResponse> loginResponseCall = service.setShipping(shared.getToken(), shippingAddressRequest);
         loginResponseCall.enqueue(new Callback<ShippingResponse>() {
             @Override
             public void onResponse(Call<ShippingResponse> call, Response<ShippingResponse> response) {
                 ghUtil.dismissDialog();
+                Log.v("shippingResponse", gson.toJson(response.body()));
                 if (response.code() == 200) {
                     ghUtil.setShippingResponse(response.body());
                     Gson gson = new Gson();
