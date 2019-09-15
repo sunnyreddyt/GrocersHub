@@ -42,7 +42,7 @@
                     android:background="@null"
                     android:enabled="true"
                     android:focusable="true"
-                    android:fontFamily="@font/poppins"
+                    android:fontFamily="@font/roboto"
                     android:hint="Search Here"
                     android:paddingLeft="@dimen/_6sdp"
                     android:textSize="@dimen/_11sdp" />

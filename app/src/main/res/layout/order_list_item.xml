@@ -37,7 +37,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Order ID:"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_11sdp" />
@@ -46,7 +46,7 @@
                     android:id="@+id/orderIDTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
+                    android:fontFamily="@font/roboto"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/_10sdp"
                     android:text="189653"
@@ -65,7 +65,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/roboto_medium"
                     android:paddingLeft="@dimen/_15sdp"
                     android:text="Total: "
                     android:textColor="@color/black"
@@ -75,7 +75,7 @@
                     android:id="@+id/orderAmountTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
+                    android:fontFamily="@font/roboto"
                     android:paddingLeft="@dimen/_15sdp"
                     android:text="₹ 550"
                     android:textColor="#353434"
@@ -88,7 +88,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/roboto_medium"
             android:paddingLeft="@dimen/_15sdp"
             android:text="Products:"
             android:textColor="@color/black"

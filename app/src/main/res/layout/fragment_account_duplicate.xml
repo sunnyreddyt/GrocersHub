@@ -34,7 +34,7 @@
                 android:text="My Profile"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_13sdp"
-                app:fontFamily="@font/poppins_medium" />
+                app:fontFamily="@font/roboto_medium" />
 
         </LinearLayout>
 
@@ -96,10 +96,10 @@
                     android:id="@+id/userNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/roboto_medium"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp"
-                    app:fontFamily="@font/poppins" />
+                    app:fontFamily="@font/roboto" />
 
 
                 <LinearLayout
@@ -118,7 +118,7 @@
                         android:id="@+id/userMailTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_medium"
+                        android:fontFamily="@font/roboto_medium"
                         android:textSize="@dimen/_10sdp" />
 
                 </LinearLayout>
@@ -139,7 +139,7 @@
                         android:id="@+id/userMobileTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_medium"
+                        android:fontFamily="@font/roboto_medium"
                         android:text="xxxxxxxxxx"
                         android:textSize="@dimen/_10sdp" />
 
@@ -174,7 +174,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/roboto"
                         android:text="My Orders"
                         android:textColor="@color/black" />
 
@@ -205,7 +205,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/roboto"
                         android:text="My Addresses"
                         android:textColor="@color/black" />
 
@@ -221,7 +221,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/roboto_medium"
                             android:text="Change Location"
                             android:textColor="#343E83"
                             android:textStyle="bold" />
@@ -254,7 +254,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/roboto"
                         android:text="Notifications"
                         android:textColor="@color/black" />
 
@@ -284,7 +284,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/roboto"
                         android:text="Feedback"
                         android:textColor="@color/black" />
 
@@ -315,7 +315,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/roboto"
                         android:text="Rate Us"
                         android:textColor="@color/black" />
 
@@ -345,7 +345,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/roboto"
                         android:text="About Us"
                         android:textColor="@color/black" />
 
@@ -376,7 +376,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/roboto"
                         android:text="Sign Out"
                         android:textColor="@color/black" />
 
@@ -410,7 +410,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@drawable/item_border"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/roboto_medium"
             android:gravity="center"
             android:paddingLeft="@dimen/_12sdp"
             android:paddingTop="@dimen/_8sdp"
@@ -425,7 +425,7 @@
             android:layout_below="@+id/loginTextView"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/_8sdp"
-            android:fontFamily="@font/poppins"
+            android:fontFamily="@font/roboto"
             android:gravity="center"
             android:text="Please Login/Register to view\norders,notifications" />
 

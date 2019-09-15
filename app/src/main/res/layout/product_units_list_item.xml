@@ -24,7 +24,7 @@
             android:paddingBottom="@dimen/_2sdp"
             android:text="1 Litre"
             android:textSize="@dimen/_10sdp"
-            app:fontFamily="@font/poppins_medium" />
+            app:fontFamily="@font/roboto_medium" />
 
 
     </LinearLayout>

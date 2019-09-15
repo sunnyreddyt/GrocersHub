@@ -61,7 +61,7 @@
                         android:text="HOME"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_8sdp"
-                        app:fontFamily="@font/poppins_medium" />
+                        app:fontFamily="@font/roboto_medium" />
 
 
                 </LinearLayout>
@@ -90,7 +90,7 @@
                         android:text="SEARCH"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_8sdp"
-                        app:fontFamily="@font/poppins_medium" />
+                        app:fontFamily="@font/roboto_medium" />
 
                 </LinearLayout>
 
@@ -122,7 +122,7 @@
                         android:text="CATEGORIES"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_8sdp"
-                        app:fontFamily="@font/poppins_medium" />
+                        app:fontFamily="@font/roboto_medium" />
 
 
                 </LinearLayout>
@@ -153,7 +153,7 @@
                         android:text="OFFERS"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_8sdp"
-                        app:fontFamily="@font/poppins_medium" />
+                        app:fontFamily="@font/roboto_medium" />
 
 
                 </LinearLayout>
@@ -183,7 +183,7 @@
                         android:text="ACCOUNT"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_8sdp"
-                        app:fontFamily="@font/poppins_medium" />
+                        app:fontFamily="@font/roboto_medium" />
 
 
                 </LinearLayout>

@@ -24,7 +24,7 @@
                 android:id="@+id/productNameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Salt 1 Kg"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_11sdp" />

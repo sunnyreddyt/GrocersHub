@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/roboto_medium"
                 android:gravity="center"
                 android:text="Hi, "
                 android:textColor="@color/black"
@@ -42,7 +42,7 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/_12sdp"
-                app:fontFamily="@font/poppins" />
+                app:fontFamily="@font/roboto" />
 
             <TextView
                 android:id="@+id/orderIDEditText"
@@ -55,7 +55,7 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/_12sdp"
-                app:fontFamily="@font/poppins" />
+                app:fontFamily="@font/roboto" />
 
             <LinearLayout
                 android:id="@+id/bottomLayout"

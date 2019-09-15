@@ -47,7 +47,7 @@
             android:text="All Categories"
             android:textColor="@color/black"
             android:textSize="@dimen/_11sdp"
-            app:fontFamily="@font/poppins" />
+            app:fontFamily="@font/roboto" />
 
     </LinearLayout>
 

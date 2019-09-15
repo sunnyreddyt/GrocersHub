@@ -48,13 +48,14 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
     RecyclerView addressRecyclerView;
     String name = "", phone = "", pincode = "", address = "", city = "";
     ArrayList<UserAddressListModel> userAddressListModelArrayList;
-    public static int selectedAddressPosition = -1;
+    public static int selectedAddressPosition;
     AddressListAdapter addressListAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shipping_address);
+        selectedAddressPosition = -1;
 
         context = ShippingAddressActivity.this;
         shared = new Shared(ShippingAddressActivity.this);

@@ -3,6 +3,7 @@ package com.grocers.hub;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -289,7 +290,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         orderSuccessDialog.show();
     }
 
-    public void applyCouponServiceCall(String couponCode) {
+    public void applyCouponServiceCall(final String couponCode) {
         ghUtil.showDialog(CheckoutActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
 
@@ -302,14 +303,20 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                 if (response.code() == 200) {
                     couponDialog.dismiss();
 
-                    discountTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_discount_amount()));
-                    shippingTextView.setText("₹ " + String.valueOf(response.body().getTotals().getShipping_discount_amount()));
-                    taxTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_tax_amount()));
-                    grandTotalTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_subtotal_with_discount()));
+                    if (response.body().getCartDetails() != null && response.body().getStatus() == 200) {
+                        // discountTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_discount_amount()));
+                        shippingTextView.setText("₹ " + String.valueOf(response.body().getCartDetails().getBase_shipping_amount()));
+                        // taxTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_tax_amount()));
+                        grandTotalTextView.setText("₹ " + String.valueOf(response.body().getCartDetails().getBase_subtotal_with_discount()));
 
-                    couponMessageTextView.setText("Coupon Applied: " + response.body().getTotals().getCoupon_code());
+                        couponMessageTextView.setText("Coupon Applied: " + response.body().getCartDetails().getCoupon_code());
+                        couponMessageTextView.setTextColor(Color.parseColor("#01d365"));
+
+                    } else {
+                        couponMessageTextView.setText("Unable to apply coupon: " + couponCode);
+                        couponMessageTextView.setTextColor(Color.parseColor("#ff0013"));
+                    }
                     couponMessageTextView.setVisibility(View.VISIBLE);
-
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }

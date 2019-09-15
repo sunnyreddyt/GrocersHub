@@ -28,7 +28,7 @@
                 android:id="@+id/paymentTypeRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins"
+                android:fontFamily="@font/roboto"
                 android:paddingLeft="@dimen/_6sdp"
                 android:text=""
                 android:textSize="@dimen/_12sdp" />
@@ -43,7 +43,7 @@
                     android:id="@+id/addressTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/roboto_medium"
                     android:maxLines="2"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp" />

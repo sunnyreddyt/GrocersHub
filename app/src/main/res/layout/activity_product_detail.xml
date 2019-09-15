@@ -167,7 +167,7 @@
                             android:text="MRP"
                             android:textColor="@color/grey"
                             android:textSize="@dimen/_11sdp"
-                            app:fontFamily="@font/poppins_medium" />
+                            app:fontFamily="@font/roboto_medium" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -178,7 +178,7 @@
                             android:text="₹420"
                             android:textColor="@color/grey"
                             android:textSize="@dimen/_11sdp"
-                            app:fontFamily="@font/poppins_medium" />
+                            app:fontFamily="@font/roboto_medium" />
 
                     </LinearLayout>
 
@@ -262,7 +262,7 @@
                     android:text="Units"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_13sdp"
-                    app:fontFamily="@font/poppins_medium" />
+                    app:fontFamily="@font/roboto_medium" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/productUnitsRecyclerView"
@@ -351,7 +351,7 @@
                 android:text="Similar Products"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_13sdp"
-                app:fontFamily="@font/poppins_medium" />
+                app:fontFamily="@font/roboto_medium" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
