@@ -54,8 +54,8 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="@dimen/_15sdp"
-                    android:layout_height="@dimen/_15sdp"
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
                     android:layout_marginTop="@dimen/_3sdp"
                     android:src="@drawable/ic_fav" />
 
@@ -67,8 +67,8 @@
                     android:src="@drawable/circle_filled_green" />
 
                 <TextView
-                    android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
                     android:text="0"
@@ -85,8 +85,8 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="@dimen/_15sdp"
-                    android:layout_height="@dimen/_15sdp"
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:src="@drawable/ic_cart" />
 
@@ -99,8 +99,8 @@
 
                 <TextView
                     android:id="@+id/cartCountTextView"
-                    android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
                     android:textColor="@color/white"

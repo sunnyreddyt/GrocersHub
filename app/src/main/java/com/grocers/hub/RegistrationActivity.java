@@ -71,18 +71,18 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (mobileEditText.getText().toString().length() > 0 && firstNameEditText.getText().toString().length() > 0 && lastNameEditText.getText().toString().length() > 0 && emailEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
-                    if (ghUtil.isPasswordValid(passwordEditText.getText().toString().trim()) && passwordEditText.getText().toString().length() > 6) {
-                        if (passwordEditText.getText().toString().equalsIgnoreCase(confirmPasswordEditText.getText().toString())) {
-                            registerServiceCall();
-                        } else {
-                            Toast.makeText(context, "Password and Confirm password should be same", Toast.LENGTH_SHORT).show();
-                        }
+                    // if (ghUtil.isPasswordValid(passwordEditText.getText().toString().trim()) && passwordEditText.getText().toString().length() > 6) {
+                    if (passwordEditText.getText().toString().equalsIgnoreCase(confirmPasswordEditText.getText().toString())) {
+                        registerServiceCall();
                     } else {
-                        Toast.makeText(context, "Password must contain atleast min 6 characters with one number,special character, lower and upper case", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Password and Confirm password should be same", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(context, "Enter Valid Details", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Password must contain atleast min 6 characters", Toast.LENGTH_SHORT).show();
                 }
+                /*} else {
+                    Toast.makeText(context, "Enter Valid Details", Toast.LENGTH_SHORT).show();
+                }*/
             }
         });
 

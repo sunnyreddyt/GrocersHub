@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class ProductDetailsResponse {
 
-    private int qty, price;
-    private String entity_id, attribute_set_id, type_id, sku, has_options, required_options, name,
+    private int qty, final_price;
+    private String price, entity_id, attribute_set_id, type_id, sku, has_options, required_options, name,
             image, value_id, file, product_id, attribute_code, weight, value_index, default_title;
-    private ProductDetailsResponse quantity_and_stock_status,data;
+    private ProductDetailsResponse quantity_and_stock_status, data;
     private boolean is_in_stock;
     private ArrayList<ProductDetailsResponse> product_links;
     private ArrayList<ProductDetailsResponse> media_gallery_entries;
@@ -37,11 +37,19 @@ public class ProductDetailsResponse {
         this.qty = qty;
     }
 
-    public int getPrice() {
+    public int getFinal_price() {
+        return final_price;
+    }
+
+    public void setFinal_price(int final_price) {
+        this.final_price = final_price;
+    }
+
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

@@ -20,8 +20,8 @@
             android:orientation="horizontal">
 
             <RelativeLayout
-                android:layout_width="@dimen/_28sdp"
-                android:layout_height="@dimen/_28sdp"
+                android:layout_width="@dimen/_27sdp"
+                android:layout_height="@dimen/_27sdp"
                 android:layout_marginRight="@dimen/_10sdp"
                 android:gravity="center_vertical">
 
@@ -32,15 +32,15 @@
                     android:src="@drawable/ic_fav" />
 
                 <ImageView
-                    android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="-5dp"
                     android:src="@drawable/circle_filled_green" />
 
                 <TextView
-                    android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
                     android:text="0"
@@ -52,8 +52,8 @@
 
             <RelativeLayout
                 android:id="@+id/cartLayout"
-                android:layout_width="@dimen/_28sdp"
-                android:layout_height="@dimen/_28sdp"
+                android:layout_width="@dimen/_27sdp"
+                android:layout_height="@dimen/_27sdp"
                 android:gravity="center_vertical">
 
                 <ImageView
@@ -63,16 +63,16 @@
                     android:src="@drawable/ic_cart" />
 
                 <ImageView
-                    android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="-5dp"
                     android:src="@drawable/circle_filled_green" />
 
                 <TextView
                     android:id="@+id/cartCountTextView"
-                    android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
                     android:textColor="@color/white"

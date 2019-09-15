@@ -49,10 +49,10 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     ProductImagesListAdapter productImagesListAdapter;
     ProductsUnitsAdapter productsUnitsAdapter;
     RelativeLayout cartLayout;
-    LinearLayout productUnitsLayout;
+    LinearLayout productUnitsLayout, similarProductsLayout;
     ImageView backImageView, productImageView;
     String skuID;
-    TextView productNameTextView, stockQuantityTextView, productPriceTextView, cartTextView, cartCountTextView, noSimilarProductsTextView;
+    TextView productNameTextView, productOriginalPriceTextView, stockQuantityTextView, productPriceTextView, cartTextView, cartCountTextView, noSimilarProductsTextView;
     ProductDetailsResponse productDetailsResponse;
     Context context;
     Shared shared;
@@ -68,7 +68,9 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         ghUtil = GHUtil.getInstance(ProductDetailActivity.this);
         shared = new Shared(ProductDetailActivity.this);
         cartCountTextView = (TextView) findViewById(R.id.cartCountTextView);
+        similarProductsLayout = (LinearLayout) findViewById(R.id.similarProductsLayout);
         backImageView = (ImageView) findViewById(R.id.backImageView);
+        productOriginalPriceTextView = (TextView) findViewById(R.id.productOriginalPriceTextView);
         noSimilarProductsTextView = (TextView) findViewById(R.id.noSimilarProductsTextView);
         productImagesRecyclerView = (RecyclerView) findViewById(R.id.productImagesRecyclerView);
         productUnitsRecyclerView = (RecyclerView) findViewById(R.id.productUnitsRecyclerView);
@@ -157,7 +159,6 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                     productDetailsResponse = response.body();
                     if (productDetailsResponse != null) {
                         productNameTextView.setText(productDetailsResponse.getData().getName());
-                        productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getData().getPrice()));
                         productQuantityAvailability = productDetailsResponse.getData().getQuantity_and_stock_status().getQty();
                         productUpdate();
 
@@ -173,7 +174,15 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                         if (productDetailsResponse.getOptions() != null && productDetailsResponse.getOptions().size() > 0) {
                             productUnitsLayout.setVisibility(View.VISIBLE);
                             selectedUnitPosition = 0;
-                            productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(0).getPrice()));
+                            productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(0).getFinal_price()));
+                            double priceDouble = Double.parseDouble(productDetailsResponse.getOptions().get(0).getPrice());
+                            int priceInt = (int) priceDouble;
+                            if (priceInt == productDetailsResponse.getData().getFinal_price()) {
+                                productOriginalPriceTextView.setVisibility(View.GONE);
+                            } else {
+                                productOriginalPriceTextView.setVisibility(View.VISIBLE);
+                            }
+
                             productQuantityAvailability = productDetailsResponse.getOptions().get(0).getQty();
                             productUpdate();
                             productOptionValue = Integer.parseInt(productDetailsResponse.getOptions().get(0).getValue_index());
@@ -183,6 +192,16 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                             productUnitsRecyclerView.setAdapter(productsUnitsAdapter);
                             productsUnitsAdapter.setClickListener(ProductDetailActivity.this);
                         } else {
+
+                            productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getData().getFinal_price()));
+                            double priceDouble = Double.parseDouble(productDetailsResponse.getData().getPrice());
+                            int priceInt = (int) priceDouble;
+                            if (priceInt == productDetailsResponse.getData().getFinal_price()) {
+                                productOriginalPriceTextView.setVisibility(View.GONE);
+                            } else {
+                                productOriginalPriceTextView.setVisibility(View.VISIBLE);
+                            }
+
                             productUnitsLayout.setVisibility(View.GONE);
                         }
                     }
@@ -218,22 +237,27 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 if (response.code() == 200) {
                     if (response.body().getStatus() == 200) {
                         if (response.body().getData().size() > 0) {
+                            similarProductsLayout.setVisibility(View.VISIBLE);
                             similarProductsRecyclerView.setVisibility(View.VISIBLE);
                             noSimilarProductsTextView.setVisibility(View.GONE);
+
                             LinearLayoutManager mLayoutManager = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
                             similarProductsRecyclerView.setLayoutManager(mLayoutManager);
                             SimilarProductsAdapter similarProductsAdapter = new SimilarProductsAdapter(context, response.body().getData());
                             similarProductsRecyclerView.setAdapter(similarProductsAdapter);
                         } else {
+                            similarProductsLayout.setVisibility(View.GONE);
                             similarProductsRecyclerView.setVisibility(View.GONE);
                             noSimilarProductsTextView.setVisibility(View.VISIBLE);
                         }
                     } else if (response.body().getStatus() == 400) {
+                        similarProductsLayout.setVisibility(View.GONE);
                         similarProductsRecyclerView.setVisibility(View.GONE);
                         noSimilarProductsTextView.setVisibility(View.VISIBLE);
                         //Toast.makeText(context, "No similar products available", Toast.LENGTH_SHORT);
                     }
                 } else {
+                    similarProductsLayout.setVisibility(View.GONE);
                     similarProductsRecyclerView.setVisibility(View.GONE);
                     noSimilarProductsTextView.setVisibility(View.VISIBLE);
                     // Toast.makeText(context, "No similar products available", Toast.LENGTH_LONG).show();
@@ -247,6 +271,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
             @Override
             public void onFailure(Call<SimilarProductsResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
+                similarProductsLayout.setVisibility(View.GONE);
                 similarProductsRecyclerView.setVisibility(View.GONE);
                 noSimilarProductsTextView.setVisibility(View.VISIBLE);
                 // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
@@ -393,7 +418,8 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                     }
 
                 } else {
-                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                    cartCountTextView.setText("0");
+                    // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -411,6 +437,14 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         selectedUnitPosition = position;
         productsUnitsAdapter.notifyDataSetChanged();
         productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(position).getPrice()));
+        double priceDouble = Double.parseDouble(productDetailsResponse.getOptions().get(position).getPrice());
+        int priceInt = (int) priceDouble;
+        if (priceInt == productDetailsResponse.getData().getFinal_price()) {
+            productOriginalPriceTextView.setVisibility(View.GONE);
+        } else {
+            productOriginalPriceTextView.setVisibility(View.VISIBLE);
+        }
+
         productQuantityAvailability = productDetailsResponse.getOptions().get(position).getQty();
         productUpdate();
     }

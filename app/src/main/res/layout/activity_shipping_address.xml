@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:background="@color/white"
-            android:elevation="@dimen/_7sdp"
+            android:elevation="@dimen/_5sdp"
             android:gravity="center_vertical">
 
             <LinearLayout
@@ -69,7 +69,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_12sdp"
             android:layout_marginTop="@dimen/_10sdp"
-            android:fontFamily="@font/roboto_medium"
             android:text="Select shipping address:"
             android:textColor="@color/black"
             android:textSize="@dimen/_12sdp" />

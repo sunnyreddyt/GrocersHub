@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +36,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
     OnOfferProductClickListener itemClickListener;
     Shared shared;
     int parentPosition;
-
+    ArrayList<String> productOptions = new ArrayList<String>();
 
     public OfferProductsListAdapter(Context mContext,
                                     ArrayList<HomeResponse> homeResponseArrayList, int parentPosition) {
@@ -49,9 +53,10 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout itemLayout;
+        Spinner optionsSpinner;
         ImageView productImageView;
-        TextView productNameTextView, addTextView, offerCostTextView;
-
+        RelativeLayout optionsLayout;
+        TextView productNameTextView, addTextView, offerCostTextView, costTextView;
 
         public MyViewHolder(View view) {
             super(view);
@@ -63,6 +68,9 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
             productNameTextView = (TextView) view.findViewById(R.id.productNameTextView);
             offerCostTextView = (TextView) view.findViewById(R.id.offerCostTextView);
             addTextView = (TextView) view.findViewById(R.id.addTextView);
+            optionsSpinner = (Spinner) view.findViewById(R.id.optionsSpinner);
+            optionsLayout = (RelativeLayout) view.findViewById(R.id.optionsLayout);
+            costTextView = (TextView) view.findViewById(R.id.costTextView);
         }
     }
 
@@ -80,6 +88,12 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
         Picasso.get().load(homeResponseArrayList.get(position).getImage()).into(holder.productImageView);
         holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getPrice()));
         holder.productNameTextView.setText(String.valueOf(homeResponseArrayList.get(position).getName()));
+        holder.costTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getPrice()));
+        if (homeResponseArrayList.get(position).getPrice() == homeResponseArrayList.get(position).getPrice()) {
+            holder.costTextView.setVisibility(View.GONE);
+        } else {
+            holder.costTextView.setVisibility(View.VISIBLE);
+        }
 
         for (int g = 0; g < HomeAdapter.cartResponseArrayList.size(); g++) {
             if (HomeAdapter.cartResponseArrayList.get(g).getSku().equalsIgnoreCase(homeResponseArrayList.get(position).getSku())) {
@@ -109,6 +123,43 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                 }
             }
         });
+
+
+        productOptions = new ArrayList<String>();
+        if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
+            holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice()));
+            holder.optionsSpinner.setVisibility(View.VISIBLE);
+            holder.optionsLayout.setVisibility(View.VISIBLE);
+            for (int k = 0; k < homeResponseArrayList.get(position).getOptions().size(); k++) {
+                productOptions.add(homeResponseArrayList.get(position).getOptions().get(k).getDefault_title());
+            }
+
+            ArrayAdapter aa = new ArrayAdapter(mContext, android.R.layout.simple_spinner_item, productOptions);
+            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            holder.optionsSpinner.setAdapter(aa);
+
+            holder.optionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.v("selected", String.valueOf(i));
+                    holder.offerCostTextView.setText(String.valueOf(homeResponseArrayList.get(position).getOptions().get(i).getFinalPrice()));
+                    double priceDouble = Double.parseDouble(homeResponseArrayList.get(position).getOptions().get(i).getPrice());
+                    int proceInt = (int) priceDouble;
+                    holder.offerCostTextView.setText(String.valueOf(proceInt));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+            holder.optionsSpinner.setSelection(0);
+
+        } else {
+            holder.optionsSpinner.setVisibility(View.INVISIBLE);
+            holder.optionsLayout.setVisibility(View.INVISIBLE);
+        }
 
     }
 

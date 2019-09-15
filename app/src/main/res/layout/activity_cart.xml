@@ -49,26 +49,26 @@
             android:orientation="horizontal">
 
             <RelativeLayout
-                android:layout_width="@dimen/_28sdp"
-                android:layout_height="@dimen/_28sdp"
+                android:layout_width="@dimen/_26sdp"
+                android:layout_height="@dimen/_26sdp"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="@dimen/_17sdp"
-                    android:layout_height="@dimen/_17sdp"
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
                     android:layout_marginTop="@dimen/_3sdp"
                     android:src="@drawable/ic_fav" />
 
                 <ImageView
-                    android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="-5dp"
                     android:src="@drawable/circle_filled_green" />
 
                 <TextView
-                    android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
+                    android:layout_width="@dimen/_11sdp"
+                    android:layout_height="@dimen/_11sdp"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
                     android:text="0"

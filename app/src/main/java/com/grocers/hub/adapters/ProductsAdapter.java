@@ -80,6 +80,12 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
 
         holder.productNameTextView.setText(productsResponseArrayList.get(position).getName());
         holder.offerCostTextView.setText("₹ " + String.valueOf(productsResponseArrayList.get(position).getFinalPrice()));
+        holder.costTextView.setText("₹ " + String.valueOf(productsResponseArrayList.get(position).getPrice()));
+        if (productsResponseArrayList.get(position).getFinalPrice() == productsResponseArrayList.get(position).getPrice()) {
+            holder.costTextView.setVisibility(View.GONE);
+        } else {
+            holder.costTextView.setVisibility(View.VISIBLE);
+        }
         Picasso.get().load(productsResponseArrayList.get(position).getImage()).into(holder.productImageView);
 
         if (productIsAddedCartArrayList.get(position).equalsIgnoreCase("yes")) {
@@ -91,6 +97,13 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
         productOptions = new ArrayList<String>();
         if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
             holder.offerCostTextView.setText("₹ " + String.valueOf(productsResponseArrayList.get(position).getOptions().get(0).getFinalPrice()));
+            double priceDouble = Double.parseDouble(productsResponseArrayList.get(position).getOptions().get(0).getPrice());
+            int priceInt = (int) priceDouble;
+
+            if (priceInt == productsResponseArrayList.get(position).getOptions().get(0).getFinalPrice()) {
+                holder.costTextView.setVisibility(View.GONE);
+            }
+            holder.costTextView.setText("₹ " + String.valueOf(priceInt));
             holder.optionsSpinner.setVisibility(View.VISIBLE);
             holder.optionsLayout.setVisibility(View.VISIBLE);
             for (int k = 0; k < productsResponseArrayList.get(position).getOptions().size(); k++) {
@@ -105,7 +118,15 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     Log.v("selected", String.valueOf(i));
-                    holder.offerCostTextView.setText(productsResponseArrayList.get(position).getOptions().get(i).getFinalPrice());
+                    holder.offerCostTextView.setText("₹ " + String.valueOf(productsResponseArrayList.get(position).getOptions().get(i).getFinalPrice()));
+                    double priceDouble = Double.parseDouble(productsResponseArrayList.get(position).getOptions().get(i).getPrice());
+                    int priceInt = (int) priceDouble;
+                    holder.costTextView.setText("₹ " + String.valueOf(priceInt));
+                    if (priceInt == productsResponseArrayList.get(position).getOptions().get(0).getFinalPrice()) {
+                        holder.costTextView.setVisibility(View.GONE);
+                    } else {
+                        holder.costTextView.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override
