@@ -39,7 +39,7 @@ import retrofit2.Response;
 
 public class ShippingAddressActivity extends AppCompatActivity implements ItemClickListener {
 
-    TextView paymentTextView, addAddressTextView;
+    TextView paymentTextView, addAddressTextView, noAddressTextView;
     Shared shared;
     GHUtil ghUtil;
     Context context;
@@ -62,6 +62,7 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         ghUtil = GHUtil.getInstance(ShippingAddressActivity.this);
 
         paymentTextView = (TextView) findViewById(R.id.paymentTextView);
+        noAddressTextView = (TextView) findViewById(R.id.noAddressTextView);
         backImageView = (ImageView) findViewById(R.id.backImageView);
         addressRecyclerView = (RecyclerView) findViewById(R.id.addressRecyclerView);
         addAddressTextView = (TextView) findViewById(R.id.addAddressTextView);
@@ -255,11 +256,19 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
                     userAddressListModelArrayList = new ArrayList<UserAddressListModel>();
                     userAddressListModelArrayList = response.body().getAddresses();
 
-                    LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
-                    addressRecyclerView.setLayoutManager(mLayoutManager);
-                    addressListAdapter = new AddressListAdapter(context, userAddressListModelArrayList);
-                    addressRecyclerView.setAdapter(addressListAdapter);
-                    addressListAdapter.setClickListener(ShippingAddressActivity.this);
+                    if (userAddressListModelArrayList != null && userAddressListModelArrayList.size() > 0) {
+                        addressRecyclerView.setVisibility(View.VISIBLE);
+                        noAddressTextView.setVisibility(View.GONE);
+
+                        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
+                        addressRecyclerView.setLayoutManager(mLayoutManager);
+                        addressListAdapter = new AddressListAdapter(context, userAddressListModelArrayList);
+                        addressRecyclerView.setAdapter(addressListAdapter);
+                        addressListAdapter.setClickListener(ShippingAddressActivity.this);
+                    } else {
+                        addressRecyclerView.setVisibility(View.GONE);
+                        noAddressTextView.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }

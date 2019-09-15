@@ -135,9 +135,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
                         Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(context, MainActivity.class);
+                        /*Intent intent = new Intent(context, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
+                        startActivity(intent);*/
                         finish();
                     } else if (response.code() == 200 && response.body().getStatus() == "400") {
                         Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();

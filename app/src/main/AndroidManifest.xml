@@ -58,6 +58,7 @@
 
         <activity
             android:name=".ProductDetailActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait"></activity>
 
         <activity

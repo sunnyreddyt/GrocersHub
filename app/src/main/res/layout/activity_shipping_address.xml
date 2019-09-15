@@ -82,6 +82,16 @@
             android:layout_marginTop="@dimen/_6sdp"
             android:layout_marginRight="@dimen/_8sdp"></androidx.recyclerview.widget.RecyclerView>
 
+        <TextView
+            android:id="@+id/noAddressTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="No Address added,\nplease add address to order"
+            android:textSize="@dimen/_11sdp"
+            android:textStyle="italic"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <TextView

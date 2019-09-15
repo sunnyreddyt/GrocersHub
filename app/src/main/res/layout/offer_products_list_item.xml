@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:id="@+id/itemLayout"
-        android:layout_width="@dimen/_110sdp"
+        android:layout_width="@dimen/_120sdp"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/_6sdp"
         android:background="@color/white"
@@ -25,8 +25,8 @@
 
             <ImageView
                 android:id="@+id/productImageView"
-                android:layout_width="@dimen/_110sdp"
-                android:layout_height="@dimen/_115sdp"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_110sdp"
                 android:layout_centerInParent="true"
                 android:padding="@dimen/_4sdp"
                 android:scaleType="fitXY"
@@ -86,19 +86,17 @@
         <RelativeLayout
             android:id="@+id/optionsLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_25sdp"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_height="@dimen/_23sdp"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginRight="@dimen/_12sdp"
             android:background="@drawable/item_border">
 
             <Spinner
                 android:id="@+id/optionsSpinner"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_25sdp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="0dp"
-                android:padding="@dimen/_5sdp" />
+                android:layout_height="@dimen/_23sdp"
+                android:layout_alignParentBottom="true"/>
 
         </RelativeLayout>
 
@@ -149,7 +147,7 @@
             android:text="ADD"
             android:textColor="@color/white"
             android:textSize="@dimen/_10sdp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </LinearLayout>
 

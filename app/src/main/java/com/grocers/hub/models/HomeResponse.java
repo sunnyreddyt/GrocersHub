@@ -17,9 +17,18 @@ public class HomeResponse {
     private ArrayList<HomeResponse> products;
     private ArrayList<ProductOptions> options;
     private int price;
+    private int finalPrice;
     private String id;
     private String sku;
     private String image;
+
+    public int getFinalPrice() {
+        return finalPrice;
+    }
+
+    public void setFinalPrice(int finalPrice) {
+        this.finalPrice = finalPrice;
+    }
 
     public ArrayList<ProductOptions> getOptions() {
         return options;

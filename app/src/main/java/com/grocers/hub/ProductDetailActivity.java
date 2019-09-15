@@ -174,10 +174,10 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                         if (productDetailsResponse.getOptions() != null && productDetailsResponse.getOptions().size() > 0) {
                             productUnitsLayout.setVisibility(View.VISIBLE);
                             selectedUnitPosition = 0;
-                            productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(0).getFinal_price()));
+                            productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(0).getFinalPrice()));
                             double priceDouble = Double.parseDouble(productDetailsResponse.getOptions().get(0).getPrice());
                             int priceInt = (int) priceDouble;
-                            if (priceInt == productDetailsResponse.getData().getFinal_price()) {
+                            if (priceInt == productDetailsResponse.getData().getFinalPrice()) {
                                 productOriginalPriceTextView.setVisibility(View.GONE);
                             } else {
                                 productOriginalPriceTextView.setVisibility(View.VISIBLE);
@@ -436,10 +436,10 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     public void onCouponClick(int position) {
         selectedUnitPosition = position;
         productsUnitsAdapter.notifyDataSetChanged();
-        productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(position).getPrice()));
+        productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(position).getFinalPrice()));
         double priceDouble = Double.parseDouble(productDetailsResponse.getOptions().get(position).getPrice());
         int priceInt = (int) priceDouble;
-        if (priceInt == productDetailsResponse.getData().getFinal_price()) {
+        if (priceInt == productDetailsResponse.getData().getFinalPrice()) {
             productOriginalPriceTextView.setVisibility(View.GONE);
         } else {
             productOriginalPriceTextView.setVisibility(View.VISIBLE);

@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
     public void customerDetailsServiceCall() {
         ghUtil.showDialog(LoginActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<GeneralResponse> loginResponseCall = service.customerDetails("Bearer " + shared.getToken());
+        Call<GeneralResponse> loginResponseCall = service.customerDetails(shared.getToken());
         loginResponseCall.enqueue(new Callback<GeneralResponse>() {
             @Override
             public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {

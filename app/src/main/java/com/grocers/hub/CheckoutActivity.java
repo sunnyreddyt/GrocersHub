@@ -313,7 +313,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                         couponMessageTextView.setTextColor(Color.parseColor("#01d365"));
 
                     } else {
-                        couponMessageTextView.setText("Unable to apply coupon: " + couponCode);
+                        couponMessageTextView.setText(couponCode + " " + response.body().getMessage());
                         couponMessageTextView.setTextColor(Color.parseColor("#ff0013"));
                     }
                     couponMessageTextView.setVisibility(View.VISIBLE);

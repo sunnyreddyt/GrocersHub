@@ -86,10 +86,10 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
     public void onBindViewHolder(final OfferProductsListAdapter.MyViewHolder holder, final int position) {
 
         Picasso.get().load(homeResponseArrayList.get(position).getImage()).into(holder.productImageView);
-        holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getPrice()));
+        holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getFinalPrice()));
         holder.productNameTextView.setText(String.valueOf(homeResponseArrayList.get(position).getName()));
         holder.costTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getPrice()));
-        if (homeResponseArrayList.get(position).getPrice() == homeResponseArrayList.get(position).getPrice()) {
+        if (homeResponseArrayList.get(position).getPrice() == homeResponseArrayList.get(position).getFinalPrice()) {
             holder.costTextView.setVisibility(View.GONE);
         } else {
             holder.costTextView.setVisibility(View.VISIBLE);
@@ -144,8 +144,13 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                     Log.v("selected", String.valueOf(i));
                     holder.offerCostTextView.setText(String.valueOf(homeResponseArrayList.get(position).getOptions().get(i).getFinalPrice()));
                     double priceDouble = Double.parseDouble(homeResponseArrayList.get(position).getOptions().get(i).getPrice());
-                    int proceInt = (int) priceDouble;
-                    holder.offerCostTextView.setText(String.valueOf(proceInt));
+                    int priceInt = (int) priceDouble;
+                    holder.costTextView.setText(String.valueOf(priceInt));
+                    if (priceInt == homeResponseArrayList.get(position).getOptions().get(position).getFinalPrice()) {
+                        holder.costTextView.setVisibility(View.GONE);
+                    } else {
+                        holder.costTextView.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override
