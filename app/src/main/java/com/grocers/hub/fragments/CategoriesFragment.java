@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -21,6 +22,7 @@ import com.grocers.hub.adapters.AllCategoriesListAdapter;
 import com.grocers.hub.adapters.CategoriesListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
@@ -41,18 +43,19 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
     GHUtil ghUtil;
     RecyclerView categoriesRecyclerView;
     ArrayList<CategoryModel> categoryModelArrayList;
-    Integer[] icons = {R.drawable.ic_categories_black, R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs,
-            R.drawable.ic_personal_care, R.drawable.ic_household_needs, R.drawable.ic_personal_care, R.drawable.ic_household_needs};
-    String categories[] = {"All Categories", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household", "Personal Care", "Household"};
     AllCategoriesListAdapter allCategoriesListAdapter;
+    TextView cartCountTextView;
     RelativeLayout cartLayout;
     Shared shared;
+    ArrayList<CartResponse> cartResponseArrayList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         init(view);
+
+        cartCountTextView.setText("0");
 
         cartLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +69,6 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
             }
         });
 
-
         getCategoriesServiceCall();
         return view;
     }
@@ -74,6 +76,7 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
     public void init(View view) {
         categoriesRecyclerView = (RecyclerView) view.findViewById(R.id.categoriesRecyclerView);
         cartLayout = (RelativeLayout) view.findViewById(R.id.cartLayout);
+        cartCountTextView = (TextView) view.findViewById(R.id.cartCountTextView);
         shared = new Shared(getActivity());
         ghUtil = GHUtil.getInstance(getActivity());
         /*// categories ArrayList
@@ -122,14 +125,7 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
             public void onResponse(Call<CategoryModel> call, Response<CategoryModel> response) {
                 ghUtil.dismissDialog();
                 if (response.code() == 200) {
-
                     categoryModelArrayList = new ArrayList<CategoryModel>();
-                    /*CategoryModel categoryModel = new CategoryModel();
-                    categoryModel.setId(0);
-                    categoryModel.setCategoryBackground(true);
-                    categoryModel.setName("All Categories");
-                    categoryModelArrayList.add(categoryModel);*/
-
                     for (int p = 0; p < response.body().getChildren_data().size(); p++) {
                         categoryModelArrayList.add(response.body().getChildren_data().get(p));
                     }
@@ -138,8 +134,9 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
                     allCategoriesListAdapter = new AllCategoriesListAdapter(getActivity(), categoryModelArrayList);
                     categoriesRecyclerView.setAdapter(allCategoriesListAdapter);
                     allCategoriesListAdapter.setClickListener(CategoriesFragment.this);
-                } else {
-                    //  Toast.makeText(getActivity(), "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+                if (shared.getUserID().length() > 0) {
+                    getCartProductsServiceCall();
                 }
             }
 
@@ -147,6 +144,36 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
             public void onFailure(Call<CategoryModel> call, Throwable t) {
                 ghUtil.dismissDialog();
                 //  Toast.makeText(getActivity(), "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getCartProductsServiceCall() {
+        ghUtil.showDialog(getActivity());
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
+        loginResponseCall.enqueue(new Callback<CartResponse>() {
+            @Override
+            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
+                ghUtil.dismissDialog();
+                cartResponseArrayList = new ArrayList<CartResponse>();
+                if (response.code() == 200) {
+
+                    int cartCount = response.body().getItems().size();
+                    if (cartCount > 0) {
+                        cartResponseArrayList = response.body().getItems();
+                        cartCountTextView.setText(String.valueOf(cartCount));
+                    } else {
+                        cartCountTextView.setText("0");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartResponse> call, Throwable t) {
+                cartCountTextView.setText("0");
+                ghUtil.dismissDialog();
+                cartResponseArrayList = new ArrayList<CartResponse>();
             }
         });
     }

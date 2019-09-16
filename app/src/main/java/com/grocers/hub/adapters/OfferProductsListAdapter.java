@@ -128,6 +128,16 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
         productOptions = new ArrayList<String>();
         if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
             holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice()));
+
+            double priceDouble = Double.parseDouble(homeResponseArrayList.get(position).getOptions().get(0).getPrice());
+            int priceInt = (int) priceDouble;
+            if (priceInt == homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice()) {
+                holder.costTextView.setVisibility(View.GONE);
+            }
+            else{
+                holder.costTextView.setVisibility(View.VISIBLE);
+            }
+
             holder.optionsSpinner.setVisibility(View.VISIBLE);
             holder.optionsLayout.setVisibility(View.VISIBLE);
             for (int k = 0; k < homeResponseArrayList.get(position).getOptions().size(); k++) {
@@ -142,10 +152,10 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     Log.v("selected", String.valueOf(i));
-                    holder.offerCostTextView.setText(String.valueOf(homeResponseArrayList.get(position).getOptions().get(i).getFinalPrice()));
+                    holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getOptions().get(i).getFinalPrice()));
                     double priceDouble = Double.parseDouble(homeResponseArrayList.get(position).getOptions().get(i).getPrice());
                     int priceInt = (int) priceDouble;
-                    holder.costTextView.setText(String.valueOf(priceInt));
+                    holder.costTextView.setText("₹ " + String.valueOf(priceInt));
                     if (priceInt == homeResponseArrayList.get(position).getOptions().get(position).getFinalPrice()) {
                         holder.costTextView.setVisibility(View.GONE);
                     } else {

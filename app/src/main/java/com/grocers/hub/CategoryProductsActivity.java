@@ -160,11 +160,15 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
                         for (int p = 0; p < productsResponseArrayList.size(); p++) {
                             productIsAddedCartArrayList.add("No");
                         }
+
+                        productsRecyclerView.setVisibility(View.VISIBLE);
                         productsRecyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
                         productsAdapter = new ProductsAdapter(context, productsResponseArrayList, productIsAddedCartArrayList);
                         productsRecyclerView.setAdapter(productsAdapter);
                         productsAdapter.setClickListener(CategoryProductsActivity.this);
+
                     } else {
+                        productsRecyclerView.setVisibility(View.GONE);
                         Toast.makeText(context, "No products available", Toast.LENGTH_SHORT).show();
                     }
                     if (shared.getUserID().length() > 0) {

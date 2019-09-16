@@ -90,7 +90,7 @@ public class SearchFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 if (s.length() > 1 && s.length() % 2 == 0) {
-                    ghUtil.hideKeyboard(getActivity());
+                   // ghUtil.hideKeyboard(getActivity());
                     getProductsServiceCall(s.toString());
                 } else if (s.length() == 0) {
                     productsRecyclerView.setVisibility(View.GONE);
@@ -110,26 +110,28 @@ public class SearchFragment extends Fragment {
 
 
     public void getProductsServiceCall(String key) {
-        ghUtil.showDialog(getActivity());
+        //ghUtil.showDialog(getActivity());
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<ProductsResponse> loginResponseCall = service.search(key, shared.getZipCode());
         loginResponseCall.enqueue(new Callback<ProductsResponse>() {
             @Override
             public void onResponse(Call<ProductsResponse> call, Response<ProductsResponse> response) {
-                ghUtil.dismissDialog();
+                // ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     productsResponseArrayList = new ArrayList<ProductsResponse>();
                     productsResponseArrayList = response.body().getProducts();
                     if (productsResponseArrayList != null && productsResponseArrayList.size() > 0) {
                         //products List
+                        productsRecyclerView.setVisibility(View.VISIBLE);
                         productsRecyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
                         searchProductsAdapter = new SearchProductsAdapter(context, productsResponseArrayList);
                         productsRecyclerView.setAdapter(searchProductsAdapter);
 
-                        searchEditText.requestFocus();
-                        showKeyboard(searchEditText);
+                        // searchEditText.requestFocus();
+                        // showKeyboard(searchEditText);
                         // searchEditText.setSelection(searchEditText.getText().toString().length());
                     } else {
+                        productsRecyclerView.setVisibility(View.GONE);
                         Toast.makeText(context, "No products available", Toast.LENGTH_SHORT).show();
                     }
                 } else {

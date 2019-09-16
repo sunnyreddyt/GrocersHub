@@ -71,7 +71,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/topLayout"
         android:fillViewport="true"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -402,38 +402,60 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/loginTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@drawable/item_border"
-            android:fontFamily="@font/roboto_medium"
-            android:gravity="center"
-            android:paddingLeft="@dimen/_12sdp"
-            android:paddingTop="@dimen/_8sdp"
-            android:paddingRight="@dimen/_12sdp"
-            android:paddingBottom="@dimen/_8sdp"
-            android:text="Login/Register"
-            android:textColor="@color/green" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/loginTextView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:fontFamily="@font/roboto"
-            android:gravity="center"
-            android:text="Please Login/Register to view\norders,notifications" />
+        android:visibility="visible">
 
         <ImageView
+            android:id="@+id/bottomLayout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_150sdp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/bottom_background" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottomLayout"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.4"></LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.6"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/loginTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/item_border"
+                    android:fontFamily="@font/roboto_medium"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/_12sdp"
+                    android:paddingTop="@dimen/_8sdp"
+                    android:paddingRight="@dimen/_12sdp"
+                    android:paddingBottom="@dimen/_8sdp"
+                    android:text="Login/Register"
+                    android:textColor="@color/green" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:fontFamily="@font/roboto"
+                    android:gravity="center"
+                    android:text="Please Login/Register to view\norders,notifications" />
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </RelativeLayout>
 

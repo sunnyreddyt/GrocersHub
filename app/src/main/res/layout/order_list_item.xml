@@ -14,7 +14,8 @@
         android:background="@color/white"
         android:elevation="@dimen/_4sdp"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/_5sdp">
+        android:paddingTop="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_12sdp">
 
         <LinearLayout
             android:id="@+id/itemLayout"
@@ -25,7 +26,6 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/_15sdp"
-            android:paddingTop="@dimen/_4sdp"
             android:weightSum="1">
 
             <LinearLayout
@@ -79,7 +79,8 @@
                     android:paddingLeft="@dimen/_15sdp"
                     android:text="₹ 550"
                     android:textColor="#353434"
-                    android:textSize="@dimen/_10sdp" />
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -88,6 +89,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
             android:fontFamily="@font/roboto_medium"
             android:paddingLeft="@dimen/_15sdp"
             android:text="Products:"
@@ -98,6 +100,7 @@
             android:id="@+id/productsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginLeft="@dimen/_15sdp"
             android:layout_marginRight="@dimen/_15sdp">
 

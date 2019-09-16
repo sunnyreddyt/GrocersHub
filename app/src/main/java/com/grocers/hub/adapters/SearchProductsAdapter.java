@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.ProductsResponse;
+import com.grocers.hub.utils.GHUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -24,11 +26,13 @@ public class SearchProductsAdapter extends RecyclerView.Adapter<SearchProductsAd
 
     private Context mContext;
     Shared shared;
+    GHUtil ghUtil;
     ArrayList<ProductsResponse> productsResponseArrayList;
 
     public SearchProductsAdapter(Context mContext,
                                  ArrayList<ProductsResponse> productsResponseArrayList) {
         this.mContext = mContext;
+        ghUtil = GHUtil.getInstance(mContext);
         this.shared = new Shared(mContext);
         this.productsResponseArrayList = productsResponseArrayList;
     }
@@ -60,6 +64,7 @@ public class SearchProductsAdapter extends RecyclerView.Adapter<SearchProductsAd
         holder.productNameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ghUtil.hideKeyboard(mContext);
                 Intent intent = new Intent(mContext, ProductDetailActivity.class);
                 String skuID = productsResponseArrayList.get(position).getSku();
                 intent.putExtra("skuID", skuID);
@@ -72,5 +77,6 @@ public class SearchProductsAdapter extends RecyclerView.Adapter<SearchProductsAd
     public int getItemCount() {
         return productsResponseArrayList.size();
     }
+
 
 }
