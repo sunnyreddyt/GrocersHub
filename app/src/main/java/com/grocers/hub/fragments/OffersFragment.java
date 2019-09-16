@@ -80,14 +80,14 @@ public class OffersFragment extends Fragment {
                     homeRecyclerView.setAdapter(homeAdapter);
 
                 } else {
-                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                   // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<HomeResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
-                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -104,7 +104,7 @@ public class OffersFragment extends Fragment {
                 if (response.code() == 200) {
                     cartResponseArrayList = response.body().getItems();
                 } else {
-                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                //    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
                 getHomeDetailsServiceCall();
             }
