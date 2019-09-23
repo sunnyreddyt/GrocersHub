@@ -3,7 +3,9 @@ package com.grocers.hub;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.grocers.hub.adapters.CartProductsAdapter;
 import com.grocers.hub.adapters.OnCartUpdateListener;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.database.AppDatabase;
+import com.grocers.hub.database.DatabaseClient;
+import com.grocers.hub.database.entities.OfflineCartProduct;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.DeleteCartResponse;
@@ -25,6 +30,9 @@ import com.grocers.hub.models.UpdateCartRequest;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,18 +65,27 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
         paymentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (totalAmount > 300) {
-                    Intent intent = new Intent(CartActivity.this, ShippingAddressActivity.class);
-                    startActivity(intent);
+                if (shared.getUserID().length() > 0) {
+                    if (totalAmount > 300) {
+                        Intent intent = new Intent(CartActivity.this, ShippingAddressActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(context, "Minimum order should be greater than Rs.300", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(context, "Minimum order should be greater than Rs.300", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(CartActivity.this, LoginActivity.class);
+                    startActivity(intent);
                 }
             }
         });
 
 
         if (ghUtil.isConnectingToInternet()) {
-            getCartProductsServiceCall();
+            if (shared.getUserID().length() > 0) {
+                getCartProductsServiceCall();
+            } else {
+                getCartProductsOfline();
+            }
         } else {
             Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
         }
@@ -80,7 +97,6 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
             }
         });
     }
-
 
     public void getCartProductsServiceCall() {
         ghUtil.showDialog(CartActivity.this);
@@ -118,6 +134,63 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                 Toast.makeText(context, "No products added to cart", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void getCartProductsOfline() {
+        class GetCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
+            @Override
+            protected List<OfflineCartProduct> doInBackground(Void... voids) {
+
+                /*OfflineCartProduct offlineCartProductList[] = new OfflineCartProduct[10];
+                offlineCartProductList[0] = DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .getAll();*/
+                List<OfflineCartProduct> offlineCartProductArrayList = new ArrayList<OfflineCartProduct>();
+                offlineCartProductArrayList = DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .getAllProducts();
+
+                return offlineCartProductArrayList;
+            }
+
+            @Override
+            protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
+                super.onPostExecute(offlineCartProductList);
+
+                ArrayList<CartResponse> cartResponseList = new ArrayList<>();
+                for (int g = 0; g < offlineCartProductList.size(); g++) {
+                    CartResponse cartResponse = new CartResponse();
+                    cartResponse.setSku(offlineCartProductList.get(g).getSkuID());
+                    cartResponse.setQty(offlineCartProductList.get(g).getQty());
+                    cartResponse.setName(offlineCartProductList.get(g).getName());
+                    cartResponse.setPrice(Double.parseDouble(offlineCartProductList.get(g).getPrice()));
+                    cartResponse.setImage(offlineCartProductList.get(g).getImage());
+                    cartResponse.setProduct_type(offlineCartProductList.get(g).getProduct_type());
+                    cartResponseList.add(cartResponse);
+                }
+
+                LinearLayoutManager mLayoutManager = new LinearLayoutManager(CartActivity.this, RecyclerView.VERTICAL, false);
+                cartRecyclerView.setLayoutManager(mLayoutManager);
+                CartProductsAdapter cartProductsAdapter = new CartProductsAdapter(CartActivity.this, cartResponseList);
+                cartRecyclerView.setAdapter(cartProductsAdapter);
+                cartProductsAdapter.setItemClickListener(CartActivity.this);
+
+                if (offlineCartProductList.size() == 0) {
+                    paymentTextView.setVisibility(View.INVISIBLE);
+                    cartRecyclerView.setVisibility(View.GONE);
+                    noDataTextView.setVisibility(View.VISIBLE);
+                } else {
+                    paymentTextView.setVisibility(View.VISIBLE);
+                    cartRecyclerView.setVisibility(View.VISIBLE);
+                    noDataTextView.setVisibility(View.GONE);
+                }
+            }
+        }
+        new GetCartProductOffline().execute();
     }
 
     @Override
@@ -200,6 +273,16 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void displayAdressesInLog(OfflineCartProduct[] offlineCartProducts) {
+
+        if (offlineCartProducts == null)
+            return;
+
+        for (OfflineCartProduct offlineCartProduct : offlineCartProducts) {
+            Log.v("CartProducts", "name: " + offlineCartProduct.getName() + ", sku: " + offlineCartProduct.getSkuID());
+        }
     }
 
 }

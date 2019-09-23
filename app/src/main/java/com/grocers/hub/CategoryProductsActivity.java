@@ -346,4 +346,8 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
         optionPosition = option;
         getQuoteIDServiceCall();
     }
+
+    public void updateCartCount(int cartCount){
+        cartCountTextView.setText(String.valueOf(cartCount));
+    }
 }

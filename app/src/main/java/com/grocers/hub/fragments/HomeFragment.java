@@ -95,12 +95,12 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
         cartLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shared.getUserID().length() > 0) {
-                    Intent intent = new Intent(getActivity(), CartActivity.class);
-                    startActivity(intent);
-                } else {
+                // if (shared.getUserID().length() > 0) {
+                Intent intent = new Intent(getActivity(), CartActivity.class);
+                startActivity(intent);
+                /*} else {
                     Toast.makeText(getActivity(), "Please login to view cart", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         });
 

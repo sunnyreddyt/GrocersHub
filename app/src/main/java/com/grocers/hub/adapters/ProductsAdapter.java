@@ -2,6 +2,7 @@ package com.grocers.hub.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +18,17 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.CategoryProductsActivity;
 import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.constants.Shared;
-import com.grocers.hub.models.CategoryModel;
+import com.grocers.hub.database.DatabaseClient;
+import com.grocers.hub.database.entities.OfflineCartProduct;
 import com.grocers.hub.models.ProductsResponse;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyViewHolder> {
 
@@ -164,7 +168,24 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                         Toast.makeText(mContext, "Product is already in Cart", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(mContext, "Please login to add", Toast.LENGTH_SHORT).show();
+                    OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
+                    if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
+                        offlineCartProduct.setProduct_id(Integer.parseInt(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getProduct_id()));
+                        offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
+                        offlineCartProduct.setValue_index(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
+                        offlineCartProduct.setPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
+                        offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
+                    } else {
+                        offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getSku());
+                        offlineCartProduct.setPrice(String.valueOf(productsResponseArrayList.get(position).getPrice()));
+                        offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getFinalPrice());
+                    }
+                    offlineCartProduct.setQty(1);
+                    offlineCartProduct.setName(productsResponseArrayList.get(position).getName());
+                    offlineCartProduct.setProduct_type(productsResponseArrayList.get(position).getProduct_type());
+                    offlineCartProduct.setImage(productsResponseArrayList.get(position).getImage());
+                    addCartProductOffline(offlineCartProduct);
+                    // Toast.makeText(mContext, "Please login to add", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -175,4 +196,34 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
         return productsResponseArrayList.size();
     }
 
+
+    public void addCartProductOffline(final OfflineCartProduct offlineCartProduct) {
+        class AddCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
+            @Override
+            protected List<OfflineCartProduct> doInBackground(Void... voids) {
+                DatabaseClient
+                        .getInstance(mContext)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .insert(offlineCartProduct);
+                List<OfflineCartProduct> offlineCartProductList = new ArrayList<OfflineCartProduct>();
+
+                OfflineCartProduct offlineCartProduct_temp = DatabaseClient
+                        .getInstance(mContext)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .getAll();
+
+                return offlineCartProductList;
+            }
+
+            @Override
+            protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
+                super.onPostExecute(offlineCartProductList);
+                Toast.makeText(mContext, "Added to Cart", Toast.LENGTH_SHORT).show();
+                ((CategoryProductsActivity) mContext).updateCartCount(offlineCartProductList.size());
+            }
+        }
+        new AddCartProductOffline().execute();
+    }
 }

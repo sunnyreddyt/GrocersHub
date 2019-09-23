@@ -3,6 +3,7 @@ package com.grocers.hub;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,8 @@ import com.grocers.hub.adapters.ProductsUnitsAdapter;
 import com.grocers.hub.adapters.SimilarProductsAdapter;
 import com.grocers.hub.constants.Constants;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.database.DatabaseClient;
+import com.grocers.hub.database.entities.OfflineCartProduct;
 import com.grocers.hub.models.AddToCartOptionRequest;
 import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
@@ -38,6 +41,7 @@ import com.grocers.hub.utils.GHUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -116,21 +120,42 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         cartTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shared.getUserEmail().length() > 0) {
-                    if (productQuantityAvailability > 0) {
-                        if (cartTextView.getText().equals("Proceed to Cart")) {
-                            Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
-                            startActivity(intent);
-                        } else {
-                            getQuoteIDServiceCall();
-                        }
+                // if (shared.getUserEmail().length() > 0) {
+                if (productQuantityAvailability > 0) {
+                    if (cartTextView.getText().equals("Proceed to Cart")) {
+                        Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
+                        startActivity(intent);
                     } else {
-                        Toast.makeText(context, "Product is not available in stock", Toast.LENGTH_SHORT).show();
+                        if (shared.getUserID().length() > 0) {
+                            getQuoteIDServiceCall();
+                        } else {
+                            OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
+                            if (productDetailsResponse.getOptions() != null && productDetailsResponse.getOptions().size() > 0) {
+                                offlineCartProduct.setProduct_id(Integer.parseInt(productDetailsResponse.getOptions().get(selectedUnitPosition).getProduct_id()));
+                                offlineCartProduct.setSkuID(productDetailsResponse.getOptions().get(selectedUnitPosition).getSku());
+                                offlineCartProduct.setValue_index(productDetailsResponse.getOptions().get(selectedUnitPosition).getValue_index());
+                                offlineCartProduct.setPrice(productDetailsResponse.getOptions().get(selectedUnitPosition).getPrice());
+                                offlineCartProduct.setFinalPrice(productDetailsResponse.getOptions().get(selectedUnitPosition).getFinalPrice());
+                            } else {
+                                offlineCartProduct.setSkuID(productDetailsResponse.getSku());
+                                offlineCartProduct.setPrice(productDetailsResponse.getPrice());
+                                offlineCartProduct.setFinalPrice(productDetailsResponse.getFinal_price());
+                            }
+                            offlineCartProduct.setQty(1);
+                            offlineCartProduct.setName(productDetailsResponse.getName());
+                            offlineCartProduct.setProduct_type(productDetailsResponse.getType_id());
+                            offlineCartProduct.setImage(productDetailsResponse.getImage());
+
+                            addCartProductOffline(offlineCartProduct);
+                        }
                     }
                 } else {
+                    Toast.makeText(context, "Product is not available in stock", Toast.LENGTH_SHORT).show();
+                }
+                /*} else {
                     Intent intent = new Intent(ProductDetailActivity.this, LoginActivity.class);
                     startActivity(intent);
-                }
+                }*/
             }
         });
 
@@ -357,14 +382,19 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         cartItem.setSku(skuID);
 
         AddToCartOptionRequest.ProductOption product_option = new AddToCartOptionRequest.ProductOption();
+
         AddToCartOptionRequest.ExtensionAttributes extension_attributes = new AddToCartOptionRequest.ExtensionAttributes();
+
         ArrayList<AddToCartOptionRequest.ConfigurableItemOptions> configurable_item_options = new ArrayList<AddToCartOptionRequest.ConfigurableItemOptions>();
         AddToCartOptionRequest.ConfigurableItemOptions obj = new AddToCartOptionRequest.ConfigurableItemOptions();
         obj.setOption_id("140");
         obj.setOption_value(productOptionValue);
         configurable_item_options.add(obj);
+
         extension_attributes.setConfigurable_item_options(configurable_item_options);
+
         product_option.setExtension_attributes(extension_attributes);
+
         cartItem.setProduct_option(product_option);
         cartItem.setProduct_type("configurable");
 
@@ -460,4 +490,35 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
             stockQuantityTextView.setTextColor(Color.parseColor("#000000"));
         }
     }
+
+    public void addCartProductOffline(final OfflineCartProduct offlineCartProduct) {
+        class AddCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
+            @Override
+            protected List<OfflineCartProduct> doInBackground(Void... voids) {
+                DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .insert(offlineCartProduct);
+                List<OfflineCartProduct> offlineCartProductList = new ArrayList<OfflineCartProduct>();
+                OfflineCartProduct offlineCartProduct_temp = DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .getAll();
+
+                return offlineCartProductList;
+            }
+
+            @Override
+            protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
+                super.onPostExecute(offlineCartProductList);
+                Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
+                cartTextView.setText("Proceed to Cart");
+                cartCountTextView.setText(String.valueOf(offlineCartProductList.size()));
+            }
+        }
+        new AddCartProductOffline().execute();
+    }
+
 }
