@@ -1,7 +1,10 @@
 package com.grocers.hub.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +22,8 @@ import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.constants.Constants;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.database.DatabaseClient;
+import com.grocers.hub.database.entities.OfflineCartProduct;
 import com.grocers.hub.models.CartResponse;
 import com.squareup.picasso.Picasso;
 
@@ -26,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ctel-cpu-84 on 2/9/2018.
@@ -36,16 +43,18 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
     private Context mContext;
     ArrayList<CartResponse> cartResponseArrayList;
     Shared shared;
-    OnCartUpdateListener onCartUpdateListener;
+    private OnCartUpdateListener onCartUpdateListener;
+    private List<OfflineCartProduct> offlineCartProductList;
 
     public void setItemClickListener(OnCartUpdateListener onCartUpdateListener) {
         this.onCartUpdateListener = onCartUpdateListener;
     }
 
-    public CartProductsAdapter(Context mContext, ArrayList<CartResponse> cartResponseArrayList) {
+    public CartProductsAdapter(Context mContext, ArrayList<CartResponse> cartResponseArrayList, List<OfflineCartProduct> offlineCartProductList) {
         this.mContext = mContext;
-        this.cartResponseArrayList = cartResponseArrayList;
         shared = new Shared(mContext);
+        this.cartResponseArrayList = cartResponseArrayList;
+        this.offlineCartProductList = offlineCartProductList;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -116,9 +125,11 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                 int count = Integer.parseInt(holder.countTextView.getText().toString());
                 count++;
                 holder.countTextView.setText(String.valueOf(count));
-                if (onCartUpdateListener != null) {
+                /*if (onCartUpdateListener != null) {
                     onCartUpdateListener.onCartUpdate(cartResponseArrayList.get(position), "add", count);
-                }
+                }*/
+                offlineCartProductList.get(position).setQty(count);
+                updateCartProductOffline(offlineCartProductList.get(position), "update");
             }
         });
 
@@ -130,9 +141,11 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                 if (count > 1) {
                     count--;
                     holder.countTextView.setText(String.valueOf(count));
-                    if (onCartUpdateListener != null) {
+                   /* if (onCartUpdateListener != null) {
                         onCartUpdateListener.onCartUpdate(cartResponseArrayList.get(position), "remove", count);
-                    }
+                    }*/
+                    offlineCartProductList.get(position).setQty(count);
+                    updateCartProductOffline(offlineCartProductList.get(position), "update");
                 }
             }
         });
@@ -140,9 +153,28 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
         holder.deleteImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onCartUpdateListener != null) {
+                /*if (onCartUpdateListener != null) {
                     onCartUpdateListener.onCartUpdate(cartResponseArrayList.get(position), "delete", 1);
-                }
+                }*/
+                new AlertDialog.Builder(mContext)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("")
+                        .setMessage("Are you sure, you want to remove from cart?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                updateCartProductOffline(offlineCartProductList.get(position), "delete");
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+
+                        })
+                        .show();
+
             }
         });
 
@@ -158,6 +190,40 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                 .getDisplayMetrics()
                 .density;
         return Math.round((float) dp * density);
+    }
+
+
+    public void updateCartProductOffline(final OfflineCartProduct offlineCartProduct, final String type) {
+        class AddCartProductOffline extends AsyncTask<Void, Void, String> {
+            @Override
+            protected String doInBackground(Void... voids) {
+
+                if (type.equalsIgnoreCase("update")) {
+                    DatabaseClient
+                            .getInstance(mContext)
+                            .getAppDatabase()
+                            .offlineCartDao()
+                            .update(offlineCartProduct);
+                } else if (type.equalsIgnoreCase("delete")) {
+                    DatabaseClient
+                            .getInstance(mContext)
+                            .getAppDatabase()
+                            .offlineCartDao()
+                            .delete(offlineCartProduct);
+
+                    onCartUpdateListener.onCartUpdate();
+                }
+
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String str) {
+                super.onPostExecute(str);
+
+            }
+        }
+        new AddCartProductOffline().execute();
     }
 
 }

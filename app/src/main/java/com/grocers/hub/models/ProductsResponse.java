@@ -6,9 +6,17 @@ public class ProductsResponse {
 
     private String status;
     private ArrayList<ProductsResponse> products;
-    private int qty,id,price,finalPrice;
-    private String name,sku,image,product_type;
+    private int qty, id, price, finalPrice, cartQuantity;
+    private String name, sku, image, product_type;
     ArrayList<ProductOptions> options;
+
+    public int getCartQuantity() {
+        return cartQuantity;
+    }
+
+    public void setCartQuantity(int cartQuantity) {
+        this.cartQuantity = cartQuantity;
+    }
 
     public String getStatus() {
         return status;
@@ -98,9 +106,17 @@ public class ProductsResponse {
         this.options = options;
     }
 
-    public class ProductOptions{
-        private String sku,price,option_title,default_title,super_attribute_label,value_index,attribute_code,product_id;
-        private int qty,finalPrice;
+    public class ProductOptions {
+        private String sku, price, option_title, default_title, super_attribute_label, value_index, attribute_code, product_id;
+        private int qty, finalPrice, cartQuantity;
+
+        public int getCartQuantity() {
+            return cartQuantity;
+        }
+
+        public void setCartQuantity(int cartQuantity) {
+            this.cartQuantity = cartQuantity;
+        }
 
         public String getSku() {
             return sku;

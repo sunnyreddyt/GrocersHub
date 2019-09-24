@@ -21,6 +21,9 @@ public interface OfflineCartDao {
     @Query("SELECT * FROM offlineCartProduct")
     List<OfflineCartProduct> getAllProducts();
 
+    @Query("SELECT * FROM offlineCartProduct WHERE skuID = :skuID")
+    OfflineCartProduct getProductUsingSkuID(String skuID);
+
     @Insert
     void insert(OfflineCartProduct offlineCartProduct);
 

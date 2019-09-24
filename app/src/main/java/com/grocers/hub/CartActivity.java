@@ -81,11 +81,12 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
 
 
         if (ghUtil.isConnectingToInternet()) {
-            if (shared.getUserID().length() > 0) {
+            /*if (shared.getUserID().length() > 0) {
                 getCartProductsServiceCall();
             } else {
                 getCartProductsOfline();
-            }
+            }*/
+            getCartProductsOfline();
         } else {
             Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
         }
@@ -98,7 +99,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
         });
     }
 
-    public void getCartProductsServiceCall() {
+    /*public void getCartProductsServiceCall() {
         ghUtil.showDialog(CartActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
@@ -134,7 +135,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                 Toast.makeText(context, "No products added to cart", Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
     public void getCartProductsOfline() {
         class GetCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
@@ -175,7 +176,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
 
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(CartActivity.this, RecyclerView.VERTICAL, false);
                 cartRecyclerView.setLayoutManager(mLayoutManager);
-                CartProductsAdapter cartProductsAdapter = new CartProductsAdapter(CartActivity.this, cartResponseList);
+                CartProductsAdapter cartProductsAdapter = new CartProductsAdapter(CartActivity.this, cartResponseList, offlineCartProductList);
                 cartRecyclerView.setAdapter(cartProductsAdapter);
                 cartProductsAdapter.setItemClickListener(CartActivity.this);
 
@@ -194,8 +195,11 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
     }
 
     @Override
-    public void onCartUpdate(final CartResponse cartResponse, String type, int count) {
-        if (type.equalsIgnoreCase("add") || type.equalsIgnoreCase("remove")) {
+    public void onCartUpdate() {
+
+        getCartProductsOfline();
+
+        /*if (type.equalsIgnoreCase("add") || type.equalsIgnoreCase("remove")) {
             UpdateCartRequest updateCartRequest = new UpdateCartRequest();
             UpdateCartRequest cartItem = new UpdateCartRequest();
             cartItem.setItem_id(cartResponse.getItem_id());
@@ -222,10 +226,10 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
 
                     })
                     .show();
-        }
+        }*/
     }
 
-    public void updateCartServiceCall(UpdateCartRequest updateCartRequest) {
+   /* public void updateCartServiceCall(UpdateCartRequest updateCartRequest) {
         ghUtil.showDialog(CartActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<AddToCartResponse> loginResponseCall = service.updateCart("Bearer " + shared.getToken(), updateCartRequest);
@@ -247,9 +251,9 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
-    public void deleteCartServiceCall(int itemId) {
+   /* public void deleteCartServiceCall(int itemId) {
         ghUtil.showDialog(CartActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
 
@@ -273,16 +277,10 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
     public void displayAdressesInLog(OfflineCartProduct[] offlineCartProducts) {
 
-        if (offlineCartProducts == null)
-            return;
-
-        for (OfflineCartProduct offlineCartProduct : offlineCartProducts) {
-            Log.v("CartProducts", "name: " + offlineCartProduct.getName() + ", sku: " + offlineCartProduct.getSkuID());
-        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.grocers.hub;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,8 @@ import com.grocers.hub.adapters.OnProductClickListener;
 import com.grocers.hub.adapters.ProductsAdapter;
 import com.grocers.hub.adapters.SubCategoriesAdapter;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.database.DatabaseClient;
+import com.grocers.hub.database.entities.OfflineCartProduct;
 import com.grocers.hub.fragments.HomeFragment;
 import com.grocers.hub.models.AddToCartOptionRequest;
 import com.grocers.hub.models.AddToCartRequest;
@@ -37,6 +40,7 @@ import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -125,6 +129,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
                 finish();
             }
         });
+
     }
 
     @Override
@@ -161,19 +166,15 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
                             productIsAddedCartArrayList.add("No");
                         }
 
-                        productsRecyclerView.setVisibility(View.VISIBLE);
-                        productsRecyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
-                        productsAdapter = new ProductsAdapter(context, productsResponseArrayList, productIsAddedCartArrayList);
-                        productsRecyclerView.setAdapter(productsAdapter);
-                        productsAdapter.setClickListener(CategoryProductsActivity.this);
+                        getCartProductsOffline();
 
                     } else {
                         productsRecyclerView.setVisibility(View.GONE);
                         Toast.makeText(context, "No products available", Toast.LENGTH_SHORT).show();
                     }
-                    if (shared.getUserID().length() > 0) {
+                    /*if (shared.getUserID().length() > 0) {
                         getCartProductsServiceCall();
-                    }
+                    }*/
 
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -347,7 +348,59 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
         getQuoteIDServiceCall();
     }
 
-    public void updateCartCount(int cartCount){
+    public void updateCartCount(int cartCount) {
         cartCountTextView.setText(String.valueOf(cartCount));
+    }
+
+    public void getCartProductsOffline() {
+        class GetCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
+            @Override
+            protected List<OfflineCartProduct> doInBackground(Void... voids) {
+
+                List<OfflineCartProduct> offlineCartProductArrayList = new ArrayList<OfflineCartProduct>();
+                offlineCartProductArrayList = DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .getAllProducts();
+
+                return offlineCartProductArrayList;
+            }
+
+            @Override
+            protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
+                super.onPostExecute(offlineCartProductList);
+
+                int cartCount = offlineCartProductList.size();
+                if (cartCount > 0) {
+                    cartCountTextView.setText(String.valueOf(cartCount));
+                } else {
+                    cartCountTextView.setText("0");
+                }
+
+                for (int p = 0; p < productsResponseArrayList.size(); p++) {
+                    for (int q = 0; q < offlineCartProductList.size(); q++) {
+                        if (productsResponseArrayList.get(p).getOptions() != null && productsResponseArrayList.get(p).getOptions().size() > 0) {
+                            for (int r = 0; r < productsResponseArrayList.get(p).getOptions().size(); r++) {
+                                if (offlineCartProductList.get(q).getSkuID().equalsIgnoreCase(productsResponseArrayList.get(p).getOptions().get(r).getSku())) {
+                                    productsResponseArrayList.get(p).getOptions().get(r).setCartQuantity(offlineCartProductList.get(q).getQty());
+                                }
+                            }
+                        } else if (offlineCartProductList.get(q).getSkuID().equalsIgnoreCase(productsResponseArrayList.get(p).getSku())) {
+                            productsResponseArrayList.get(p).setCartQuantity(offlineCartProductList.get(q).getQty());
+
+                        }
+                    }
+                }
+
+                productsRecyclerView.setVisibility(View.VISIBLE);
+                productsRecyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
+                productsAdapter = new ProductsAdapter(context, productsResponseArrayList/*, productIsAddedCartArrayList*/);
+                productsRecyclerView.setAdapter(productsAdapter);
+                productsAdapter.setClickListener(CategoryProductsActivity.this);
+
+            }
+        }
+        new GetCartProductOffline().execute();
     }
 }

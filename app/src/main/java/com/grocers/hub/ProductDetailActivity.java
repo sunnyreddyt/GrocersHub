@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.grocers.hub.adapters.CartProductsAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.adapters.OnCouponClick;
 import com.grocers.hub.adapters.ProductImagesListAdapter;
@@ -99,12 +100,12 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 cartLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (shared.getUserID().length() > 0) {
-                            Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
-                            startActivity(intent);
-                        } else {
+                        //if (shared.getUserID().length() > 0) {
+                        Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
+                        startActivity(intent);
+                        /*} else {
                             Toast.makeText(ProductDetailActivity.this, "Please login to view cart", Toast.LENGTH_SHORT).show();
-                        }
+                        }*/
                     }
                 });
             }
@@ -126,28 +127,28 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                         Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
                         startActivity(intent);
                     } else {
-                        if (shared.getUserID().length() > 0) {
+                        /*if (shared.getUserID().length() > 0) {
                             getQuoteIDServiceCall();
+                        } else {*/
+                        OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
+                        if (productDetailsResponse.getOptions() != null && productDetailsResponse.getOptions().size() > 0) {
+                            offlineCartProduct.setProduct_id(Integer.parseInt(productDetailsResponse.getOptions().get(selectedUnitPosition).getProduct_id()));
+                            offlineCartProduct.setSkuID(productDetailsResponse.getOptions().get(selectedUnitPosition).getSku());
+                            offlineCartProduct.setValue_index(productDetailsResponse.getOptions().get(selectedUnitPosition).getValue_index());
+                            offlineCartProduct.setPrice(productDetailsResponse.getOptions().get(selectedUnitPosition).getPrice());
+                            offlineCartProduct.setFinalPrice(productDetailsResponse.getOptions().get(selectedUnitPosition).getFinalPrice());
                         } else {
-                            OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
-                            if (productDetailsResponse.getOptions() != null && productDetailsResponse.getOptions().size() > 0) {
-                                offlineCartProduct.setProduct_id(Integer.parseInt(productDetailsResponse.getOptions().get(selectedUnitPosition).getProduct_id()));
-                                offlineCartProduct.setSkuID(productDetailsResponse.getOptions().get(selectedUnitPosition).getSku());
-                                offlineCartProduct.setValue_index(productDetailsResponse.getOptions().get(selectedUnitPosition).getValue_index());
-                                offlineCartProduct.setPrice(productDetailsResponse.getOptions().get(selectedUnitPosition).getPrice());
-                                offlineCartProduct.setFinalPrice(productDetailsResponse.getOptions().get(selectedUnitPosition).getFinalPrice());
-                            } else {
-                                offlineCartProduct.setSkuID(productDetailsResponse.getSku());
-                                offlineCartProduct.setPrice(productDetailsResponse.getPrice());
-                                offlineCartProduct.setFinalPrice(productDetailsResponse.getFinal_price());
-                            }
-                            offlineCartProduct.setQty(1);
-                            offlineCartProduct.setName(productDetailsResponse.getName());
-                            offlineCartProduct.setProduct_type(productDetailsResponse.getType_id());
-                            offlineCartProduct.setImage(productDetailsResponse.getImage());
-
-                            addCartProductOffline(offlineCartProduct);
+                            offlineCartProduct.setSkuID(productDetailsResponse.getData().getSku());
+                            offlineCartProduct.setPrice(productDetailsResponse.getData().getPrice());
+                            offlineCartProduct.setFinalPrice(productDetailsResponse.getData().getFinal_price());
                         }
+                        offlineCartProduct.setQty(1);
+                        offlineCartProduct.setName(productDetailsResponse.getData().getName());
+                        offlineCartProduct.setProduct_type(productDetailsResponse.getData().getType_id());
+                        offlineCartProduct.setImage(productDetailsResponse.getData().getImage());
+
+                        addCartProductOffline(offlineCartProduct);
+                        // }
                     }
                 } else {
                     Toast.makeText(context, "Product is not available in stock", Toast.LENGTH_SHORT).show();
@@ -165,7 +166,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     protected void onResume() {
         super.onResume();
         if (activityCount > 0 && shared.getUserID().length() > 0) {
-            getCartProductsServiceCall();
+            getCartProductsOffline();
         } else {
             activityCount++;
         }
@@ -289,7 +290,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 }
 
                 if (shared.getUserID().length() > 0) {
-                    getCartProductsServiceCall();
+                    getCartProductsOffline();
                 }
             }
 
@@ -301,7 +302,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 noSimilarProductsTextView.setVisibility(View.VISIBLE);
                 // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
                 if (shared.getUserID().length() > 0) {
-                    getCartProductsServiceCall();
+                    getCartProductsOffline();
                 }
             }
         });
@@ -358,7 +359,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 if (response.code() == 200) {
                     Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
                     cartTextView.setText("Proceed to Cart");
-                    getCartProductsServiceCall();
+                    getCartProductsOffline();
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -410,7 +411,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 if (response.code() == 200) {
                     Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
                     cartTextView.setText("Proceed to Cart");
-                    getCartProductsServiceCall();
+                    getCartProductsOffline();
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -424,7 +425,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         });
     }
 
-    public void getCartProductsServiceCall() {
+    /*public void getCartProductsServiceCall() {
         // ghUtil.showDialog(ProductDetailActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
@@ -460,7 +461,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 //Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
     @Override
     public void onCouponClick(int position) {
@@ -516,9 +517,47 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
                 cartTextView.setText("Proceed to Cart");
                 cartCountTextView.setText(String.valueOf(offlineCartProductList.size()));
+                getCartProductsOffline();
             }
         }
         new AddCartProductOffline().execute();
+    }
+
+    public void getCartProductsOffline() {
+        class GetCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
+            @Override
+            protected List<OfflineCartProduct> doInBackground(Void... voids) {
+
+                List<OfflineCartProduct> offlineCartProductArrayList = new ArrayList<OfflineCartProduct>();
+                offlineCartProductArrayList = DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .getAllProducts();
+
+                return offlineCartProductArrayList;
+            }
+
+            @Override
+            protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
+                super.onPostExecute(offlineCartProductList);
+
+                int cartCount = offlineCartProductList.size();
+                if (cartCount > 0) {
+                    cartCountTextView.setText(String.valueOf(cartCount));
+                } else {
+                    cartCountTextView.setText("0");
+                }
+
+                for (int o = 0; o < cartCount; o++) {
+                    if (offlineCartProductList.get(o).getSkuID().equalsIgnoreCase(skuID)) {
+                        cartTextView.setText("Proceed to Cart");
+                    }
+                }
+
+            }
+        }
+        new GetCartProductOffline().execute();
     }
 
 }
