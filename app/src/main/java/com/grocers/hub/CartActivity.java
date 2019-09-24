@@ -1,7 +1,6 @@
 package com.grocers.hub;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,21 +11,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.grocers.hub.adapters.CartProductsAdapter;
 import com.grocers.hub.adapters.OnCartUpdateListener;
 import com.grocers.hub.constants.Shared;
-import com.grocers.hub.database.AppDatabase;
 import com.grocers.hub.database.DatabaseClient;
 import com.grocers.hub.database.entities.OfflineCartProduct;
+import com.grocers.hub.models.AddToCartOptionRequest;
+import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
-import com.grocers.hub.models.DeleteCartResponse;
-import com.grocers.hub.models.UpdateCartRequest;
+import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
@@ -46,7 +45,10 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
     Shared shared;
     Context context;
     GHUtil ghUtil;
-    public static int totalAmount = 0;
+    public static int totalAmount;
+    List<OfflineCartProduct> offlineCartProductArrayList;
+    int cartProductsAddedCount = 0;
+    String quoteID = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,8 +69,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
             public void onClick(View view) {
                 if (shared.getUserID().length() > 0) {
                     if (totalAmount > 300) {
-                        Intent intent = new Intent(CartActivity.this, ShippingAddressActivity.class);
-                        startActivity(intent);
+                        getQuoteIDServiceCall();
                     } else {
                         Toast.makeText(context, "Minimum order should be greater than Rs.300", Toast.LENGTH_SHORT).show();
                     }
@@ -78,7 +79,6 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                 }
             }
         });
-
 
         if (ghUtil.isConnectingToInternet()) {
             /*if (shared.getUserID().length() > 0) {
@@ -142,13 +142,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
             @Override
             protected List<OfflineCartProduct> doInBackground(Void... voids) {
 
-                /*OfflineCartProduct offlineCartProductList[] = new OfflineCartProduct[10];
-                offlineCartProductList[0] = DatabaseClient
-                        .getInstance(context)
-                        .getAppDatabase()
-                        .offlineCartDao()
-                        .getAll();*/
-                List<OfflineCartProduct> offlineCartProductArrayList = new ArrayList<OfflineCartProduct>();
+                offlineCartProductArrayList = new ArrayList<OfflineCartProduct>();
                 offlineCartProductArrayList = DatabaseClient
                         .getInstance(context)
                         .getAppDatabase()
@@ -169,8 +163,11 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                     cartResponse.setQty(offlineCartProductList.get(g).getQty());
                     cartResponse.setName(offlineCartProductList.get(g).getName());
                     cartResponse.setPrice(Double.parseDouble(offlineCartProductList.get(g).getPrice()));
+                    cartResponse.setFinalPrice(Double.parseDouble(offlineCartProductList.get(g).getPrice()));
                     cartResponse.setImage(offlineCartProductList.get(g).getImage());
                     cartResponse.setProduct_type(offlineCartProductList.get(g).getProduct_type());
+                    cartResponse.setDefault_title(offlineCartProductList.get(g).getDefault_title());
+                    cartResponse.setParentSkuID(offlineCartProductList.get(g).getParentSkuID());
                     cartResponseList.add(cartResponse);
                 }
 
@@ -279,8 +276,126 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
         });
     }*/
 
-    public void displayAdressesInLog(OfflineCartProduct[] offlineCartProducts) {
 
+    public void getQuoteIDServiceCall() {
+        ghUtil.showDialog(CartActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<QuoteIDResponse> loginResponseCall = service.getQuoteID(shared.getToken(), shared.getUserID());
+        loginResponseCall.enqueue(new Callback<QuoteIDResponse>() {
+            @Override
+            public void onResponse(Call<QuoteIDResponse> call, Response<QuoteIDResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    if (response.body().getStatus() == 200) {
+                        if (response.body().getStatus() == 200) {
+                            quoteID = String.valueOf(response.body().getQuote_id());
+                            cartProductsAddedCount = 0;
+                            allItemsToCart();
+                        }
+                    }
+
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QuoteIDResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void addToCartServiceCall() {
+        ghUtil.showDialog(CartActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        AddToCartRequest addToCartRequest = new AddToCartRequest();
+        AddToCartRequest cartItem = new AddToCartRequest();
+        cartItem.setQty(offlineCartProductArrayList.get(cartProductsAddedCount).getQty());
+        cartItem.setQuote_id(quoteID);
+        cartItem.setSku(offlineCartProductArrayList.get(cartProductsAddedCount).getSkuID());
+
+        addToCartRequest.setCartItem(cartItem);
+        Call<AddToCartResponse> loginResponseCall = service.addToCart("Bearer " + shared.getToken(), addToCartRequest);
+        loginResponseCall.enqueue(new Callback<AddToCartResponse>() {
+            @Override
+            public void onResponse(Call<AddToCartResponse> call, Response<AddToCartResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    allItemsToCart();
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddToCartResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void addToCartOptionServiceCall() {
+        ghUtil.showDialog(CartActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+
+        AddToCartOptionRequest addToCartOptionRequest = new AddToCartOptionRequest();
+        AddToCartOptionRequest.CartItem cartItem = new AddToCartOptionRequest.CartItem();
+        cartItem.setQty(offlineCartProductArrayList.get(cartProductsAddedCount).getQty());
+        cartItem.setQuote_id(Integer.parseInt(quoteID));
+        cartItem.setSku(offlineCartProductArrayList.get(cartProductsAddedCount).getSkuID());
+
+        AddToCartOptionRequest.ProductOption product_option = new AddToCartOptionRequest.ProductOption();
+        AddToCartOptionRequest.ExtensionAttributes extension_attributes = new AddToCartOptionRequest.ExtensionAttributes();
+        ArrayList<AddToCartOptionRequest.ConfigurableItemOptions> configurable_item_options = new ArrayList<AddToCartOptionRequest.ConfigurableItemOptions>();
+        AddToCartOptionRequest.ConfigurableItemOptions obj = new AddToCartOptionRequest.ConfigurableItemOptions();
+        obj.setOption_id("140");
+        obj.setOption_value(Integer.parseInt(offlineCartProductArrayList.get(cartProductsAddedCount).getValue_index()));
+        configurable_item_options.add(obj);
+        extension_attributes.setConfigurable_item_options(configurable_item_options);
+        product_option.setExtension_attributes(extension_attributes);
+        cartItem.setProduct_option(product_option);
+        cartItem.setProduct_type("configurable");
+
+        addToCartOptionRequest.setCartItem(cartItem);
+
+        Gson gson = new Gson();
+        Log.v("addToCartOptionRequest", gson.toJson(addToCartOptionRequest));
+
+        Call<AddToCartResponse> loginResponseCall = service.addToCartOption("Bearer " + shared.getToken(), addToCartOptionRequest);
+        loginResponseCall.enqueue(new Callback<AddToCartResponse>() {
+            @Override
+            public void onResponse(Call<AddToCartResponse> call, Response<AddToCartResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    allItemsToCart();
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddToCartResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void allItemsToCart() {
+        if (cartProductsAddedCount == offlineCartProductArrayList.size()) {
+            Intent intent = new Intent(CartActivity.this, ShippingAddressActivity.class);
+            startActivity(intent);
+        } else {
+            if (offlineCartProductArrayList.get(cartProductsAddedCount).getProduct_type().equalsIgnoreCase("simple")) {
+                addToCartServiceCall();
+            } else {
+                addToCartOptionServiceCall();
+            }
+        }
+        cartProductsAddedCount++;
     }
 
 }

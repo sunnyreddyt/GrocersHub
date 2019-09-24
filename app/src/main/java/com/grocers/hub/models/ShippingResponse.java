@@ -9,42 +9,42 @@ public class ShippingResponse {
     private String title;
 
     private ShippingResponse totals;
-    private int grand_total;
-    private int base_grand_total;
-    private int subtotal;
-    private int base_subtotal;
-    private int discount_amount;
-    private int base_discount_amount;
-    private int subtotal_with_discount;
-    private int base_subtotal_with_discount;
-    private int shipping_amount;
-    private int base_shipping_amount;
-    private int shipping_discount_amount;
-    private int base_shipping_discount_amount;
-    private int tax_amount;
-    private int base_tax_amount;
-    private int shipping_tax_amount;
-    private int base_shipping_tax_amount;
-    private int subtotal_incl_tax;
-    private int shipping_incl_tax;
-    private int base_shipping_incl_tax;
+    private double grand_total;
+    private double base_grand_total;
+    private double subtotal;
+    private double base_subtotal;
+    private double discount_amount;
+    private double base_discount_amount;
+    private double subtotal_with_discount;
+    private double base_subtotal_with_discount;
+    private double shipping_amount;
+    private double base_shipping_amount;
+    private double shipping_discount_amount;
+    private double base_shipping_discount_amount;
+    private double tax_amount;
+    private double base_tax_amount;
+    private double shipping_tax_amount;
+    private double base_shipping_tax_amount;
+    private double subtotal_incl_tax;
+    private double shipping_incl_tax;
+    private double base_shipping_incl_tax;
     private String base_currency_code;
     private String quote_currency_code;
-    private int items_qty;
+    private double items_qty;
     private ArrayList<ShippingResponse> items;
-    private int item_id;
-    private int price;
-    private int base_price;
-    private int qty;
-    private int row_total;
-    private int base_row_total;
-    private int row_total_with_discount;
-    private int tax_percent;
-    private int discount_percent;
-    private int price_incl_tax;
-    private int base_price_incl_tax;
-    private int row_total_incl_tax;
-    private int base_row_total_incl_tax;
+    private double item_id;
+    private double price;
+    private double base_price;
+    private double qty;
+    private double row_total;
+    private double base_row_total;
+    private double row_total_with_discount;
+    private double tax_percent;
+    private double discount_percent;
+    private double price_incl_tax;
+    private double base_price_incl_tax;
+    private double row_total_incl_tax;
+    private double base_row_total_incl_tax;
     private String options;
     private String name;
     private ArrayList<ShippingResponse> total_segments;
@@ -82,155 +82,165 @@ public class ShippingResponse {
         this.totals = totals;
     }
 
-    public int getGrand_total() {
+
+
+    public ArrayList<ShippingResponse> getItems() {
+        return items;
+    }
+
+    public void setItems(ArrayList<ShippingResponse> items) {
+        this.items = items;
+    }
+
+    public double getGrand_total() {
         return grand_total;
     }
 
-    public void setGrand_total(int grand_total) {
+    public void setGrand_total(double grand_total) {
         this.grand_total = grand_total;
     }
 
-    public int getBase_grand_total() {
+    public double getBase_grand_total() {
         return base_grand_total;
     }
 
-    public void setBase_grand_total(int base_grand_total) {
+    public void setBase_grand_total(double base_grand_total) {
         this.base_grand_total = base_grand_total;
     }
 
-    public int getSubtotal() {
+    public double getSubtotal() {
         return subtotal;
     }
 
-    public void setSubtotal(int subtotal) {
+    public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
     }
 
-    public int getBase_subtotal() {
+    public double getBase_subtotal() {
         return base_subtotal;
     }
 
-    public void setBase_subtotal(int base_subtotal) {
+    public void setBase_subtotal(double base_subtotal) {
         this.base_subtotal = base_subtotal;
     }
 
-    public int getDiscount_amount() {
+    public double getDiscount_amount() {
         return discount_amount;
     }
 
-    public void setDiscount_amount(int discount_amount) {
+    public void setDiscount_amount(double discount_amount) {
         this.discount_amount = discount_amount;
     }
 
-    public int getBase_discount_amount() {
+    public double getBase_discount_amount() {
         return base_discount_amount;
     }
 
-    public void setBase_discount_amount(int base_discount_amount) {
+    public void setBase_discount_amount(double base_discount_amount) {
         this.base_discount_amount = base_discount_amount;
     }
 
-    public int getSubtotal_with_discount() {
+    public double getSubtotal_with_discount() {
         return subtotal_with_discount;
     }
 
-    public void setSubtotal_with_discount(int subtotal_with_discount) {
+    public void setSubtotal_with_discount(double subtotal_with_discount) {
         this.subtotal_with_discount = subtotal_with_discount;
     }
 
-    public int getBase_subtotal_with_discount() {
+    public double getBase_subtotal_with_discount() {
         return base_subtotal_with_discount;
     }
 
-    public void setBase_subtotal_with_discount(int base_subtotal_with_discount) {
+    public void setBase_subtotal_with_discount(double base_subtotal_with_discount) {
         this.base_subtotal_with_discount = base_subtotal_with_discount;
     }
 
-    public int getShipping_amount() {
+    public double getShipping_amount() {
         return shipping_amount;
     }
 
-    public void setShipping_amount(int shipping_amount) {
+    public void setShipping_amount(double shipping_amount) {
         this.shipping_amount = shipping_amount;
     }
 
-    public int getBase_shipping_amount() {
+    public double getBase_shipping_amount() {
         return base_shipping_amount;
     }
 
-    public void setBase_shipping_amount(int base_shipping_amount) {
+    public void setBase_shipping_amount(double base_shipping_amount) {
         this.base_shipping_amount = base_shipping_amount;
     }
 
-    public int getShipping_discount_amount() {
+    public double getShipping_discount_amount() {
         return shipping_discount_amount;
     }
 
-    public void setShipping_discount_amount(int shipping_discount_amount) {
+    public void setShipping_discount_amount(double shipping_discount_amount) {
         this.shipping_discount_amount = shipping_discount_amount;
     }
 
-    public int getBase_shipping_discount_amount() {
+    public double getBase_shipping_discount_amount() {
         return base_shipping_discount_amount;
     }
 
-    public void setBase_shipping_discount_amount(int base_shipping_discount_amount) {
+    public void setBase_shipping_discount_amount(double base_shipping_discount_amount) {
         this.base_shipping_discount_amount = base_shipping_discount_amount;
     }
 
-    public int getTax_amount() {
+    public double getTax_amount() {
         return tax_amount;
     }
 
-    public void setTax_amount(int tax_amount) {
+    public void setTax_amount(double tax_amount) {
         this.tax_amount = tax_amount;
     }
 
-    public int getBase_tax_amount() {
+    public double getBase_tax_amount() {
         return base_tax_amount;
     }
 
-    public void setBase_tax_amount(int base_tax_amount) {
+    public void setBase_tax_amount(double base_tax_amount) {
         this.base_tax_amount = base_tax_amount;
     }
 
-    public int getShipping_tax_amount() {
+    public double getShipping_tax_amount() {
         return shipping_tax_amount;
     }
 
-    public void setShipping_tax_amount(int shipping_tax_amount) {
+    public void setShipping_tax_amount(double shipping_tax_amount) {
         this.shipping_tax_amount = shipping_tax_amount;
     }
 
-    public int getBase_shipping_tax_amount() {
+    public double getBase_shipping_tax_amount() {
         return base_shipping_tax_amount;
     }
 
-    public void setBase_shipping_tax_amount(int base_shipping_tax_amount) {
+    public void setBase_shipping_tax_amount(double base_shipping_tax_amount) {
         this.base_shipping_tax_amount = base_shipping_tax_amount;
     }
 
-    public int getSubtotal_incl_tax() {
+    public double getSubtotal_incl_tax() {
         return subtotal_incl_tax;
     }
 
-    public void setSubtotal_incl_tax(int subtotal_incl_tax) {
+    public void setSubtotal_incl_tax(double subtotal_incl_tax) {
         this.subtotal_incl_tax = subtotal_incl_tax;
     }
 
-    public int getShipping_incl_tax() {
+    public double getShipping_incl_tax() {
         return shipping_incl_tax;
     }
 
-    public void setShipping_incl_tax(int shipping_incl_tax) {
+    public void setShipping_incl_tax(double shipping_incl_tax) {
         this.shipping_incl_tax = shipping_incl_tax;
     }
 
-    public int getBase_shipping_incl_tax() {
+    public double getBase_shipping_incl_tax() {
         return base_shipping_incl_tax;
     }
 
-    public void setBase_shipping_incl_tax(int base_shipping_incl_tax) {
+    public void setBase_shipping_incl_tax(double base_shipping_incl_tax) {
         this.base_shipping_incl_tax = base_shipping_incl_tax;
     }
 
@@ -250,123 +260,115 @@ public class ShippingResponse {
         this.quote_currency_code = quote_currency_code;
     }
 
-    public int getItems_qty() {
+    public double getItems_qty() {
         return items_qty;
     }
 
-    public void setItems_qty(int items_qty) {
+    public void setItems_qty(double items_qty) {
         this.items_qty = items_qty;
     }
 
-    public ArrayList<ShippingResponse> getItems() {
-        return items;
-    }
-
-    public void setItems(ArrayList<ShippingResponse> items) {
-        this.items = items;
-    }
-
-    public int getItem_id() {
+    public double getItem_id() {
         return item_id;
     }
 
-    public void setItem_id(int item_id) {
+    public void setItem_id(double item_id) {
         this.item_id = item_id;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public int getBase_price() {
+    public double getBase_price() {
         return base_price;
     }
 
-    public void setBase_price(int base_price) {
+    public void setBase_price(double base_price) {
         this.base_price = base_price;
     }
 
-    public int getQty() {
+    public double getQty() {
         return qty;
     }
 
-    public void setQty(int qty) {
+    public void setQty(double qty) {
         this.qty = qty;
     }
 
-    public int getRow_total() {
+    public double getRow_total() {
         return row_total;
     }
 
-    public void setRow_total(int row_total) {
+    public void setRow_total(double row_total) {
         this.row_total = row_total;
     }
 
-    public int getBase_row_total() {
+    public double getBase_row_total() {
         return base_row_total;
     }
 
-    public void setBase_row_total(int base_row_total) {
+    public void setBase_row_total(double base_row_total) {
         this.base_row_total = base_row_total;
     }
 
-    public int getRow_total_with_discount() {
+    public double getRow_total_with_discount() {
         return row_total_with_discount;
     }
 
-    public void setRow_total_with_discount(int row_total_with_discount) {
+    public void setRow_total_with_discount(double row_total_with_discount) {
         this.row_total_with_discount = row_total_with_discount;
     }
 
-    public int getTax_percent() {
+    public double getTax_percent() {
         return tax_percent;
     }
 
-    public void setTax_percent(int tax_percent) {
+    public void setTax_percent(double tax_percent) {
         this.tax_percent = tax_percent;
     }
 
-    public int getDiscount_percent() {
+    public double getDiscount_percent() {
         return discount_percent;
     }
 
-    public void setDiscount_percent(int discount_percent) {
+    public void setDiscount_percent(double discount_percent) {
         this.discount_percent = discount_percent;
     }
 
-    public int getPrice_incl_tax() {
+    public double getPrice_incl_tax() {
         return price_incl_tax;
     }
 
-    public void setPrice_incl_tax(int price_incl_tax) {
+    public void setPrice_incl_tax(double price_incl_tax) {
         this.price_incl_tax = price_incl_tax;
     }
 
-    public int getBase_price_incl_tax() {
+    public double getBase_price_incl_tax() {
         return base_price_incl_tax;
     }
 
-    public void setBase_price_incl_tax(int base_price_incl_tax) {
+    public void setBase_price_incl_tax(double base_price_incl_tax) {
         this.base_price_incl_tax = base_price_incl_tax;
     }
 
-    public int getRow_total_incl_tax() {
+    public double getRow_total_incl_tax() {
         return row_total_incl_tax;
     }
 
-    public void setRow_total_incl_tax(int row_total_incl_tax) {
+    public void setRow_total_incl_tax(double row_total_incl_tax) {
         this.row_total_incl_tax = row_total_incl_tax;
     }
 
-    public int getBase_row_total_incl_tax() {
+    public double getBase_row_total_incl_tax() {
         return base_row_total_incl_tax;
     }
 
-    public void setBase_row_total_incl_tax(int base_row_total_incl_tax) {
+    public void setBase_row_total_incl_tax(double base_row_total_incl_tax) {
         this.base_row_total_incl_tax = base_row_total_incl_tax;
     }
 

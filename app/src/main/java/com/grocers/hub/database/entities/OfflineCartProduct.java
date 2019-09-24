@@ -38,6 +38,27 @@ public class OfflineCartProduct {
     @ColumnInfo(name = "finalPrice")
     private int finalPrice;
 
+    @ColumnInfo(name = "default_title")
+    private String default_title;
+
+    @ColumnInfo(name = "parentSkuID")
+    private String parentSkuID;
+
+    public String getParentSkuID() {
+        return parentSkuID;
+    }
+
+    public void setParentSkuID(String parentSkuID) {
+        this.parentSkuID = parentSkuID;
+    }
+
+    public String getDefault_title() {
+        return default_title;
+    }
+
+    public void setDefault_title(String default_title) {
+        this.default_title = default_title;
+    }
 
     public int getID() {
         return ID;

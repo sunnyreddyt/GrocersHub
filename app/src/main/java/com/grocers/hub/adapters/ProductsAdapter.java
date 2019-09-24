@@ -105,7 +105,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
 
         Picasso.get().load(productsResponseArrayList.get(position).getImage()).into(holder.productImageView);
 
-
         /*holder.addTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,6 +219,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                         holder.costTextView.setVisibility(View.VISIBLE);
                     }
 
+
                     if (productsResponseArrayList.get(position).getOptions().get(i).getCartQuantity() > 0) {
                         holder.cartCountLayout.setVisibility(View.VISIBLE);
                         holder.cartAddLayout.setVisibility(View.GONE);
@@ -228,6 +228,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                         holder.cartCountLayout.setVisibility(View.GONE);
                         holder.cartAddLayout.setVisibility(View.VISIBLE);
                     }
+
                 }
 
                 @Override
@@ -270,17 +271,25 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                     offlineCartProduct.setProduct_id(Integer.parseInt(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getProduct_id()));
                     offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
                     offlineCartProduct.setValue_index(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
-                    offlineCartProduct.setPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
+                    offlineCartProduct.setPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
                     offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
+                    offlineCartProduct.setDefault_title(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
+                    productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(1);
+
                 } else {
                     offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(productsResponseArrayList.get(position).getPrice()));
                     offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getFinalPrice());
+
+                    productsResponseArrayList.get(position).setCartQuantity(1);
+
                 }
                 offlineCartProduct.setQty(1);
+                offlineCartProduct.setParentSkuID(productsResponseArrayList.get(position).getSku());
                 offlineCartProduct.setName(productsResponseArrayList.get(position).getName());
                 offlineCartProduct.setProduct_type(productsResponseArrayList.get(position).getProduct_type());
                 offlineCartProduct.setImage(productsResponseArrayList.get(position).getImage());
+
                 addCartProductOffline(offlineCartProduct);
 
                 holder.cartCountLayout.setVisibility(View.VISIBLE);
@@ -297,7 +306,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
     public int getItemCount() {
         return productsResponseArrayList.size();
     }
-
 
     public void addCartProductOffline(final OfflineCartProduct offlineCartProduct) {
         class AddCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {

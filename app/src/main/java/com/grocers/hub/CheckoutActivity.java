@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.grocers.hub.adapters.OnCouponClick;
 import com.grocers.hub.adapters.OrderProductsAdapter;
 import com.grocers.hub.adapters.PaymentAdapter;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.database.DatabaseClient;
 import com.grocers.hub.models.ApplyCouponResponse;
 import com.grocers.hub.models.CouponListResponseModel;
 import com.grocers.hub.models.DeleteCartResponse;
@@ -185,6 +187,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                 ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     orderSuccessDialog(response.body());
+                    clearOfflineCart();
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -196,6 +199,29 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    public void clearOfflineCart() {
+        class ClearCartProductOffline extends AsyncTask<Void, Void, String> {
+            @Override
+            protected String doInBackground(Void... voids) {
+
+                DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .truncate();
+
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String str) {
+                super.onPostExecute(str);
+            }
+        }
+        new ClearCartProductOffline().execute();
     }
 
     public void getQuoteIDServiceCall() {

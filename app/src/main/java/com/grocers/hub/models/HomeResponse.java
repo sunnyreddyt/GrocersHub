@@ -21,6 +21,24 @@ public class HomeResponse {
     private String id;
     private String sku;
     private String image;
+    private int cartQuantity;
+    private String product_type;
+
+    public String getProduct_type() {
+        return product_type;
+    }
+
+    public void setProduct_type(String product_type) {
+        this.product_type = product_type;
+    }
+
+    public int getCartQuantity() {
+        return cartQuantity;
+    }
+
+    public void setCartQuantity(int cartQuantity) {
+        this.cartQuantity = cartQuantity;
+    }
 
     public int getFinalPrice() {
         return finalPrice;
@@ -160,7 +178,15 @@ public class HomeResponse {
 
     public class ProductOptions {
         private String sku, price, option_title, default_title, super_attribute_label, value_index, attribute_code, product_id;
-        private int qty, finalPrice;
+        private int qty, finalPrice,cartQuantity;
+
+        public int getCartQuantity() {
+            return cartQuantity;
+        }
+
+        public void setCartQuantity(int cartQuantity) {
+            this.cartQuantity = cartQuantity;
+        }
 
         public String getSku() {
             return sku;

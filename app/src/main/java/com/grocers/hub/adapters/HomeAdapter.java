@@ -103,7 +103,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         offerProductsListAdapter = new OfferProductsListAdapter(mContext, categoryProducts.get(position).getProducts(), position);
         holder.productsRecyclerView.setAdapter(offerProductsListAdapter);
         offerProductsListAdapterArrayList.add(offerProductsListAdapter);
-        offerProductsListAdapter.setClickListener(HomeAdapter.this);
+        //offerProductsListAdapter.setClickListener(HomeAdapter.this);
 
     }
 

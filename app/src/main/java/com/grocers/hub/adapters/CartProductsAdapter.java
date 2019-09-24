@@ -91,12 +91,14 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
     @Override
     public void onBindViewHolder(final CartProductsAdapter.MyViewHolder holder, final int position) {
 
-
         holder.productNameTextView.setText(cartResponseArrayList.get(position).getName());
-        Picasso.get().load(Constants.PRODUCT_IMAGE__BASE_URL + cartResponseArrayList.get(position).getImage()).into(holder.productImageView);
+        Picasso.get().load(cartResponseArrayList.get(position).getImage()).into(holder.productImageView);
         holder.offerCostTextView.setText(String.valueOf(cartResponseArrayList.get(position).getPrice()));
         holder.costTextView.setVisibility(View.INVISIBLE);
         holder.countTextView.setText(String.valueOf(cartResponseArrayList.get(position).getQty()));
+        if (cartResponseArrayList.get(position).getDefault_title() != null && cartResponseArrayList.get(position).getDefault_title().length() > 0) {
+            holder.productQuantityTextView.setText(cartResponseArrayList.get(position).getDefault_title());
+        }
 
         if (position == 0) {
             CartActivity.totalAmount = 0;
@@ -112,7 +114,7 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, ProductDetailActivity.class);
-                String skuID = cartResponseArrayList.get(position).getSku();
+                String skuID = cartResponseArrayList.get(position).getParentSkuID();
                 intent.putExtra("skuID", skuID);
                 mContext.startActivity(intent);
             }
@@ -130,6 +132,13 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                 }*/
                 offlineCartProductList.get(position).setQty(count);
                 updateCartProductOffline(offlineCartProductList.get(position), "update");
+
+
+                double priceDouble = cartResponseArrayList.get(position).getPrice();
+                int price = (int) priceDouble;
+                int quantity = cartResponseArrayList.get(position).getQty();
+                int productPrice = price * quantity;
+                CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
             }
         });
 
@@ -146,6 +155,12 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                     }*/
                     offlineCartProductList.get(position).setQty(count);
                     updateCartProductOffline(offlineCartProductList.get(position), "update");
+
+                    double priceDouble = cartResponseArrayList.get(position).getPrice();
+                    int price = (int) priceDouble;
+                    int quantity = cartResponseArrayList.get(position).getQty();
+                    int productPrice = price * quantity;
+                    CartActivity.totalAmount = CartActivity.totalAmount - productPrice;
                 }
             }
         });
@@ -174,7 +189,6 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
 
                         })
                         .show();
-
             }
         });
 
@@ -191,7 +205,6 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                 .density;
         return Math.round((float) dp * density);
     }
-
 
     public void updateCartProductOffline(final OfflineCartProduct offlineCartProduct, final String type) {
         class AddCartProductOffline extends AsyncTask<Void, Void, String> {

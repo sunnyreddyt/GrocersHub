@@ -10,9 +10,36 @@ public class CartResponse {
     private int qty;
     private String name;
     private double price;
+    private double finalPrice;
     private String image;
     private String product_type;
     private String quote_id;
+    private String default_title;
+    private String parentSkuID;
+
+    public String getParentSkuID() {
+        return parentSkuID;
+    }
+
+    public void setParentSkuID(String parentSkuID) {
+        this.parentSkuID = parentSkuID;
+    }
+
+    public String getDefault_title() {
+        return default_title;
+    }
+
+    public void setDefault_title(String default_title) {
+        this.default_title = default_title;
+    }
+
+    public double getFinalPrice() {
+        return finalPrice;
+    }
+
+    public void setFinalPrice(double finalPrice) {
+        this.finalPrice = finalPrice;
+    }
 
     public ArrayList<CartResponse> getItems() {
         return items;

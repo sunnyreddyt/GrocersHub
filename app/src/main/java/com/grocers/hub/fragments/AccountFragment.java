@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,21 +22,27 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.CartActivity;
 import com.grocers.hub.EditProfileActivity;
 import com.grocers.hub.LoginActivity;
 import com.grocers.hub.MainActivity;
 import com.grocers.hub.OrderHistoryActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.SplashActivity;
+import com.grocers.hub.adapters.CartProductsAdapter;
 import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.database.DatabaseClient;
+import com.grocers.hub.database.entities.OfflineCartProduct;
+import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.LocationsModel;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -114,15 +121,7 @@ public class AccountFragment extends Fragment implements ItemClickListener {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
-                                shared.clearPreferences();
-                                Toast.makeText(getActivity(), "Signout Successful", Toast.LENGTH_SHORT).show();
-                                shared.setCity("Hyderabad");
-                                shared.setZipCode("500081");
-                                Intent intent = new Intent(getActivity(), MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-
+                                clearOfflineCart();
                             }
 
                         })
@@ -237,4 +236,35 @@ public class AccountFragment extends Fragment implements ItemClickListener {
             selectedLocation.setText(shared.getCity().substring(0, 1).toUpperCase() + shared.getCity().substring(1, shared.getCity().toString().length()));
         }
     }
+
+    public void clearOfflineCart() {
+        class ClearCartProductOffline extends AsyncTask<Void, Void, String> {
+            @Override
+            protected String doInBackground(Void... voids) {
+
+                DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .truncate();
+
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String str) {
+                super.onPostExecute(str);
+
+                shared.clearPreferences();
+                Toast.makeText(getActivity(), "Signout Successful", Toast.LENGTH_SHORT).show();
+                shared.setCity("Hyderabad");
+                shared.setZipCode("500081");
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        }
+        new ClearCartProductOffline().execute();
+    }
+
 }

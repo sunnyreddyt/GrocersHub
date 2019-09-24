@@ -71,6 +71,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
     private ImageView[] dots;
     ViewPagerAdapter viewPagerAdapter;
     Dialog citiesDialog;
+    HomeAdapter homeAdapter;
     ArrayList<CartResponse> cartResponseArrayList = new ArrayList<>();
 
     @Nullable
@@ -223,7 +224,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
 
                     LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
                     homeRecyclerView.setLayoutManager(mLayoutManager1);
-                    HomeAdapter homeAdapter = new HomeAdapter(getActivity(), response.body().getCategoryProducts(), cartResponseArrayList);
+                    homeAdapter = new HomeAdapter(getActivity(), response.body().getCategoryProducts(), cartResponseArrayList);
                     homeRecyclerView.setAdapter(homeAdapter);
                     homeAdapter.setCartListener(HomeFragment.this);
 
