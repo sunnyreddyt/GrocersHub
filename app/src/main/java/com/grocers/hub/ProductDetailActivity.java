@@ -53,11 +53,11 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     RecyclerView productImagesRecyclerView, productUnitsRecyclerView, similarProductsRecyclerView;
     ProductImagesListAdapter productImagesListAdapter;
     ProductsUnitsAdapter productsUnitsAdapter;
-    RelativeLayout cartLayout;
+    RelativeLayout cartLayout, discountLayout;
     LinearLayout productUnitsLayout, similarProductsLayout;
     ImageView backImageView, productImageView;
     String skuID = "", childSkuID = "";
-    TextView productNameTextView, productOriginalPriceTextView, stockQuantityTextView, productPriceTextView, cartTextView, cartCountTextView, noSimilarProductsTextView;
+    TextView productNameTextView, discountTextView, productOriginalPriceTextView, stockQuantityTextView, productPriceTextView, cartTextView, cartCountTextView, noSimilarProductsTextView;
     ProductDetailsResponse productDetailsResponse;
     Context context;
     Shared shared;
@@ -66,6 +66,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     int activityCount = 0, productOptionValue = 0, productQuantityAvailability = 0;
     public static int selectedUnitPosition = 0;
     List<OfflineCartProduct> offlineCartProductArrayList;
+    String productImageUrl = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +75,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         ghUtil = GHUtil.getInstance(ProductDetailActivity.this);
         shared = new Shared(ProductDetailActivity.this);
         cartCountTextView = (TextView) findViewById(R.id.cartCountTextView);
+        discountLayout = (RelativeLayout) findViewById(R.id.discountLayout);
         similarProductsLayout = (LinearLayout) findViewById(R.id.similarProductsLayout);
         backImageView = (ImageView) findViewById(R.id.backImageView);
         productOriginalPriceTextView = (TextView) findViewById(R.id.productOriginalPriceTextView);
@@ -84,6 +86,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         similarProductsRecyclerView = (RecyclerView) findViewById(R.id.similarProductsRecyclerView);
         context = ProductDetailActivity.this;
         productPriceTextView = (TextView) findViewById(R.id.productPriceTextView);
+        discountTextView = (TextView) findViewById(R.id.discountTextView);
         cartTextView = (TextView) findViewById(R.id.cartTextView);
         productNameTextView = (TextView) findViewById(R.id.productNameTextView);
         stockQuantityTextView = (TextView) findViewById(R.id.stockQuantityTextView);
@@ -149,7 +152,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                         offlineCartProduct.setQty(1);
                         offlineCartProduct.setName(productDetailsResponse.getData().getName());
                         offlineCartProduct.setProduct_type(productDetailsResponse.getData().getType_id());
-                        offlineCartProduct.setImage(productDetailsResponse.getData().getImage());
+                        offlineCartProduct.setImage(productImageUrl);
 
                         addCartProductOffline(offlineCartProduct);
                         // }
@@ -194,6 +197,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
                         if (productDetailsResponse.getMedia_gallery_entries().size() > 0) {
                             Picasso.get().load(Constants.PRODUCT_IMAGE__BASE_URL + productDetailsResponse.getMedia_gallery_entries().get(0).getFile()).into(productImageView);
+                            productImageUrl = Constants.PRODUCT_IMAGE__BASE_URL + productDetailsResponse.getMedia_gallery_entries().get(0).getFile();
                         }
                         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
                         productImagesRecyclerView.setLayoutManager(mLayoutManager);
@@ -209,8 +213,20 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                             int priceInt = (int) priceDouble;
                             if (priceInt == productDetailsResponse.getData().getFinalPrice()) {
                                 productOriginalPriceTextView.setVisibility(View.GONE);
+                                discountLayout.setVisibility(View.GONE);
                             } else {
                                 productOriginalPriceTextView.setVisibility(View.VISIBLE);
+
+                                int originalPrice = priceInt;
+                                if (originalPrice > 0) {
+                                    int finalPrice = productDetailsResponse.getData().getFinal_price();
+                                    int decreaseAmount = originalPrice - finalPrice;
+                                    int discount = (decreaseAmount / originalPrice) * 100;
+                                    if (discount > 0) {
+                                        discountLayout.setVisibility(View.VISIBLE);
+                                        discountTextView.setText(String.valueOf(discount) + "% off");
+                                    }
+                                }
                             }
 
                             productQuantityAvailability = productDetailsResponse.getOptions().get(0).getQty();
@@ -231,8 +247,20 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                             int priceInt = (int) priceDouble;
                             if (priceInt == productDetailsResponse.getData().getFinal_price()) {
                                 productOriginalPriceTextView.setVisibility(View.GONE);
+                                discountLayout.setVisibility(View.GONE);
                             } else {
                                 productOriginalPriceTextView.setVisibility(View.VISIBLE);
+
+                                int originalPrice = priceInt;
+                                if (originalPrice > 0) {
+                                    int finalPrice = productDetailsResponse.getData().getFinal_price();
+                                    int decreaseAmount = originalPrice - finalPrice;
+                                    int discount = (decreaseAmount / originalPrice) * 100;
+                                    if (discount > 0) {
+                                        discountLayout.setVisibility(View.VISIBLE);
+                                        discountTextView.setText(String.valueOf(discount) + "% off");
+                                    }
+                                }
                             }
 
                             productQuantityAvailability = productDetailsResponse.getQty();
@@ -479,8 +507,20 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         int priceInt = (int) priceDouble;
         if (priceInt == productDetailsResponse.getData().getFinalPrice()) {
             productOriginalPriceTextView.setVisibility(View.GONE);
+            discountLayout.setVisibility(View.GONE);
         } else {
             productOriginalPriceTextView.setVisibility(View.VISIBLE);
+
+            int originalPrice = priceInt;
+            if (originalPrice > 0) {
+                int finalPrice = productDetailsResponse.getData().getFinal_price();
+                int decreaseAmount = originalPrice - finalPrice;
+                int discount = (decreaseAmount / originalPrice) * 100;
+                if (discount > 0) {
+                    discountLayout.setVisibility(View.VISIBLE);
+                    discountTextView.setText(String.valueOf(discount) + "% off");
+                }
+            }
         }
 
         productQuantityAvailability = productDetailsResponse.getOptions().get(position).getQty();

@@ -22,34 +22,27 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.grocers.hub.CartActivity;
 import com.grocers.hub.EditProfileActivity;
 import com.grocers.hub.LoginActivity;
 import com.grocers.hub.MainActivity;
 import com.grocers.hub.OrderHistoryActivity;
 import com.grocers.hub.R;
-import com.grocers.hub.SplashActivity;
-import com.grocers.hub.adapters.CartProductsAdapter;
 import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.database.DatabaseClient;
-import com.grocers.hub.database.entities.OfflineCartProduct;
-import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.LocationsModel;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.view.View.GONE;
-
 
 /**
  * Created by ctel-cpu-84 on 2/8/2018.
@@ -88,7 +81,6 @@ public class AccountFragment extends Fragment implements ItemClickListener {
         logoutLayout = (RelativeLayout) view.findViewById(R.id.logoutLayout);
         context = getActivity();
         shared = new Shared(getActivity());
-
 
         changeLocationTextView.setOnClickListener(new View.OnClickListener() {
             @Override

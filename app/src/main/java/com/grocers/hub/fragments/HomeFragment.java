@@ -3,6 +3,7 @@ package com.grocers.hub.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.grocers.hub.CartActivity;
-import com.grocers.hub.ProductDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.ViewPagerAdapter;
 import com.grocers.hub.adapters.CategoriesListAdapter;
@@ -34,6 +34,8 @@ import com.grocers.hub.adapters.OfferProductsListAdapter;
 import com.grocers.hub.adapters.OnCartChangeListener;
 import com.grocers.hub.adapters.OnCategoryClickListener;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.database.DatabaseClient;
+import com.grocers.hub.database.entities.OfflineCartProduct;
 import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.HomeResponse;
@@ -43,6 +45,7 @@ import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -73,6 +76,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
     Dialog citiesDialog;
     HomeAdapter homeAdapter;
     ArrayList<CartResponse> cartResponseArrayList = new ArrayList<>();
+    private ArrayList<HomeResponse> homeResponseArrayList = new ArrayList<HomeResponse>();
 
     @Nullable
     @Override
@@ -188,11 +192,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
 
                     ghUtil.setcategoryModel(response.body());
 
-                    if (shared.getUserID().length() > 0) {
-                        getCartProductsServiceCall();
-                    } else {
-                        getHomeDetailsServiceCall();
-                    }
+                    getHomeDetailsServiceCall();
 
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -222,11 +222,9 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
                     viewPager.setAdapter(viewPagerAdapter);
                     setUpViewPager();
 
-                    LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-                    homeRecyclerView.setLayoutManager(mLayoutManager1);
-                    homeAdapter = new HomeAdapter(getActivity(), response.body().getCategoryProducts(), cartResponseArrayList);
-                    homeRecyclerView.setAdapter(homeAdapter);
-                    homeAdapter.setCartListener(HomeFragment.this);
+                    homeResponseArrayList = response.body().getCategoryProducts();
+
+                    getCartProductsOffline();
 
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -338,7 +336,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
         categoriesListAdapter.notifyDataSetChanged();
     }
 
-    public void getCartProductsServiceCall() {
+    /*public void getCartProductsServiceCall() {
         ghUtil.showDialog(getActivity());
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
@@ -372,10 +370,67 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
                 //  Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
     @Override
     public void onCartChange(int count) {
         cartCountTextView.setText(String.valueOf(count));
+    }
+
+    public void updateCartCount(int cartCount) {
+        cartCountTextView.setText(String.valueOf(cartCount));
+    }
+
+    public void getCartProductsOffline() {
+        class GetCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
+            @Override
+            protected List<OfflineCartProduct> doInBackground(Void... voids) {
+
+                List<OfflineCartProduct> offlineCartProductArrayList = new ArrayList<OfflineCartProduct>();
+                offlineCartProductArrayList = DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .getAllProducts();
+
+                return offlineCartProductArrayList;
+            }
+
+            @Override
+            protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
+                super.onPostExecute(offlineCartProductList);
+
+                int cartCount = offlineCartProductList.size();
+                if (cartCount > 0) {
+                    cartCountTextView.setText(String.valueOf(cartCount));
+                } else {
+                    cartCountTextView.setText("0");
+                }
+
+                for (int p = 0; p < homeResponseArrayList.size(); p++) {
+                    for (int k = 0; k < homeResponseArrayList.get(p).getProducts().size(); k++) {
+                        for (int q = 0; q < offlineCartProductList.size(); q++) {
+                            if (homeResponseArrayList.get(p).getProducts().get(k).getOptions() != null && homeResponseArrayList.get(p).getProducts().get(k).getOptions().size() > 0) {
+                                for (int r = 0; r < homeResponseArrayList.get(p).getProducts().get(k).getOptions().size(); r++) {
+                                    if (offlineCartProductList.get(q).getSkuID().equalsIgnoreCase(homeResponseArrayList.get(p).getProducts().get(k).getOptions().get(r).getSku())) {
+                                        homeResponseArrayList.get(p).getProducts().get(k).getOptions().get(r).setCartQuantity(offlineCartProductList.get(q).getQty());
+                                    }
+                                }
+                            } else if (offlineCartProductList.get(q).getSkuID().equalsIgnoreCase(homeResponseArrayList.get(p).getProducts().get(k).getSku())) {
+                                homeResponseArrayList.get(p).getProducts().get(k).setCartQuantity(offlineCartProductList.get(q).getQty());
+                            }
+                        }
+                    }
+                }
+
+                LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+                homeRecyclerView.setLayoutManager(mLayoutManager1);
+                homeAdapter = new HomeAdapter(getActivity(), homeResponseArrayList, HomeFragment.this);
+                homeRecyclerView.setAdapter(homeAdapter);
+                homeAdapter.setCartListener(HomeFragment.this);
+
+            }
+        }
+        new GetCartProductOffline().execute();
     }
 }

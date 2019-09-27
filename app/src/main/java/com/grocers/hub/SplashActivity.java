@@ -3,10 +3,15 @@ package com.grocers.hub;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LabeledIntent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -33,6 +38,7 @@ import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +51,7 @@ import retrofit2.Response;
 public class SplashActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, PermissionResultCallback, ItemClickListener {
 
     TextView appNameTextView, locationTextView;
-    ImageView locationImageView;
+    ImageView locationImageView, appIconImageView;
     int count = 0;
     ArrayList<String> permissions = new ArrayList<>();
     PermissionUtils permissionUtils;
@@ -113,8 +119,17 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
         permissions.add(android.Manifest.permission.ACCESS_COARSE_LOCATION);
 
         appNameTextView = (TextView) findViewById(R.id.appNameTextView);
+        appIconImageView = (ImageView) findViewById(R.id.appIconImageView);
         locationImageView = (ImageView) findViewById(R.id.locationImageView);
         locationTextView = (TextView) findViewById(R.id.locationTextView);
+
+        appIconImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //openApp();
+
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             permissionUtils.check_permission(permissions, "Allow permissions to have best Experience", 1);
@@ -223,5 +238,36 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void openApp() {
+        Intent emailIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:"));
+        PackageManager pm = getPackageManager();
+
+        List<ResolveInfo> resInfo = pm.queryIntentActivities(emailIntent, 0);
+        if (resInfo.size() > 0) {
+            ResolveInfo ri = resInfo.get(0);
+            // First create an intent with only the package name of the first registered email app
+            // and build a picked based on it
+            Intent intentChooser = pm.getLaunchIntentForPackage(ri.activityInfo.packageName);
+            Intent openInChooser =
+                    Intent.createChooser(intentChooser,
+                            "OpenApp");
+
+            // Then create a list of LabeledIntent for the rest of the registered email apps
+            List<LabeledIntent> intentList = new ArrayList<LabeledIntent>();
+            for (int i = 1; i < resInfo.size(); i++) {
+                // Extract the label and repackage it in a LabeledIntent
+                ri = resInfo.get(i);
+                String packageName = ri.activityInfo.packageName;
+                Intent intent = pm.getLaunchIntentForPackage(packageName);
+                intentList.add(new LabeledIntent(intent, packageName, ri.loadLabel(pm), ri.icon));
+            }
+
+            LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
+            // Add the rest of the email apps to the picker selection
+            openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+            startActivity(openInChooser);
+        }
     }
 }

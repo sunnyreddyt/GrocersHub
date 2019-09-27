@@ -23,24 +23,24 @@ import com.grocers.hub.R;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.database.DatabaseClient;
 import com.grocers.hub.database.entities.OfflineCartProduct;
-import com.grocers.hub.fragments.OffersFragment;
+import com.grocers.hub.fragments.HomeFragment;
 import com.grocers.hub.models.HomeResponse;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProductsListAdapter.MyViewHolder> {
+public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductListAdapter.MyViewHolder> {
 
     private Context mContext;
     ArrayList<HomeResponse> homeResponseArrayList;
     Shared shared;
     int parentPosition;
     ArrayList<String> productOptions = new ArrayList<String>();
-    OffersFragment fragment;
+    HomeFragment fragment;
 
-    public OfferProductsListAdapter(Context mContext,
-                                    ArrayList<HomeResponse> homeResponseArrayList, int parentPosition, OffersFragment fragment) {
+    public HomeProductListAdapter(Context mContext,
+                                  ArrayList<HomeResponse> homeResponseArrayList, int parentPosition, HomeFragment fragment) {
         this.mContext = mContext;
         this.homeResponseArrayList = homeResponseArrayList;
         this.shared = new Shared(mContext);
@@ -54,7 +54,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
         Spinner optionsSpinner;
         ImageView productImageView;
         RelativeLayout optionsLayout, cartAddLayout, discountLayout;
-        TextView productNameTextView, offerCostTextView, discountTextView, addTextView, costTextView, minusTextView, countTextView, plusTextView;
+        TextView productNameTextView, discountTextView, offerCostTextView, addTextView, costTextView, minusTextView, countTextView, plusTextView;
 
         public MyViewHolder(View view) {
             super(view);
@@ -68,27 +68,27 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
             optionsSpinner = (Spinner) view.findViewById(R.id.optionsSpinner);
             optionsLayout = (RelativeLayout) view.findViewById(R.id.optionsLayout);
             costTextView = (TextView) view.findViewById(R.id.costTextView);
+            discountLayout = (RelativeLayout) view.findViewById(R.id.discountLayout);
             addTextView = (TextView) view.findViewById(R.id.addTextView);
             cartAddLayout = (RelativeLayout) view.findViewById(R.id.cartAddLayout);
             minusTextView = (TextView) view.findViewById(R.id.minusTextView);
+            discountTextView = (TextView) view.findViewById(R.id.discountTextView);
             countTextView = (TextView) view.findViewById(R.id.countTextView);
             plusTextView = (TextView) view.findViewById(R.id.plusTextView);
             cartCountLayout = (LinearLayout) view.findViewById(R.id.cartCountLayout);
-            discountTextView = (TextView) view.findViewById(R.id.discountTextView);
-            discountLayout = (RelativeLayout) view.findViewById(R.id.discountLayout);
         }
     }
 
     @Override
-    public OfferProductsListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HomeProductListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.offer_products_list_item, parent, false);
 
-        return new OfferProductsListAdapter.MyViewHolder(itemView);
+        return new HomeProductListAdapter.MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final OfferProductsListAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final HomeProductListAdapter.MyViewHolder holder, final int position) {
 
         Picasso.get().load(homeResponseArrayList.get(position).getImage()).into(holder.productImageView);
         holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getFinalPrice()));
@@ -110,6 +110,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                     holder.discountTextView.setText(String.valueOf(discount) + "% off");
                 }
             }
+
         }
 
         /*for (int g = 0; g < HomeAdapter.cartResponseArrayList.size(); g++) {
@@ -208,7 +209,6 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                         holder.discountLayout.setVisibility(View.VISIBLE);
                     } else {
                         holder.costTextView.setVisibility(View.VISIBLE);
-
                         int originalPrice = priceInt;
                         if (originalPrice > 0) {
                             int finalPrice = homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice();
@@ -359,7 +359,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
             protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
                 super.onPostExecute(offlineCartProductList);
                 Toast.makeText(mContext, "Added to Cart", Toast.LENGTH_SHORT).show();
-                // fragment.updateCartCount(offlineCartProductList.size());
+                fragment.updateCartCount(offlineCartProductList.size());
             }
         }
         new AddCartProductOffline().execute();
@@ -404,10 +404,11 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
             @Override
             protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
                 super.onPostExecute(offlineCartProductList);
-                // fragment.updateCartCount(offlineCartProductList.size());
+                fragment.updateCartCount(offlineCartProductList.size());
             }
         }
         new AddCartProductOffline().execute();
     }
 
 }
+

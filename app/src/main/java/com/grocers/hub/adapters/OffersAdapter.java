@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,14 +12,13 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.grocers.hub.CategoryProductsActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.fragments.HomeFragment;
+import com.grocers.hub.fragments.OffersFragment;
 import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
-import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.HomeResponse;
 import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.network.APIInterface;
@@ -33,32 +31,32 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> implements OnOfferProductClickListener {
+public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.MyViewHolder> implements OnOfferProductClickListener {
 
     private Context mContext;
     ItemClickListener itemClickListener;
     private ArrayList<HomeResponse> categoryProducts;
-    ArrayList<HomeProductListAdapter> homeProductListAdapterArrayList = new ArrayList<HomeProductListAdapter>();
-    HomeProductListAdapter homeProductListAdapter;
+    ArrayList<OfferProductsListAdapter> offerProductsListAdapterArrayList = new ArrayList<OfferProductsListAdapter>();
+    OfferProductsListAdapter offerProductsListAdapter;
     GHUtil ghUtil;
     String quoteID;
     int parentPosition, productPosition;
     Shared shared;
-    //public static ArrayList<CartResponse> cartResponseArrayList;
+    // public static ArrayList<CartResponse> cartResponseArrayList;
     OnCartChangeListener onCartChangeListener;
-    HomeFragment fragment;
+    OffersFragment fragment;
 
     public void setCartListener(OnCartChangeListener onCartChangeListener) {
         this.onCartChangeListener = onCartChangeListener;
     }
 
-    public HomeAdapter(Context mContext,
-                       ArrayList<HomeResponse> categoryProducts, HomeFragment fragment) {
+    public OffersAdapter(Context mContext,
+                         ArrayList<HomeResponse> categoryProducts, OffersFragment fragment) {
         this.mContext = mContext;
         ghUtil = GHUtil.getInstance(mContext);
         this.categoryProducts = categoryProducts;
         shared = new Shared(mContext);
-        // this.cartResponseArrayList = cartResponseArrayList;
+        //this.cartResponseArrayList = cartResponseArrayList;
         this.fragment = fragment;
     }
 
@@ -71,7 +69,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         this.parentPosition = parentPosition;
         this.productPosition = productPosition;
         Log.v("positions", String.valueOf(parentPosition) + String.valueOf(productPosition));
-        // getQuoteIDServiceCall();
+        //getQuoteIDServiceCall();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -89,24 +87,24 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
     }
 
     @Override
-    public HomeAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public OffersAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.home_list_item, parent, false);
 
-        return new HomeAdapter.MyViewHolder(itemView);
+        return new OffersAdapter.MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final HomeAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final OffersAdapter.MyViewHolder holder, final int position) {
 
         holder.categoryNameTextView.setText(categoryProducts.get(position).getName());
 
         LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         holder.productsRecyclerView.setLayoutManager(mLayoutManager1);
-        homeProductListAdapter = new HomeProductListAdapter(mContext, categoryProducts.get(position).getProducts(), position, fragment);
-        holder.productsRecyclerView.setAdapter(homeProductListAdapter);
-        homeProductListAdapterArrayList.add(homeProductListAdapter);
-        //offerProductsListAdapter.setClickListener(HomeAdapter.this);
+        offerProductsListAdapter = new OfferProductsListAdapter(mContext, categoryProducts.get(position).getProducts(), position, fragment);
+        holder.productsRecyclerView.setAdapter(offerProductsListAdapter);
+        offerProductsListAdapterArrayList.add(offerProductsListAdapter);
+        //offerProductsListAdapter.setClickListener(OffersAdapter.this);
 
     }
 
@@ -123,7 +121,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
                 if (response.code() == 200) {
                     cartResponseArrayList = response.body().getItems();
-                    homeProductListAdapterArrayList.get(parentPosition).notifyItemChanged(productPosition);
+                    offerProductsListAdapterArrayList.get(parentPosition).notifyItemChanged(productPosition);
                     if (onCartChangeListener != null) {
                         onCartChangeListener.onCartChange(response.body().getItems().size());
                     }
@@ -193,3 +191,4 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
     }*/
 
 }
+

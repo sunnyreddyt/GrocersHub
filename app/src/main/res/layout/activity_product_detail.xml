@@ -201,22 +201,23 @@
                     android:src="#989898" />
 
                 <RelativeLayout
-                    android:layout_width="@dimen/_22sdp"
-                    android:layout_height="@dimen/_22sdp"
+                    android:layout_width="@dimen/_21sdp"
+                    android:layout_height="@dimen/_21sdp"
                     android:layout_alignParentLeft="true"
                     android:layout_margin="@dimen/_2sdp"
+                    android:id="@+id/discountLayout"
                     android:background="@drawable/circle_filled_red"
                     android:visibility="gone">
 
                     <TextView
-                        android:id="@+id/categoryImageView"
-                        android:layout_width="@dimen/_22sdp"
-                        android:layout_height="@dimen/_22sdp"
+                        android:id="@+id/discountTextView"
+                        android:layout_width="@dimen/_21sdp"
+                        android:layout_height="@dimen/_21sdp"
                         android:layout_centerInParent="true"
                         android:gravity="center"
                         android:text="20%"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_8sdp"
+                        android:textSize="@dimen/_7sdp"
                         android:visibility="gone" />
 
                 </RelativeLayout>

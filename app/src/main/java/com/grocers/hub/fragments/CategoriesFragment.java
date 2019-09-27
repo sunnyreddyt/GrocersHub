@@ -1,6 +1,8 @@
 package com.grocers.hub.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +22,11 @@ import com.grocers.hub.CartActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.AllCategoriesListAdapter;
 import com.grocers.hub.adapters.CategoriesListAdapter;
+import com.grocers.hub.adapters.HomeAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.database.DatabaseClient;
+import com.grocers.hub.database.entities.OfflineCartProduct;
 import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.network.APIInterface;
@@ -29,6 +34,7 @@ import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,6 +53,7 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
     TextView cartCountTextView;
     RelativeLayout cartLayout;
     Shared shared;
+    Context context;
     ArrayList<CartResponse> cartResponseArrayList = new ArrayList<>();
 
     @Nullable
@@ -78,6 +85,7 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
         cartLayout = (RelativeLayout) view.findViewById(R.id.cartLayout);
         cartCountTextView = (TextView) view.findViewById(R.id.cartCountTextView);
         shared = new Shared(getActivity());
+        context = getActivity();
         ghUtil = GHUtil.getInstance(getActivity());
         /*// categories ArrayList
         categoryModelArrayList = new ArrayList<CategoryModel>();
@@ -135,9 +143,7 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
                     categoriesRecyclerView.setAdapter(allCategoriesListAdapter);
                     allCategoriesListAdapter.setClickListener(CategoriesFragment.this);
                 }
-                if (shared.getUserID().length() > 0) {
-                    getCartProductsServiceCall();
-                }
+                getCartProductsOffline();
             }
 
             @Override
@@ -148,34 +154,35 @@ public class CategoriesFragment extends Fragment implements ItemClickListener {
         });
     }
 
-    public void getCartProductsServiceCall() {
-        ghUtil.showDialog(getActivity());
-        APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
-        loginResponseCall.enqueue(new Callback<CartResponse>() {
+    public void getCartProductsOffline() {
+        class GetCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
             @Override
-            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
-                ghUtil.dismissDialog();
-                cartResponseArrayList = new ArrayList<CartResponse>();
-                if (response.code() == 200) {
+            protected List<OfflineCartProduct> doInBackground(Void... voids) {
 
-                    int cartCount = response.body().getItems().size();
-                    if (cartCount > 0) {
-                        cartResponseArrayList = response.body().getItems();
-                        cartCountTextView.setText(String.valueOf(cartCount));
-                    } else {
-                        cartCountTextView.setText("0");
-                    }
+                List<OfflineCartProduct> offlineCartProductArrayList = new ArrayList<OfflineCartProduct>();
+                offlineCartProductArrayList = DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .getAllProducts();
+
+                return offlineCartProductArrayList;
+            }
+
+            @Override
+            protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
+                super.onPostExecute(offlineCartProductList);
+
+                int cartCount = offlineCartProductList.size();
+                if (cartCount > 0) {
+                    cartCountTextView.setText(String.valueOf(cartCount));
+                } else {
+                    cartCountTextView.setText("0");
                 }
-            }
 
-            @Override
-            public void onFailure(Call<CartResponse> call, Throwable t) {
-                cartCountTextView.setText("0");
-                ghUtil.dismissDialog();
-                cartResponseArrayList = new ArrayList<CartResponse>();
             }
-        });
+        }
+        new GetCartProductOffline().execute();
     }
 
 }
