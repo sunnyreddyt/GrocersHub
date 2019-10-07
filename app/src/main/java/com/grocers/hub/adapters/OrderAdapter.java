@@ -1,15 +1,18 @@
 package com.grocers.hub.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.OrderDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.models.OrdersResponse;
 
@@ -28,16 +31,17 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout itemLayout;
-        TextView orderIDTextView, orderAmountTextView;
+        RelativeLayout orderLayout;
+        TextView orderIDTextView, orderAmountTextView, productsHeadingTextView;
         RecyclerView productsRecyclerView;
 
         public MyViewHolder(View view) {
             super(view);
-            itemLayout = (LinearLayout) view.findViewById(R.id.itemLayout);
+            orderLayout = (RelativeLayout) view.findViewById(R.id.orderLayout);
             orderIDTextView = (TextView) view.findViewById(R.id.orderIDTextView);
             orderAmountTextView = (TextView) view.findViewById(R.id.orderAmountTextView);
             productsRecyclerView = (RecyclerView) view.findViewById(R.id.productsRecyclerView);
+            productsHeadingTextView = (TextView) view.findViewById(R.id.productsHeadingTextView);
         }
     }
 
@@ -57,10 +61,29 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
         int totalAmount = (int) totalAmountDouble;
         holder.orderAmountTextView.setText("₹ " + totalAmount);
 
-        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+        final LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         holder.productsRecyclerView.setLayoutManager(mLayoutManager1);
-        OrderItemsAdapter orderItemsAdapter = new OrderItemsAdapter(mContext, ordersResponseArrayList.get(position).getItems());
+        OrderItemsAdapter orderItemsAdapter = new OrderItemsAdapter(mContext, ordersResponseArrayList.get(position).getItems(), ordersResponseArrayList.get(position).getOrderId());
         holder.productsRecyclerView.setAdapter(orderItemsAdapter);
+
+        holder.orderLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, OrderDetailActivity.class);
+                intent.putExtra("orderID", ordersResponseArrayList.get(position).getOrderId());
+                mContext.startActivity(intent);
+            }
+        });
+
+        holder.productsHeadingTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, OrderDetailActivity.class);
+                intent.putExtra("orderID", ordersResponseArrayList.get(position).getOrderId());
+                mContext.startActivity(intent);
+            }
+        });
+
     }
 
     @Override

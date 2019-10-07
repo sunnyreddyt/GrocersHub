@@ -1,6 +1,7 @@
 package com.grocers.hub.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.OrderDetailActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.constants.Constants;
 import com.grocers.hub.constants.Shared;
@@ -24,12 +26,14 @@ public class OrderItemsAdapter extends RecyclerView.Adapter<OrderItemsAdapter.My
     private Context mContext;
     ArrayList<OrdersResponse> ordersResponseArrayList;
     Shared shared;
+    String orderID;
 
     public OrderItemsAdapter(Context mContext,
-                             ArrayList<OrdersResponse> ordersResponseArrayList) {
+                             ArrayList<OrdersResponse> ordersResponseArrayList, String orderID) {
         this.mContext = mContext;
         this.ordersResponseArrayList = ordersResponseArrayList;
         this.shared = new Shared(mContext);
+        this.orderID = orderID;
     }
 
 
@@ -64,6 +68,14 @@ public class OrderItemsAdapter extends RecyclerView.Adapter<OrderItemsAdapter.My
         holder.offerCostTextView.setText("₹ " + String.valueOf(ordersResponseArrayList.get(position).getPrice()));
         holder.productNameTextView.setText(String.valueOf(ordersResponseArrayList.get(position).getName()));
 
+        holder.itemLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, OrderDetailActivity.class);
+                intent.putExtra("orderID", orderID);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

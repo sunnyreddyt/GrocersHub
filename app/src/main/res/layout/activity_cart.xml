@@ -86,8 +86,8 @@
         android:id="@+id/cartRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/paymentTextView"
         android:layout_below="@+id/topLayout"
+        android:layout_above="@+id/checkoutLayout"
         android:layout_marginLeft="@dimen/_6sdp"
         android:layout_marginRight="@dimen/_6sdp"
         android:visibility="visible"></androidx.recyclerview.widget.RecyclerView>
@@ -97,7 +97,6 @@
         android:id="@+id/noDataTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/paymentTextView"
         android:layout_below="@+id/topLayout"
         android:layout_marginLeft="@dimen/_8sdp"
         android:layout_marginRight="@dimen/_8sdp"

@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -156,8 +155,8 @@ public class OffersFragment extends Fragment {
                     }
                 }
 
-//                LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-                homeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+                homeRecyclerView.setLayoutManager(mLayoutManager1);
                 OffersAdapter homeAdapter = new OffersAdapter(getActivity(), homeResponseArrayList, OffersFragment.this);
                 homeRecyclerView.setAdapter(homeAdapter);
             }

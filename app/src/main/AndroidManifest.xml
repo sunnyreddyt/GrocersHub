@@ -88,6 +88,9 @@
             android:name=".OrderHistoryActivity"
             android:screenOrientation="portrait"></activity>
 
+        <activity android:name=".OrderDetailActivity"
+            android:screenOrientation="portrait"></activity>
+
     </application>
 
 </manifest>

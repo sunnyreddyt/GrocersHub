@@ -5,6 +5,7 @@
     android:layout_gravity="center_horizontal"
     android:background="@color/background_color"
     android:gravity="center"
+    android:id="@+id/orderLayout"
     android:orientation="vertical">
 
     <LinearLayout
@@ -18,7 +19,6 @@
         android:paddingBottom="@dimen/_12sdp">
 
         <LinearLayout
-            android:id="@+id/itemLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_15sdp"
@@ -93,6 +93,7 @@
             android:fontFamily="@font/roboto_medium"
             android:paddingLeft="@dimen/_15sdp"
             android:text="Products:"
+            android:id="@+id/productsHeadingTextView"
             android:textColor="@color/black"
             android:textSize="@dimen/_11sdp" />
 
@@ -100,8 +101,8 @@
             android:id="@+id/productsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginLeft="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginRight="@dimen/_15sdp">
 
         </androidx.recyclerview.widget.RecyclerView>

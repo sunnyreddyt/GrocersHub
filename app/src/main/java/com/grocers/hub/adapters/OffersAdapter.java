@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -99,8 +100,8 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.MyViewHold
 
         holder.categoryNameTextView.setText(categoryProducts.get(position).getName());
 
-        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
-        holder.productsRecyclerView.setLayoutManager(mLayoutManager1);
+//        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+        holder.productsRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         offerProductsListAdapter = new OfferProductsListAdapter(mContext, categoryProducts.get(position).getProducts(), position, fragment);
         holder.productsRecyclerView.setAdapter(offerProductsListAdapter);
         offerProductsListAdapterArrayList.add(offerProductsListAdapter);

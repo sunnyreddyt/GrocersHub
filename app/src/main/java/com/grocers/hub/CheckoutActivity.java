@@ -49,7 +49,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     ImageView backImageView;
     RecyclerView paymentMethodsRecyclerView, productsRecyclerView;
     GHUtil ghUtil;
-    TextView orderTextView, couponMessageTextView, discountTextView, shippingTextView, taxTextView, grandTotalTextView, applyCouponTextView;
+    TextView orderTextView, couponMessageTextView, subTotalTextView, discountTextView, shippingTextView, taxTextView, grandTotalTextView, applyCouponTextView;
     Context context;
     Shared shared;
     String quoteID = "";
@@ -80,6 +80,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         applyCouponTextView = (TextView) findViewById(R.id.applyCouponTextView);
         taxTextView = (TextView) findViewById(R.id.taxTextView);
         grandTotalTextView = (TextView) findViewById(R.id.grandTotalTextView);
+        subTotalTextView = (TextView) findViewById(R.id.subTotalTextView);
         couponMessageTextView = (TextView) findViewById(R.id.couponMessageTextView);
 
         Intent intent = getIntent();
@@ -100,6 +101,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         OrderProductsAdapter orderProductsAdapter = new OrderProductsAdapter(CheckoutActivity.this, shippingResponse.getTotals().getItems());
         productsRecyclerView.setAdapter(orderProductsAdapter);
 
+        subTotalTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getBase_subtotal()));
         discountTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getDiscount_amount()));
         shippingTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getBase_shipping_amount()));
         taxTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getTax_amount()));

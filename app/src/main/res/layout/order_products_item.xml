@@ -19,8 +19,8 @@
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_50sdp"
             android:layout_centerInParent="true"
-            android:background="#989898"
-            android:src="#989898" />
+            android:background="#CECDCD"
+            android:src="#CFCFCF" />
 
         <LinearLayout
             android:layout_width="match_parent"
