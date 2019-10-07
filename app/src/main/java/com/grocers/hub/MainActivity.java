@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-
-            homeImageView.setImageResource(R.drawable.ic_home);
+            loadHomeFragment();
+           /* homeImageView.setImageResource(R.drawable.ic_home);
             searchImageView.setImageResource(R.drawable.ic_search_black);
             categoriesImageView.setImageResource(R.drawable.ic_categories_black);
             offersImageView.setImageResource(R.drawable.ic_offers_black);
@@ -72,8 +72,7 @@ public class MainActivity extends AppCompatActivity {
             FragmentTransaction ft = fm.beginTransaction();
             ft.replace(R.id.mainFramelayout, fragment);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ft.commitAllowingStateLoss();
-
+            ft.commitAllowingStateLoss();*/
 
         }
 
@@ -113,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                fragment = new HomeFragment();
+                loadHomeFragment();
+                /*fragment = new HomeFragment();
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.mainFramelayout, fragment);
@@ -131,8 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 searchTextview.setTextColor(Color.parseColor("#000000"));
                 categoriesTextview.setTextColor(Color.parseColor("#000000"));
                 offersTextView.setTextColor(Color.parseColor("#000000"));
-                accountTextview.setTextColor(Color.parseColor("#000000"));
-
+                accountTextview.setTextColor(Color.parseColor("#000000"));*/
 
             }
         });
@@ -160,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
                 offersTextView.setTextColor(Color.parseColor("#000000"));
                 accountTextview.setTextColor(Color.parseColor("#000000"));
 
-
             }
         });
 
@@ -168,14 +166,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
                 fragment = new OffersFragment();
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.mainFramelayout, fragment);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.commitAllowingStateLoss();
-
 
                 homeImageView.setImageResource(R.drawable.ic_home_black);
                 searchImageView.setImageResource(R.drawable.ic_search_black);
@@ -189,14 +185,12 @@ public class MainActivity extends AppCompatActivity {
                 offersTextView.setTextColor(Color.parseColor("#01d365"));
                 accountTextview.setTextColor(Color.parseColor("#000000"));
 
-
             }
         });
 
         accountLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 fragment = new AccountFragment();
                 FragmentManager fm = getSupportFragmentManager();
@@ -218,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
                 offersTextView.setTextColor(Color.parseColor("#000000"));
                 accountTextview.setTextColor(Color.parseColor("#01d365"));
 
-
             }
         });
 
@@ -234,5 +227,26 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
         System.exit(0);
+    }
+
+    public void loadHomeFragment() {
+        fragment = new HomeFragment();
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.mainFramelayout, fragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.commitAllowingStateLoss();
+
+        homeImageView.setImageResource(R.drawable.ic_home);
+        searchImageView.setImageResource(R.drawable.ic_search_black);
+        categoriesImageView.setImageResource(R.drawable.ic_categories_black);
+        offersImageView.setImageResource(R.drawable.ic_offers_black);
+        accountImageView.setImageResource(R.drawable.ic_account_black);
+
+        homeTextview.setTextColor(Color.parseColor("#01d365"));
+        searchTextview.setTextColor(Color.parseColor("#000000"));
+        categoriesTextview.setTextColor(Color.parseColor("#000000"));
+        offersTextView.setTextColor(Color.parseColor("#000000"));
+        accountTextview.setTextColor(Color.parseColor("#000000"));
     }
 }

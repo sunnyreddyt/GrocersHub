@@ -91,20 +91,26 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
     public void onBindViewHolder(final OfferProductsListAdapter.MyViewHolder holder, final int position) {
 
         Picasso.get().load(homeResponseArrayList.get(position).getImage()).into(holder.productImageView);
-        holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getFinalPrice()));
+        int finalPriceInteger = (int) homeResponseArrayList.get(position).getFinalPrice();
+        holder.offerCostTextView.setText("₹ " + String.valueOf(finalPriceInteger));
         holder.productNameTextView.setText(String.valueOf(homeResponseArrayList.get(position).getName()));
-        holder.costTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getPrice()));
+
+        int originalPriceInteger = (int) homeResponseArrayList.get(position).getPrice();
+        holder.costTextView.setText("₹ " + String.valueOf(originalPriceInteger));
         if (homeResponseArrayList.get(position).getPrice() == homeResponseArrayList.get(position).getFinalPrice()) {
             holder.costTextView.setVisibility(View.GONE);
             holder.discountLayout.setVisibility(View.GONE);
         } else {
             holder.costTextView.setVisibility(View.VISIBLE);
 
-            int originalPrice = homeResponseArrayList.get(position).getPrice();
-            if (originalPrice > 0) {
-                int finalPrice = homeResponseArrayList.get(position).getFinalPrice();
-                int decreaseAmount = originalPrice - finalPrice;
-                int discount = (decreaseAmount / originalPrice) * 100;
+            double originalPrice = homeResponseArrayList.get(position).getPrice();
+            int originalPriceInt = (int) originalPrice;
+
+            if (originalPriceInt > 0) {
+                double finalPrice = homeResponseArrayList.get(position).getFinalPrice();
+                int finalPriceInt = (int) finalPrice;
+                int decreaseAmount = originalPriceInt - finalPriceInt;
+                int discount = (decreaseAmount / originalPriceInt) * 100;
                 if (discount > 0) {
                     holder.discountLayout.setVisibility(View.VISIBLE);
                     holder.discountTextView.setText(String.valueOf(discount) + "% off");
@@ -154,7 +160,8 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
 
         productOptions = new ArrayList<String>();
         if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
-            holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice()));
+            int optionalFinalPriceInteger = (int) homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice();
+            holder.offerCostTextView.setText("₹ " + String.valueOf(optionalFinalPriceInteger));
 
             double priceDouble = Double.parseDouble(homeResponseArrayList.get(position).getOptions().get(0).getPrice());
             int priceInt = (int) priceDouble;
@@ -166,8 +173,9 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
 
                 int originalPrice = priceInt;
                 if (originalPrice > 0) {
-                    int finalPrice = homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice();
-                    int decreaseAmount = originalPrice - finalPrice;
+                    double finalPrice = homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice();
+                    int finalPriceInt = (int) finalPrice;
+                    int decreaseAmount = originalPrice - finalPriceInt;
                     int discount = (decreaseAmount / originalPrice) * 100;
                     if (discount > 0) {
                         holder.discountLayout.setVisibility(View.VISIBLE);
@@ -199,20 +207,22 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     Log.v("selected", String.valueOf(i));
-                    holder.offerCostTextView.setText("₹ " + String.valueOf(homeResponseArrayList.get(position).getOptions().get(i).getFinalPrice()));
+                    int finalPriceInteger = (int) homeResponseArrayList.get(position).getOptions().get(i).getFinalPrice();
+                    holder.offerCostTextView.setText("₹ " + String.valueOf(finalPriceInteger));
                     double priceDouble = Double.parseDouble(homeResponseArrayList.get(position).getOptions().get(i).getPrice());
                     int priceInt = (int) priceDouble;
                     holder.costTextView.setText("₹ " + String.valueOf(priceInt));
-                    if (priceInt == homeResponseArrayList.get(position).getOptions().get(position).getFinalPrice()) {
+                    if (priceInt == homeResponseArrayList.get(position).getOptions().get(i).getFinalPrice()) {
                         holder.costTextView.setVisibility(View.GONE);
-                        holder.discountLayout.setVisibility(View.VISIBLE);
+                        holder.discountLayout.setVisibility(View.GONE);
                     } else {
                         holder.costTextView.setVisibility(View.VISIBLE);
 
                         int originalPrice = priceInt;
                         if (originalPrice > 0) {
-                            int finalPrice = homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice();
-                            int decreaseAmount = originalPrice - finalPrice;
+                            double finalPrice = homeResponseArrayList.get(position).getOptions().get(i).getFinalPrice();
+                            int finalPriceInt = (int) finalPrice;
+                            int decreaseAmount = originalPrice - finalPriceInt;
                             int discount = (decreaseAmount / originalPrice) * 100;
                             if (discount > 0) {
                                 holder.discountLayout.setVisibility(View.VISIBLE);
@@ -248,22 +258,32 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
         holder.plusTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int availableQuantity = 0;
 
                 int count = Integer.parseInt(holder.countTextView.getText().toString());
                 count++;
-                holder.countTextView.setText(String.valueOf(count));
 
                 String sku_temp = "";
                 if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
                     sku_temp = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku();
-                    homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(count);
+                    availableQuantity = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
+                    if (availableQuantity >= count) {
+                        homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(count);
+                    }
                 } else {
                     sku_temp = homeResponseArrayList.get(position).getSku();
-                    homeResponseArrayList.get(position).setCartQuantity(count);
+                    availableQuantity = homeResponseArrayList.get(position).getQty();
+                    if (availableQuantity >= count) {
+                        homeResponseArrayList.get(position).setCartQuantity(count);
+                    }
                 }
 
-                updateCartProductOfflineUsingSkuID(sku_temp, count, "update");
-
+                if (availableQuantity >= count) {
+                    updateCartProductOfflineUsingSkuID(sku_temp, count, "update");
+                    holder.countTextView.setText(String.valueOf(count));
+                } else {
+                    Toast.makeText(mContext, "Only " + String.valueOf(count - 1) + " are available in stock", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -298,7 +318,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
         holder.addTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                int availableQuantity = 0;
                 OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
                 if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
                     offlineCartProduct.setProduct_id(Integer.parseInt(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getProduct_id()));
@@ -307,12 +327,18 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                     offlineCartProduct.setPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
                     offlineCartProduct.setDefault_title(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
-                    homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(1);
+                    availableQuantity = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
+                    if (availableQuantity > 0) {
+                        homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(1);
+                    }
                 } else {
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(homeResponseArrayList.get(position).getPrice()));
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getFinalPrice());
-                    homeResponseArrayList.get(position).setCartQuantity(1);
+                    availableQuantity = homeResponseArrayList.get(position).getQty();
+                    if (availableQuantity > 0) {
+                        homeResponseArrayList.get(position).setCartQuantity(1);
+                    }
                 }
                 offlineCartProduct.setQty(1);
                 offlineCartProduct.setParentSkuID(homeResponseArrayList.get(position).getSku());
@@ -320,11 +346,14 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                 offlineCartProduct.setProduct_type(homeResponseArrayList.get(position).getProduct_type());
                 offlineCartProduct.setImage(homeResponseArrayList.get(position).getImage());
 
-                addCartProductOffline(offlineCartProduct);
-
-                holder.cartCountLayout.setVisibility(View.VISIBLE);
-                holder.countTextView.setText(String.valueOf(1));
-                holder.cartAddLayout.setVisibility(View.GONE);
+                if (availableQuantity > 0) {
+                    addCartProductOffline(offlineCartProduct);
+                    holder.cartCountLayout.setVisibility(View.VISIBLE);
+                    holder.countTextView.setText(String.valueOf(1));
+                    holder.cartAddLayout.setVisibility(View.GONE);
+                } else {
+                    Toast.makeText(mContext, "Product is not available in stock to buy", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -375,23 +404,24 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                         .getAppDatabase()
                         .offlineCartDao()
                         .getProductUsingSkuID(skuIDTemp);
-                if (type.equalsIgnoreCase("update")) {
+                if (offlineCartProduct != null) {
+                    if (type.equalsIgnoreCase("update")) {
 
-                    offlineCartProduct.setQty(count);
-                    DatabaseClient
-                            .getInstance(mContext)
-                            .getAppDatabase()
-                            .offlineCartDao()
-                            .update(offlineCartProduct);
+                        offlineCartProduct.setQty(count);
+                        DatabaseClient
+                                .getInstance(mContext)
+                                .getAppDatabase()
+                                .offlineCartDao()
+                                .update(offlineCartProduct);
 
-                } else if (type.equalsIgnoreCase("delete")) {
-                    DatabaseClient
-                            .getInstance(mContext)
-                            .getAppDatabase()
-                            .offlineCartDao()
-                            .delete(offlineCartProduct);
+                    } else if (type.equalsIgnoreCase("delete")) {
+                        DatabaseClient
+                                .getInstance(mContext)
+                                .getAppDatabase()
+                                .offlineCartDao()
+                                .delete(offlineCartProduct);
+                    }
                 }
-
                 List<OfflineCartProduct> offlineCartProduct_temp = DatabaseClient
                         .getInstance(mContext)
                         .getAppDatabase()

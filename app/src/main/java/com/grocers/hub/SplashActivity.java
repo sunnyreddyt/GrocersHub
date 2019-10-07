@@ -127,7 +127,6 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
             @Override
             public void onClick(View v) {
                 //openApp();
-
             }
         });
 
@@ -205,7 +204,6 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
         }
         mainCode();
     }
-
 
     public void getLocations() {
         ghUtil.showDialog(SplashActivity.this);

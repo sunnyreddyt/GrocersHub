@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,7 +65,7 @@ public class OffersFragment extends Fragment {
     public void getHomeDetailsServiceCall() {
         ghUtil.showDialog(getActivity());
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<HomeResponse> loginResponseCall = service.getHomeDetails(shared.getZipCode());
+        Call<HomeResponse> loginResponseCall = service.getOffersDetails(shared.getZipCode());
         loginResponseCall.enqueue(new Callback<HomeResponse>() {
             @Override
             public void onResponse(Call<HomeResponse> call, Response<HomeResponse> response) {
@@ -72,7 +73,6 @@ public class OffersFragment extends Fragment {
                 if (response.code() == 200) {
                     homeResponseArrayList = response.body().getCategoryProducts();
                     getCartProductsOffline();
-
                 } else {
                     // Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -156,11 +156,10 @@ public class OffersFragment extends Fragment {
                     }
                 }
 
-                LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-                homeRecyclerView.setLayoutManager(mLayoutManager1);
+//                LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+                homeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                 OffersAdapter homeAdapter = new OffersAdapter(getActivity(), homeResponseArrayList, OffersFragment.this);
                 homeRecyclerView.setAdapter(homeAdapter);
-
             }
         }
         new GetCartProductOffline().execute();

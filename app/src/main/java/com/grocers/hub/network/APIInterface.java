@@ -9,6 +9,7 @@ import com.grocers.hub.models.CartResponse;
 import com.grocers.hub.models.CategoryModel;
 import com.grocers.hub.models.CouponListResponseModel;
 import com.grocers.hub.models.DeleteCartResponse;
+import com.grocers.hub.models.EditProfileResponse;
 import com.grocers.hub.models.FinalOrderResponse;
 import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
@@ -52,7 +53,7 @@ public interface APIInterface {
 
     @Headers({"Accept: application/json"})
     @POST("homeapi/Updatecustomer?")
-    Call<GeneralResponse> updateProfile(@Query("cusId") String cusId, @Body UpdateProfileRequest updateProfileRequest);
+    Call<EditProfileResponse> updateProfile(@Query("cusId") String cusId, @Body UpdateProfileRequest updateProfileRequest);
 
     @Headers({"Accept: application/json"})
     @GET("homeapi/Customerinfo?")
@@ -65,6 +66,11 @@ public interface APIInterface {
     @Headers({"Accept: application/json"})
     @GET("homeapi?")
     Call<HomeResponse> getHomeDetails(@Query("city") String city);
+
+    @Headers({"Accept: application/json"})
+    @GET("homeapi/offersscreen?")
+    Call<HomeResponse> getOffersDetails(@Query("zipcode") String zipcode);
+
 
     @Headers({"Accept: application/json"})
     @GET("homeapi/Categoryproducts?")
@@ -118,7 +124,7 @@ public interface APIInterface {
     @GET("homeapi/Searchapi?")
     Call<ProductsResponse> search(@Query("key") String key, @Query("zipcode") String zipcode);
 
-   // @Headers({"Accept: application/json"})
+    // @Headers({"Accept: application/json"})
     @GET("homeapi/applycoupon?")
     Call<ApplyCouponResponse> applyCoupon(@Query("cartId") String cartId, @Query("couponCode") String couponCode);
 

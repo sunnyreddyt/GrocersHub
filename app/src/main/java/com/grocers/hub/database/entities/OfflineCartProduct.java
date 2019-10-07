@@ -36,7 +36,7 @@ public class OfflineCartProduct {
     private String price;
 
     @ColumnInfo(name = "finalPrice")
-    private int finalPrice;
+    private double finalPrice;
 
     @ColumnInfo(name = "default_title")
     private String default_title;
@@ -132,11 +132,11 @@ public class OfflineCartProduct {
         this.price = price;
     }
 
-    public int getFinalPrice() {
+    public double getFinalPrice() {
         return finalPrice;
     }
 
-    public void setFinalPrice(int finalPrice) {
+    public void setFinalPrice(double finalPrice) {
         this.finalPrice = finalPrice;
     }
 }

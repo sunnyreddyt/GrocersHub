@@ -3,6 +3,7 @@ package com.grocers.hub;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,8 +13,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.CustomAttributes;
+import com.grocers.hub.models.EditProfileResponse;
 import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.models.UpdateProfileRequest;
@@ -104,10 +107,13 @@ public class EditProfileActivity extends AppCompatActivity {
 
         updateProfileRequest.setCustomer(updateCustomer);
 
-        Call<GeneralResponse> loginResponseCall = service.updateProfile(shared.getUserID(), updateProfileRequest);
-        loginResponseCall.enqueue(new Callback<GeneralResponse>() {
+        Gson gson = new Gson();
+        Log.v("updateProfileRequest", gson.toJson(updateProfileRequest));
+
+        Call<EditProfileResponse> loginResponseCall = service.updateProfile(shared.getUserID(), updateProfileRequest);
+        loginResponseCall.enqueue(new Callback<EditProfileResponse>() {
             @Override
-            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+            public void onResponse(Call<EditProfileResponse> call, Response<EditProfileResponse> response) {
                 ghUtil.dismissDialog();
                 if (response.code() == 200) {
 
@@ -124,16 +130,12 @@ public class EditProfileActivity extends AppCompatActivity {
                 } else if (response.code() == 400) {
                     Toast.makeText(context, "User already exists", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (response.body().getMessage() != null) {
-                        Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
-                    }
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<GeneralResponse> call, Throwable t) {
+            public void onFailure(Call<EditProfileResponse> call, Throwable t) {
                 ghUtil.dismissDialog();
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }

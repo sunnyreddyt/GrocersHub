@@ -34,7 +34,6 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.MyViewHo
         this.shippingResponseArrayList = shippingResponseArrayList;
     }
 
-
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RadioButton paymentTypeRadioButton;

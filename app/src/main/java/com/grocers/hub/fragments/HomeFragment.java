@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,21 @@ import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,7 +131,6 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
             Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
         }
 
-
         return view;
     }
 
@@ -148,7 +163,6 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
 
         if (resultCode == 1) {
             String location = data.getStringExtra("location");
-
             if (location.length() > 0) {
                 locationTextView.setText(location);
             }
@@ -159,8 +173,14 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
     public void onClick(int position) {
         shared.setCity(cityArrayList.get(position).getCity());
         shared.setZipCode(cityArrayList.get(position).getPostcode());
+        locationTextView.setText(shared.getCity());
         if (citiesDialog != null) {
             citiesDialog.dismiss();
+        }
+        if (ghUtil.isConnectingToInternet()) {
+            getCategoriesServiceCall();
+        } else {
+            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -241,38 +261,42 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
     }
 
     public void setUpViewPager() {
-        dotscount = viewPagerAdapter.getCount();
-        dots = new ImageView[dotscount];
+        try {
+            dotscount = viewPagerAdapter.getCount();
+            dots = new ImageView[dotscount];
 
-        for (int i = 0; i < dotscount; i++) {
-            dots[i] = new ImageView(getActivity());
-            dots[i].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.non_active_dot));
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(4, 0, 4, 0);
-            sliderDotspanel.addView(dots[i], params);
-        }
-
-        dots[0].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.active_dot));
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            for (int i = 0; i < dotscount; i++) {
+                dots[i] = new ImageView(getActivity());
+                dots[i].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.non_active_dot));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.setMargins(4, 0, 4, 0);
+                sliderDotspanel.addView(dots[i], params);
             }
 
-            @Override
-            public void onPageSelected(int position) {
-
-                for (int i = 0; i < dotscount; i++) {
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.non_active_dot));
+            dots[0].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.active_dot));
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 }
-                dots[position].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.active_dot));
 
-            }
+                @Override
+                public void onPageSelected(int position) {
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
+                    for (int i = 0; i < dotscount; i++) {
+                        dots[i].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.non_active_dot));
+                    }
+                    dots[position].setImageDrawable(ContextCompat.getDrawable(context, R.drawable.active_dot));
 
-            }
-        });
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void getLocations() {
@@ -433,4 +457,5 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
         }
         new GetCartProductOffline().execute();
     }
+
 }

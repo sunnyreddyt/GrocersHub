@@ -111,6 +111,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
             subCategoriesAdapter.setClickListener(CategoryProductsActivity.this);
 
             if (selectedSubCategoryId.length() > 0) {
+                productsRecyclerView.setVisibility(View.GONE);
                 getProductsServiceCall();
             }
         }
@@ -145,6 +146,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
         }
         subCategoriesAdapter.notifyDataSetChanged();
         selectedSubCategoryId = String.valueOf(categoryModelArrayList.get(position).getId());
+        productsRecyclerView.setVisibility(View.GONE);
         getProductsServiceCall();
     }
 

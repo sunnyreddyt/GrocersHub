@@ -16,13 +16,22 @@ public class HomeResponse {
     private String name;
     private ArrayList<HomeResponse> products;
     private ArrayList<ProductOptions> options;
-    private int price;
-    private int finalPrice;
+    private double price;
+    private double finalPrice;
     private String id;
     private String sku;
     private String image;
     private int cartQuantity;
     private String product_type;
+    private int qty;
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
 
     public String getProduct_type() {
         return product_type;
@@ -40,9 +49,6 @@ public class HomeResponse {
         this.cartQuantity = cartQuantity;
     }
 
-    public int getFinalPrice() {
-        return finalPrice;
-    }
 
     public void setFinalPrice(int finalPrice) {
         this.finalPrice = finalPrice;
@@ -144,8 +150,20 @@ public class HomeResponse {
         this.products = products;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getFinalPrice() {
+        return finalPrice;
+    }
+
+    public void setFinalPrice(double finalPrice) {
+        this.finalPrice = finalPrice;
     }
 
     public void setPrice(int price) {
@@ -178,7 +196,8 @@ public class HomeResponse {
 
     public class ProductOptions {
         private String sku, price, option_title, default_title, super_attribute_label, value_index, attribute_code, product_id;
-        private int qty, finalPrice,cartQuantity;
+        private int qty, cartQuantity;
+        private double finalPrice;
 
         public int getCartQuantity() {
             return cartQuantity;
@@ -260,7 +279,7 @@ public class HomeResponse {
             this.qty = qty;
         }
 
-        public int getFinalPrice() {
+        public double getFinalPrice() {
             return finalPrice;
         }
 

@@ -1,5 +1,6 @@
 package com.grocers.hub.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.grocers.hub.MainActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.SearchProductsAdapter;
 import com.grocers.hub.constants.Shared;
@@ -71,6 +73,12 @@ public class SearchFragment extends Fragment {
             public void onClick(View view) {
                 if (searchEditText.hasFocus()) {
                     ghUtil.hideKeyboard(getActivity());
+                    searchEditText.clearFocus();
+                } else {
+                    MainActivity mainActivity = (MainActivity) getActivity();
+                    if (mainActivity != null) {
+                        mainActivity.loadHomeFragment();
+                    }
                 }
             }
         });
@@ -89,8 +97,8 @@ public class SearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if (s.length() > 1 && s.length() % 2 == 0) {
-                   // ghUtil.hideKeyboard(getActivity());
+                if (s.length() > 1 /*&& s.length() % 2 == 0*/) {
+                    // ghUtil.hideKeyboard(getActivity());
                     getProductsServiceCall(s.toString());
                 } else if (s.length() == 0) {
                     productsRecyclerView.setVisibility(View.GONE);

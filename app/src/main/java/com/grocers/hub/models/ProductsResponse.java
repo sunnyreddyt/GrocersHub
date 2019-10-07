@@ -6,7 +6,8 @@ public class ProductsResponse {
 
     private String status;
     private ArrayList<ProductsResponse> products;
-    private int qty, id, price, finalPrice, cartQuantity;
+    private int qty, id, cartQuantity;
+    private double price, finalPrice;
     private String name, sku, image, product_type;
     ArrayList<ProductOptions> options;
 
@@ -50,19 +51,19 @@ public class ProductsResponse {
         this.id = id;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public int getFinalPrice() {
+    public double getFinalPrice() {
         return finalPrice;
     }
 
-    public void setFinalPrice(int finalPrice) {
+    public void setFinalPrice(double finalPrice) {
         this.finalPrice = finalPrice;
     }
 
@@ -108,7 +109,8 @@ public class ProductsResponse {
 
     public class ProductOptions {
         private String sku, price, option_title, default_title, super_attribute_label, value_index, attribute_code, product_id;
-        private int qty, finalPrice, cartQuantity;
+        private int qty, cartQuantity;
+        private double finalPrice;
 
         public int getCartQuantity() {
             return cartQuantity;
@@ -190,14 +192,13 @@ public class ProductsResponse {
             this.qty = qty;
         }
 
-        public int getFinalPrice() {
-            return finalPrice;
-        }
-
-        public void setFinalPrice(int finalPrice) {
+        public void setFinalPrice(double finalPrice) {
             this.finalPrice = finalPrice;
         }
-    }
 
+        public double getFinalPrice() {
+            return finalPrice;
+        }
+    }
 
 }

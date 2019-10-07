@@ -198,14 +198,14 @@
                     android:layout_width="@dimen/_110sdp"
                     android:layout_height="@dimen/_140sdp"
                     android:layout_centerInParent="true"
-                    android:src="#989898" />
+                    android:src="@color/white" />
 
                 <RelativeLayout
+                    android:id="@+id/discountLayout"
                     android:layout_width="@dimen/_21sdp"
                     android:layout_height="@dimen/_21sdp"
                     android:layout_alignParentLeft="true"
                     android:layout_margin="@dimen/_2sdp"
-                    android:id="@+id/discountLayout"
                     android:background="@drawable/circle_filled_red"
                     android:visibility="gone">
 
@@ -339,6 +339,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginTop="@dimen/_30sdp"
                 android:visibility="gone">
 
                 <TextView

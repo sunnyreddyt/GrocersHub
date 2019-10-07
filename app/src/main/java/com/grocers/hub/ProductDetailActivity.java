@@ -616,4 +616,8 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         new GetCartProductOffline().execute();
     }
 
+    public void updateCartCount(int cartCount) {
+        cartCountTextView.setText(String.valueOf(cartCount));
+    }
+
 }

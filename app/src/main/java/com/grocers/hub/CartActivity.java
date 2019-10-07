@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,19 @@ import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +55,8 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
 
     RecyclerView cartRecyclerView;
     ImageView backImageView;
-    TextView paymentTextView, noDataTextView;
+    RelativeLayout checkoutLayout;
+    TextView paymentTextView, noDataTextView, totalAmountTextView;
     Shared shared;
     Context context;
     GHUtil ghUtil;
@@ -49,6 +64,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
     List<OfflineCartProduct> offlineCartProductArrayList;
     int cartProductsAddedCount = 0;
     String quoteID = "";
+    JSONArray cartRequestArray;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +77,8 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
         noDataTextView = (TextView) findViewById(R.id.noDataTextView);
         cartRecyclerView = (RecyclerView) findViewById(R.id.cartRecyclerView);
         paymentTextView = (TextView) findViewById(R.id.paymentTextView);
+        totalAmountTextView = (TextView) findViewById(R.id.totalAmountTextView);
+        checkoutLayout = (RelativeLayout) findViewById(R.id.checkoutLayout);
 
         totalAmount = 0;
 
@@ -115,11 +133,11 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                     cartProductsAdapter.setItemClickListener(CartActivity.this);
 
                     if (response.body().getItems().size() == 0) {
-                        paymentTextView.setVisibility(View.INVISIBLE);
+                        checkoutLayout.setVisibility(View.INVISIBLE);
                         cartRecyclerView.setVisibility(View.GONE);
                         noDataTextView.setVisibility(View.VISIBLE);
                     } else {
-                        paymentTextView.setVisibility(View.VISIBLE);
+                        checkoutLayout.setVisibility(View.VISIBLE);
                         cartRecyclerView.setVisibility(View.VISIBLE);
                         noDataTextView.setVisibility(View.GONE);
                     }
@@ -178,11 +196,11 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                 cartProductsAdapter.setItemClickListener(CartActivity.this);
 
                 if (offlineCartProductList.size() == 0) {
-                    paymentTextView.setVisibility(View.INVISIBLE);
+                    checkoutLayout.setVisibility(View.INVISIBLE);
                     cartRecyclerView.setVisibility(View.GONE);
                     noDataTextView.setVisibility(View.VISIBLE);
                 } else {
-                    paymentTextView.setVisibility(View.VISIBLE);
+                    checkoutLayout.setVisibility(View.VISIBLE);
                     cartRecyclerView.setVisibility(View.VISIBLE);
                     noDataTextView.setVisibility(View.GONE);
                 }
@@ -284,12 +302,13 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
         loginResponseCall.enqueue(new Callback<QuoteIDResponse>() {
             @Override
             public void onResponse(Call<QuoteIDResponse> call, Response<QuoteIDResponse> response) {
-                ghUtil.dismissDialog();
+                // ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     if (response.body().getStatus() == 200) {
                         if (response.body().getStatus() == 200) {
                             quoteID = String.valueOf(response.body().getQuote_id());
                             cartProductsAddedCount = 0;
+                            cartRequestArray = new JSONArray();
                             allItemsToCart();
                         }
                     }
@@ -386,16 +405,165 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
 
     public void allItemsToCart() {
         if (cartProductsAddedCount == offlineCartProductArrayList.size()) {
-            Intent intent = new Intent(CartActivity.this, ShippingAddressActivity.class);
-            startActivity(intent);
+            /*Intent intent = new Intent(CartActivity.this, ShippingAddressActivity.class);
+            startActivity(intent);*/
+            addAllProducts();
         } else {
             if (offlineCartProductArrayList.get(cartProductsAddedCount).getProduct_type().equalsIgnoreCase("simple")) {
-                addToCartServiceCall();
+                /*addToCartServiceCall();*/
+                /*AddToCartRequest addToCartRequest = new AddToCartRequest();
+                AddToCartRequest cartItem = new AddToCartRequest();
+                cartItem.setQty(offlineCartProductArrayList.get(cartProductsAddedCount).getQty());
+                cartItem.setQuote_id(quoteID);
+                cartItem.setSku(offlineCartProductArrayList.get(cartProductsAddedCount).getSkuID());
+                addToCartRequest.setCartItem(cartItem);*/
+
+                try {
+                    JSONObject addToCartRequest = new JSONObject();
+                    addToCartRequest.put("sku", offlineCartProductArrayList.get(cartProductsAddedCount).getSkuID());
+                    addToCartRequest.put("qty", offlineCartProductArrayList.get(cartProductsAddedCount).getQty());
+                    addToCartRequest.put("quote_id", quoteID);
+                    addToCartRequest.put("product_type", "simple");
+                    cartRequestArray.put(addToCartRequest);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
             } else {
-                addToCartOptionServiceCall();
+                /*addToCartOptionServiceCall();*/
+                /*AddToCartOptionRequest addToCartOptionRequest = new AddToCartOptionRequest();
+                AddToCartOptionRequest.CartItem cartItem = new AddToCartOptionRequest.CartItem();
+                cartItem.setQty(offlineCartProductArrayList.get(cartProductsAddedCount).getQty());
+                cartItem.setQuote_id(Integer.parseInt(quoteID));
+                cartItem.setSku(offlineCartProductArrayList.get(cartProductsAddedCount).getSkuID());
+
+                AddToCartOptionRequest.ProductOption product_option = new AddToCartOptionRequest.ProductOption();
+                AddToCartOptionRequest.ExtensionAttributes extension_attributes = new AddToCartOptionRequest.ExtensionAttributes();
+                ArrayList<AddToCartOptionRequest.ConfigurableItemOptions> configurable_item_options = new ArrayList<AddToCartOptionRequest.ConfigurableItemOptions>();
+                AddToCartOptionRequest.ConfigurableItemOptions obj = new AddToCartOptionRequest.ConfigurableItemOptions();
+                obj.setOption_id("140");
+                obj.setOption_value(Integer.parseInt(offlineCartProductArrayList.get(cartProductsAddedCount).getValue_index()));
+                configurable_item_options.add(obj);
+                extension_attributes.setConfigurable_item_options(configurable_item_options);
+                product_option.setExtension_attributes(extension_attributes);
+                cartItem.setProduct_option(product_option);
+                cartItem.setProduct_type("configurable");
+
+                addToCartOptionRequest.setCartItem(cartItem);
+
+                cartRequestArray.put(addToCartOptionRequest);*/
+
+                try {
+                    JSONObject addToCartRequest = new JSONObject();
+
+                    JSONArray configurable_item_options = new JSONArray();
+                    JSONObject obj = new JSONObject();
+                    obj.put("option_id", "140");
+                    obj.put("option_value", Integer.parseInt(offlineCartProductArrayList.get(cartProductsAddedCount).getValue_index()));
+                    configurable_item_options.put(obj);
+
+                    JSONObject extension_attributes = new JSONObject();
+                    extension_attributes.put("configurable_item_options", configurable_item_options);
+
+                    JSONObject product_option = new JSONObject();
+                    product_option.put("extension_attributes", extension_attributes);
+
+                    addToCartRequest.put("product_option", product_option);
+                    addToCartRequest.put("sku", offlineCartProductArrayList.get(cartProductsAddedCount).getSkuID());
+                    addToCartRequest.put("qty", offlineCartProductArrayList.get(cartProductsAddedCount).getQty());
+                    addToCartRequest.put("quote_id", quoteID);
+                    addToCartRequest.put("product_type", "configurable");
+
+                    cartRequestArray.put(addToCartRequest);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
+            cartProductsAddedCount++;
+            allItemsToCart();
         }
-        cartProductsAddedCount++;
     }
 
+
+    public void addAllProducts() {
+        try {
+            class AddAllProductsToCart extends AsyncTask<String, Integer, String> {
+
+                @Override
+                protected String doInBackground(String... params) {
+                    // TODO Auto-generated method stub
+                    String str = postData();
+                    return str;
+                }
+
+                protected void onPostExecute(String json) {
+                    try {
+                        ghUtil.dismissDialog();
+                        if (json != null) {
+                            Intent intent = new Intent(CartActivity.this, ShippingAddressActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(context, "Something went wrong, please try again later", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                protected void onProgressUpdate(Integer... progress) {
+                }
+
+                @SuppressWarnings("deprecation")
+                public String postData() {
+                    // Create a new HttpClient and Post Header
+                    String json = "";
+                    try {
+                        HttpClient httpclient = new DefaultHttpClient();
+                        HttpPost httppost = new HttpPost("https://www.grocershub.in/homeapi/multiplecart?token=" + shared.getToken());
+
+                        StringEntity se = null;
+
+                        se = new StringEntity(cartRequestArray.toString());
+                        Log.v("cartRequestArray", cartRequestArray.toString());
+
+                        // Log.v("values", mainObject.toString());
+                        httppost.setEntity(se);
+                        httppost.setHeader("Content-type", "application/json");
+
+                        // Execute HTTP Post Request
+                        HttpResponse response = httpclient.execute(httppost);
+                        HttpEntity httpEntity = response.getEntity();
+                        InputStream is = httpEntity.getContent();
+
+                        BufferedReader reader = new BufferedReader(
+                                new InputStreamReader(is, "iso-8859-1"), 8);
+                        StringBuilder sb = new StringBuilder();
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            sb.append(line + "\n");
+                        }
+                        is.close();
+                        json = sb.toString();
+                        Log.v("objJsonMain", "" + json);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return json;
+                }
+            }
+
+            new AddAllProductsToCart().execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateCartProductsTotalPrice() {
+        totalAmountTextView.setText(String.valueOf(totalAmount));
+    }
 }
