@@ -1,6 +1,5 @@
 package com.grocers.hub.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -24,8 +23,6 @@ import com.grocers.hub.R;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.database.DatabaseClient;
 import com.grocers.hub.database.entities.OfflineCartProduct;
-import com.grocers.hub.fragments.HomeFragment;
-import com.grocers.hub.models.HomeResponse;
 import com.grocers.hub.models.SimilarProductsResponse;
 import com.squareup.picasso.Picasso;
 
@@ -108,10 +105,11 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
                 double finalPrice = homeResponseArrayList.get(position).getFinalPrice();
                 int finalPriceInt = (int) finalPrice;
                 int decreaseAmount = originalPriceInt - finalPriceInt;
-                int discount = (decreaseAmount / originalPriceInt) * 100;
-                if (discount > 0) {
+                double divisionValue = (double) decreaseAmount / originalPrice;
+                double discount = divisionValue * 100.0;
+                if ((int)discount > 0) {
                     holder.discountLayout.setVisibility(View.VISIBLE);
-                    holder.discountTextView.setText(String.valueOf(discount) + "% off");
+                    holder.discountTextView.setText(String.valueOf((int)discount) + "% off");
                 }
             }
 
@@ -174,10 +172,11 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
                     double finalPrice = homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice();
                     int finalPriceInt = (int) finalPrice;
                     int decreaseAmount = originalPrice - finalPriceInt;
-                    int discount = (decreaseAmount / originalPrice) * 100;
-                    if (discount > 0) {
+                    double divisionValue = (double) decreaseAmount / originalPrice;
+                    double discount = divisionValue * 100.0;
+                    if ((int)discount > 0) {
                         holder.discountLayout.setVisibility(View.VISIBLE);
-                        holder.discountTextView.setText(String.valueOf(discount) + "% off");
+                        holder.discountTextView.setText(String.valueOf((int)discount) + "% off");
                     } else {
                         holder.discountLayout.setVisibility(View.GONE);
                     }
@@ -222,10 +221,11 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
                             double finalPrice = homeResponseArrayList.get(position).getOptions().get(i).getFinalPrice();
                             int finalPriceInt = (int) finalPrice;
                             int decreaseAmount = originalPrice - finalPriceInt;
-                            int discount = (decreaseAmount / originalPrice) * 100;
-                            if (discount > 0) {
+                            double divisionValue = (double) decreaseAmount / originalPrice;
+                            double discount = divisionValue * 100.0;
+                            if ((int)discount > 0) {
                                 holder.discountLayout.setVisibility(View.VISIBLE);
-                                holder.discountTextView.setText(String.valueOf(discount) + "% off");
+                                holder.discountTextView.setText(String.valueOf((int)discount) + "% off");
                             }
                         }
                     }

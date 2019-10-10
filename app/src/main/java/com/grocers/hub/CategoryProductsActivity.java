@@ -68,6 +68,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     int addedPosition = 0, optionPosition = 0;
     TextView categoryNameTextView, cartCountTextView;
     ArrayList<String> productIsAddedCartArrayList;
+    int activityCount = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -401,6 +402,49 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
                 productsRecyclerView.setAdapter(productsAdapter);
                 productsAdapter.setClickListener(CategoryProductsActivity.this);
 
+            }
+        }
+        new GetCartProductOffline().execute();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (activityCount > 0 && shared.getUserID().length() > 0) {
+            updateCartProductsCount();
+            if (productsAdapter != null) {
+                productsAdapter.notifyDataSetChanged();
+            }
+        } else {
+            activityCount++;
+        }
+    }
+
+    public void updateCartProductsCount() {
+        class GetCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
+            @Override
+            protected List<OfflineCartProduct> doInBackground(Void... voids) {
+
+                List<OfflineCartProduct> offlineCartProductArrayList = new ArrayList<OfflineCartProduct>();
+                offlineCartProductArrayList = DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .getAllProducts();
+
+                return offlineCartProductArrayList;
+            }
+
+            @Override
+            protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
+                super.onPostExecute(offlineCartProductList);
+
+                int cartCount = offlineCartProductList.size();
+                if (cartCount > 0) {
+                    cartCountTextView.setText(String.valueOf(cartCount));
+                } else {
+                    cartCountTextView.setText("0");
+                }
             }
         }
         new GetCartProductOffline().execute();

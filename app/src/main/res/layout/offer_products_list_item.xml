@@ -58,6 +58,7 @@
                 android:layout_height="@dimen/_20sdp"
                 android:layout_alignParentRight="true"
                 android:layout_margin="@dimen/_5sdp"
+                android:visibility="invisible"
                 android:padding="@dimen/_4sdp"
                 android:src="@drawable/ic_fav_select" />
 

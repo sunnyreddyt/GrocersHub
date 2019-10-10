@@ -112,6 +112,10 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
+
+        double divisionValue = (double) 20/80;
+        Log.v("division_values",String.valueOf(divisionValue));
+
         ghUtil = GHUtil.getInstance(SplashActivity.this);
         shared = new Shared(SplashActivity.this);
         permissionUtils = new PermissionUtils(SplashActivity.this);

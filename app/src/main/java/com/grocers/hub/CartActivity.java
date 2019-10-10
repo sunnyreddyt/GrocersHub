@@ -189,6 +189,15 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                     cartResponseList.add(cartResponse);
                 }
 
+                CartActivity.totalAmount = 0;
+                for (int g = 0; g < cartResponseList.size(); g++) {
+                    double priceDouble = cartResponseList.get(g).getPrice();
+                    int price = (int) priceDouble;
+                    int quantity = cartResponseList.get(g).getQty();
+                    int productPrice = price * quantity;
+                    CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
+                }
+
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(CartActivity.this, RecyclerView.VERTICAL, false);
                 cartRecyclerView.setLayoutManager(mLayoutManager);
                 CartProductsAdapter cartProductsAdapter = new CartProductsAdapter(CartActivity.this, cartResponseList, offlineCartProductList);

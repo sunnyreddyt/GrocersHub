@@ -49,6 +49,7 @@
             <RelativeLayout
                 android:layout_width="@dimen/_28sdp"
                 android:layout_height="@dimen/_28sdp"
+                android:visibility="invisible"
                 android:layout_marginRight="@dimen/_10sdp"
                 android:gravity="center_vertical">
 

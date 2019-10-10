@@ -16,38 +16,48 @@
 
         <RelativeLayout
             android:id="@+id/itemLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="@dimen/_6sdp">
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_90sdp"
+            android:gravity="center">
 
-            <ImageView
-                android:id="@+id/categoryBackgroundImageView"
-                android:layout_width="@dimen/_52sdp"
-                android:layout_height="@dimen/_52sdp"
-                android:layout_centerInParent="true"
-                android:src="@drawable/circle_border" />
+            <!--   <ImageView
+                   android:id="@+id/categoryBackgroundImageView"
+                   android:layout_width="@dimen/_52sdp"
+                   android:layout_height="@dimen/_52sdp"
+                   android:layout_centerInParent="true"
+                   android:src="@drawable/circle_border" />-->
 
             <ImageView
                 android:id="@+id/categoryImageView"
-                android:layout_width="@dimen/_35sdp"
-                android:padding="@dimen/_3sdp"
-                android:layout_height="@dimen/_35sdp"
-                android:layout_centerInParent="true" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_3sdp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#80000000">
+
+                <TextView
+                    android:id="@+id/categoryNameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/_2sdp"
+                    android:paddingRight="@dimen/_2sdp"
+                    android:text="All Categories"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
+                    android:paddingTop="@dimen/_1sdp"
+                    android:paddingBottom="@dimen/_1sdp"
+                    android:textStyle="bold"
+                    app:fontFamily="@font/roboto" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
-
-        <TextView
-            android:id="@+id/categoryNameTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/_3sdp"
-            android:gravity="center"
-            android:paddingLeft="@dimen/_3sdp"
-            android:text="All Categories"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_11sdp"
-            app:fontFamily="@font/roboto" />
 
     </LinearLayout>
 

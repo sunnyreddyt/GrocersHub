@@ -3,7 +3,8 @@ package com.grocers.hub.models;
 public class ApplyCouponResponse {
 
     private ApplyCouponResponse cartDetails;
-    private int status, entity_id, base_subtotal_with_discount, base_shipping_amount;
+    private int status, entity_id;
+    private double base_subtotal_with_discount, base_shipping_amount;
     private String coupon_code, message;
 
     public ApplyCouponResponse getCartDetails() {
@@ -30,19 +31,19 @@ public class ApplyCouponResponse {
         this.entity_id = entity_id;
     }
 
-    public int getBase_subtotal_with_discount() {
+    public double getBase_subtotal_with_discount() {
         return base_subtotal_with_discount;
     }
 
-    public void setBase_subtotal_with_discount(int base_subtotal_with_discount) {
+    public void setBase_subtotal_with_discount(double base_subtotal_with_discount) {
         this.base_subtotal_with_discount = base_subtotal_with_discount;
     }
 
-    public int getBase_shipping_amount() {
+    public double getBase_shipping_amount() {
         return base_shipping_amount;
     }
 
-    public void setBase_shipping_amount(int base_shipping_amount) {
+    public void setBase_shipping_amount(double base_shipping_amount) {
         this.base_shipping_amount = base_shipping_amount;
     }
 

@@ -136,7 +136,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                 count++;
                 holder.countTextView.setText(String.valueOf(count));
 
-                String sku_temp = "";
+                /*String sku_temp = "";
                 if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
                     sku_temp = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku();
                     availableQuantity = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
@@ -149,9 +149,39 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                     if (availableQuantity > count) {
                         productsResponseArrayList.get(position).setCartQuantity(count);
                     }
+                }*/
+                String sku_temp = "";
+                OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
+                if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
+                    offlineCartProduct.setProduct_id(Integer.parseInt(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getProduct_id()));
+                    offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
+                    offlineCartProduct.setValue_index(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
+                    offlineCartProduct.setPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
+                    offlineCartProduct.setDefault_title(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
+                    availableQuantity = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
+                    if (availableQuantity >= count) {
+                        productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(count);
+                    }
+                    sku_temp = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku();
+                } else {
+                    offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getSku());
+                    offlineCartProduct.setPrice(String.valueOf(productsResponseArrayList.get(position).getPrice()));
+                    offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getFinalPrice());
+                    availableQuantity = productsResponseArrayList.get(position).getQty();
+                    if (availableQuantity >= count) {
+                        productsResponseArrayList.get(position).setCartQuantity(count);
+                    }
+                    sku_temp = productsResponseArrayList.get(position).getSku();
                 }
+                offlineCartProduct.setQty(count);
+                offlineCartProduct.setParentSkuID(productsResponseArrayList.get(position).getSku());
+                offlineCartProduct.setName(productsResponseArrayList.get(position).getName());
+                offlineCartProduct.setProduct_type(productsResponseArrayList.get(position).getProduct_type());
+                offlineCartProduct.setImage(productsResponseArrayList.get(position).getImage());
+
                 if (availableQuantity > count) {
-                    updateCartProductOfflineUsingSkuID(sku_temp, count, "update");
+                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, count, "update");
                 } else {
                     Toast.makeText(mContext, "Only " + String.valueOf(count - 1) + " are available in stock", Toast.LENGTH_SHORT).show();
                 }
@@ -165,22 +195,50 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                 int count = Integer.parseInt(holder.countTextView.getText().toString());
                 count--;
 
-                String sku_temp = "";
-                if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
+                /*if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
                     sku_temp = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku();
                     productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(count);
                 } else {
                     sku_temp = productsResponseArrayList.get(position).getSku();
                     productsResponseArrayList.get(position).setCartQuantity(count);
+                }*/
+
+                String sku_temp = "";
+                OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
+                if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
+                    offlineCartProduct.setProduct_id(Integer.parseInt(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getProduct_id()));
+                    offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
+                    offlineCartProduct.setValue_index(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
+                    offlineCartProduct.setPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
+                    offlineCartProduct.setDefault_title(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
+
+                    productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(count);
+
+                    sku_temp = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku();
+                } else {
+                    offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getSku());
+                    offlineCartProduct.setPrice(String.valueOf(productsResponseArrayList.get(position).getPrice()));
+                    offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getFinalPrice());
+
+                    productsResponseArrayList.get(position).setCartQuantity(count);
+
+                    sku_temp = productsResponseArrayList.get(position).getSku();
                 }
+                offlineCartProduct.setQty(count);
+                offlineCartProduct.setParentSkuID(productsResponseArrayList.get(position).getSku());
+                offlineCartProduct.setName(productsResponseArrayList.get(position).getName());
+                offlineCartProduct.setProduct_type(productsResponseArrayList.get(position).getProduct_type());
+                offlineCartProduct.setImage(productsResponseArrayList.get(position).getImage());
+
 
                 if (count > 0) {
                     holder.countTextView.setText(String.valueOf(count));
-                    updateCartProductOfflineUsingSkuID(sku_temp, count, "update");
+                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, count, "update");
                 } else if (count == 0) {
                     holder.cartCountLayout.setVisibility(View.GONE);
                     holder.cartAddLayout.setVisibility(View.VISIBLE);
-                    updateCartProductOfflineUsingSkuID(sku_temp, count, "delete");
+                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, count, "delete");
                 }
 
             }
@@ -240,7 +298,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                         holder.cartCountLayout.setVisibility(View.GONE);
                         holder.cartAddLayout.setVisibility(View.VISIBLE);
                     }
-
                 }
 
                 @Override
@@ -279,6 +336,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                     }
                 } else {*/
                 int availableQuantity = 0;
+                String sku_temp = "";
                 OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
                 if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
                     offlineCartProduct.setProduct_id(Integer.parseInt(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getProduct_id()));
@@ -291,6 +349,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                     if (availableQuantity > 0) {
                         productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(1);
                     }
+                    sku_temp = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku();
                 } else {
                     offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(productsResponseArrayList.get(position).getPrice()));
@@ -299,6 +358,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                     if (availableQuantity > 0) {
                         productsResponseArrayList.get(position).setCartQuantity(1);
                     }
+                    sku_temp = productsResponseArrayList.get(position).getSku();
                 }
                 offlineCartProduct.setQty(1);
                 offlineCartProduct.setParentSkuID(productsResponseArrayList.get(position).getSku());
@@ -307,7 +367,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                 offlineCartProduct.setImage(productsResponseArrayList.get(position).getImage());
 
                 if (availableQuantity > 0) {
-                    addCartProductOffline(offlineCartProduct);
+//                    addCartProductOffline(offlineCartProduct);
+                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, 1, "insert");
+
                     holder.cartCountLayout.setVisibility(View.VISIBLE);
                     holder.countTextView.setText(String.valueOf(1));
                     holder.cartAddLayout.setVisibility(View.GONE);
@@ -354,7 +416,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
         new AddCartProductOffline().execute();
     }
 
-    public void updateCartProductOfflineUsingSkuID(final String skuIDTemp, final int count, final String type) {
+    public void updateCartProductOfflineUsingSkuID(final OfflineCartProduct insertOfflineCartProduct, final String skuIDTemp, final int count, final String type) {
         class AddCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
             @Override
             protected List<OfflineCartProduct> doInBackground(Void... voids) {
@@ -380,6 +442,20 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                                 .offlineCartDao()
                                 .delete(offlineCartProduct);
                     }
+                } else {
+                    if (type.equalsIgnoreCase("update") || type.equalsIgnoreCase("insert")) {
+                        DatabaseClient
+                                .getInstance(mContext)
+                                .getAppDatabase()
+                                .offlineCartDao()
+                                .insert(insertOfflineCartProduct);
+                    } /*else {
+                        DatabaseClient
+                                .getInstance(mContext)
+                                .getAppDatabase()
+                                .offlineCartDao()
+                                .delete(offlineCartProduct);
+                    }*/
                 }
                 List<OfflineCartProduct> offlineCartProduct_temp = DatabaseClient
                         .getInstance(mContext)

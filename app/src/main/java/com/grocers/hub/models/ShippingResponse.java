@@ -48,7 +48,7 @@ public class ShippingResponse {
     private String options;
     private String name;
     private ArrayList<ShippingResponse> total_segments;
-    private int value;
+    private double value;
 
     public ArrayList<ShippingResponse> getPayment_methods() {
         return payment_methods;
@@ -396,11 +396,12 @@ public class ShippingResponse {
         this.total_segments = total_segments;
     }
 
-    public int getValue() {
+
+    public double getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(double value) {
         this.value = value;
     }
 }

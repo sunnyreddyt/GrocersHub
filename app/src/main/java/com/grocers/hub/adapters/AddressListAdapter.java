@@ -35,7 +35,6 @@ public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.
         //this.selectedPaymentPosition = selectedPaymentPosition;
     }
 
-
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RadioButton paymentTypeRadioButton;
@@ -64,7 +63,7 @@ public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.
     public void onBindViewHolder(final AddressListAdapter.MyViewHolder holder, final int position) {
 
         holder.contactTextView.setText(userAddressListModelArrayList.get(position).getFirstname() + " (" + userAddressListModelArrayList.get(position).getTelephone() + ")");
-        holder.addressTextView.setText(userAddressListModelArrayList.get(position).getStreet());
+        holder.addressTextView.setText(userAddressListModelArrayList.get(position).getStreet() + "," + userAddressListModelArrayList.get(position).getCity() + "," + userAddressListModelArrayList.get(position).getPostcode());
         if (position == ShippingAddressActivity.selectedAddressPosition) {
             holder.paymentTypeRadioButton.setChecked(true);
         } else {

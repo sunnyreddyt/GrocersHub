@@ -50,13 +50,12 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
 
         RelativeLayout itemLayout;
         TextView categoryNameTextView;
-        ImageView categoryBackgroundImageView, categoryImageView;
+        ImageView categoryImageView;
 
         public MyViewHolder(View view) {
             super(view);
             itemLayout = (RelativeLayout) view.findViewById(R.id.itemLayout);
             categoryNameTextView = (TextView) view.findViewById(R.id.categoryNameTextView);
-            categoryBackgroundImageView = (ImageView) view.findViewById(R.id.categoryBackgroundImageView);
             categoryImageView = (ImageView) view.findViewById(R.id.categoryImageView);
         }
     }
@@ -81,13 +80,6 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
         }
 
         holder.categoryNameTextView.setText(categoryModel.getName());
-        /*if (categoryModel.isCategoryBackground()) {
-            holder.categoryBackgroundImageView.setImageResource(R.drawable.circle_filled_green);
-            holder.categoryImageView.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
-        } else {
-            holder.categoryBackgroundImageView.setImageResource(R.drawable.circle_border);
-            holder.categoryImageView.setImageTintList(ColorStateList.valueOf(Color.parseColor("#8b8b8b")));
-        }*/
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override

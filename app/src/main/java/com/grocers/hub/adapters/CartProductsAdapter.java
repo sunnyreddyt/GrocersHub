@@ -100,16 +100,15 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
             holder.productQuantityTextView.setText(cartResponseArrayList.get(position).getDefault_title());
         }
 
-        if (position == 0) {
+        /*if (position == 0) {
             CartActivity.totalAmount = 0;
-        }
+        }*/
 
-
-        double priceDouble = cartResponseArrayList.get(position).getPrice();
+        /*double priceDouble = cartResponseArrayList.get(position).getPrice();
         int price = (int) priceDouble;
         int quantity = cartResponseArrayList.get(position).getQty();
         int productPrice = price * quantity;
-        CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
+        CartActivity.totalAmount = CartActivity.totalAmount + productPrice;*/
 
 
         ((CartActivity) mContext).updateCartProductsTotalPrice();

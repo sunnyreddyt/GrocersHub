@@ -51,6 +51,7 @@
             <RelativeLayout
                 android:layout_width="@dimen/_26sdp"
                 android:layout_height="@dimen/_26sdp"
+                android:visibility="invisible"
                 android:gravity="center_vertical">
 
                 <ImageView

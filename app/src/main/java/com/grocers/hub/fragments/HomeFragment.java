@@ -458,4 +458,43 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
         new GetCartProductOffline().execute();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateCartProductsCount();
+        if (homeAdapter != null) {
+            homeAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void updateCartProductsCount() {
+        class GetCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
+            @Override
+            protected List<OfflineCartProduct> doInBackground(Void... voids) {
+
+                List<OfflineCartProduct> offlineCartProductArrayList = new ArrayList<OfflineCartProduct>();
+                offlineCartProductArrayList = DatabaseClient
+                        .getInstance(context)
+                        .getAppDatabase()
+                        .offlineCartDao()
+                        .getAllProducts();
+
+                return offlineCartProductArrayList;
+            }
+
+            @Override
+            protected void onPostExecute(List<OfflineCartProduct> offlineCartProductList) {
+                super.onPostExecute(offlineCartProductList);
+
+                int cartCount = offlineCartProductList.size();
+                if (cartCount > 0) {
+                    cartCountTextView.setText(String.valueOf(cartCount));
+                } else {
+                    cartCountTextView.setText("0");
+                }
+            }
+        }
+        new GetCartProductOffline().execute();
+    }
+
 }

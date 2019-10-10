@@ -110,10 +110,11 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                 double finalPrice = homeResponseArrayList.get(position).getFinalPrice();
                 int finalPriceInt = (int) finalPrice;
                 int decreaseAmount = originalPriceInt - finalPriceInt;
-                int discount = (decreaseAmount / originalPriceInt) * 100;
-                if (discount > 0) {
+                double divisionValue = (double) decreaseAmount / originalPrice;
+                double discount = divisionValue * 100.0;
+                if ((int)discount > 0) {
                     holder.discountLayout.setVisibility(View.VISIBLE);
-                    holder.discountTextView.setText(String.valueOf(discount) + "% off");
+                    holder.discountTextView.setText(String.valueOf((int)discount) + "% off");
                 }
             }
 
@@ -125,15 +126,16 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
             }
         }*/
 
-        if (homeResponseArrayList.get(position).getCartQuantity() > 0) {
-            holder.cartCountLayout.setVisibility(View.VISIBLE);
-            holder.cartAddLayout.setVisibility(View.GONE);
-            holder.countTextView.setText(String.valueOf(homeResponseArrayList.get(position).getCartQuantity()));
-        } else {
-            holder.cartCountLayout.setVisibility(View.GONE);
-            holder.cartAddLayout.setVisibility(View.VISIBLE);
+        if (homeResponseArrayList.get(position).getOptions() == null || homeResponseArrayList.get(position).getOptions().size() == 0) {
+            if (homeResponseArrayList.get(position).getCartQuantity() > 0) {
+                holder.cartCountLayout.setVisibility(View.VISIBLE);
+                holder.cartAddLayout.setVisibility(View.GONE);
+                holder.countTextView.setText(String.valueOf(homeResponseArrayList.get(position).getCartQuantity()));
+            } else {
+                holder.cartCountLayout.setVisibility(View.GONE);
+                holder.cartAddLayout.setVisibility(View.VISIBLE);
+            }
         }
-
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,6 +162,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
 
         productOptions = new ArrayList<String>();
         if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
+
             int optionalFinalPriceInteger = (int) homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice();
             holder.offerCostTextView.setText("₹ " + String.valueOf(optionalFinalPriceInteger));
 
@@ -176,10 +179,11 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     double finalPrice = homeResponseArrayList.get(position).getOptions().get(0).getFinalPrice();
                     int finalPriceInt = (int) finalPrice;
                     int decreaseAmount = originalPrice - finalPriceInt;
-                    int discount = (decreaseAmount / originalPrice) * 100;
-                    if (discount > 0) {
+                    double divisionValue = (double) decreaseAmount / originalPrice;
+                    double discount = divisionValue * 100.0;
+                    if ((int)discount > 0) {
                         holder.discountLayout.setVisibility(View.VISIBLE);
-                        holder.discountTextView.setText(String.valueOf(discount) + "% off");
+                        holder.discountTextView.setText(String.valueOf((int) discount) + "% off");
                     } else {
                         holder.discountLayout.setVisibility(View.GONE);
                     }
@@ -224,10 +228,11 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                             double finalPrice = homeResponseArrayList.get(position).getOptions().get(i).getFinalPrice();
                             int finalPriceInt = (int) finalPrice;
                             int decreaseAmount = originalPrice - finalPriceInt;
-                            int discount = (decreaseAmount / originalPrice) * 100;
-                            if (discount > 0) {
+                            double divisionValue = (double) decreaseAmount / originalPrice;
+                            double discount = divisionValue * 100.0;
+                            if ((int)discount > 0) {
                                 holder.discountLayout.setVisibility(View.VISIBLE);
-                                holder.discountTextView.setText(String.valueOf(discount) + "% off");
+                                holder.discountTextView.setText(String.valueOf((int)discount) + "% off");
                             }
                         }
                     }
@@ -259,7 +264,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
         holder.plusTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int availableQuantity = 0;
+                /*int availableQuantity = 0;
                 int count = Integer.parseInt(holder.countTextView.getText().toString());
                 count++;
 
@@ -283,6 +288,46 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     holder.countTextView.setText(String.valueOf(count));
                 } else {
                     Toast.makeText(mContext, "Only "+String.valueOf(count-1)+" are available in stock", Toast.LENGTH_SHORT).show();
+                }*/
+
+                String sku_temp = "";
+                int availableQuantity = 0;
+                int count = Integer.parseInt(holder.countTextView.getText().toString());
+                count++;
+                OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
+                if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
+                    offlineCartProduct.setProduct_id(Integer.parseInt(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getProduct_id()));
+                    offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
+                    offlineCartProduct.setValue_index(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
+                    offlineCartProduct.setPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
+                    offlineCartProduct.setDefault_title(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
+                    availableQuantity = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
+                    if (availableQuantity >= count) {
+                        homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(count);
+                    }
+                    sku_temp = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku();
+                } else {
+                    offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getSku());
+                    offlineCartProduct.setPrice(String.valueOf(homeResponseArrayList.get(position).getPrice()));
+                    offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getFinalPrice());
+                    availableQuantity = homeResponseArrayList.get(position).getQty();
+                    if (availableQuantity >= count) {
+                        homeResponseArrayList.get(position).setCartQuantity(count);
+                    }
+                    sku_temp = homeResponseArrayList.get(position).getSku();
+                }
+                offlineCartProduct.setQty(count);
+                offlineCartProduct.setParentSkuID(homeResponseArrayList.get(position).getSku());
+                offlineCartProduct.setName(homeResponseArrayList.get(position).getName());
+                offlineCartProduct.setProduct_type(homeResponseArrayList.get(position).getProduct_type());
+                offlineCartProduct.setImage(homeResponseArrayList.get(position).getImage());
+
+                if (availableQuantity >= count) {
+                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, count, "update");
+                    holder.countTextView.setText(String.valueOf(count));
+                } else {
+                    Toast.makeText(mContext, "Only " + String.valueOf(count - 1) + " are available in stock", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -291,35 +336,60 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
         holder.minusTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //int availableQuantity = 0;
-                int count = Integer.parseInt(holder.countTextView.getText().toString());
-                count--;
 
+                /*int count = Integer.parseInt(holder.countTextView.getText().toString());
+                count--;
                 String sku_temp = "";
-                int quantityAvailable = 0;
                 if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
                     sku_temp = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku();
-                    // quantityAvailable = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
-                    // availableQuantity = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
-                    // if (availableQuantity > count) {
                     homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(count);
-                    //  }
                 } else {
                     sku_temp = homeResponseArrayList.get(position).getSku();
-                    // quantityAvailable = homeResponseArrayList.get(position).getSku();
-                    // availableQuantity = homeResponseArrayList.get(position).getQty();
-                    //  if (availableQuantity > count) {
                     homeResponseArrayList.get(position).setCartQuantity(count);
-                    //  }
                 }
 
-                if (count > 0 /*&& (availableQuantity > count)*/) {
+                if (count > 0 *//*&& (availableQuantity > count)*//*) {
                     holder.countTextView.setText(String.valueOf(count));
                     updateCartProductOfflineUsingSkuID(sku_temp, count, "update");
                 } else if (count == 0) {
                     holder.cartCountLayout.setVisibility(View.GONE);
                     holder.cartAddLayout.setVisibility(View.VISIBLE);
                     updateCartProductOfflineUsingSkuID(sku_temp, count, "delete");
+                }*/
+
+                String sku_temp = "";
+                int count = Integer.parseInt(holder.countTextView.getText().toString());
+                count--;
+                OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
+                if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
+                    offlineCartProduct.setProduct_id(Integer.parseInt(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getProduct_id()));
+                    offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
+                    offlineCartProduct.setValue_index(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
+                    offlineCartProduct.setPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
+                    offlineCartProduct.setDefault_title(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
+                    homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(count);
+                    sku_temp = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku();
+                } else {
+                    offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getSku());
+                    offlineCartProduct.setPrice(String.valueOf(homeResponseArrayList.get(position).getPrice()));
+                    offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getFinalPrice());
+                    homeResponseArrayList.get(position).setCartQuantity(count);
+                    sku_temp = homeResponseArrayList.get(position).getSku();
+                }
+                offlineCartProduct.setQty(count);
+                offlineCartProduct.setParentSkuID(homeResponseArrayList.get(position).getSku());
+                offlineCartProduct.setName(homeResponseArrayList.get(position).getName());
+                offlineCartProduct.setProduct_type(homeResponseArrayList.get(position).getProduct_type());
+                offlineCartProduct.setImage(homeResponseArrayList.get(position).getImage());
+
+                if (count > 0) {
+                    holder.countTextView.setText(String.valueOf(count));
+                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, count, "update");
+                } else if (count == 0) {
+                    holder.cartCountLayout.setVisibility(View.GONE);
+                    holder.cartAddLayout.setVisibility(View.VISIBLE);
+                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, count, "delete");
                 }
             }
         });
@@ -329,6 +399,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
             @Override
             public void onClick(View view) {
                 int availableQuantity = 0;
+                String sku_temp = "";
                 OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
                 if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
                     offlineCartProduct.setProduct_id(Integer.parseInt(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getProduct_id()));
@@ -341,6 +412,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     if (availableQuantity > 0) {
                         homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(1);
                     }
+                    sku_temp = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku();
                 } else {
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(homeResponseArrayList.get(position).getPrice()));
@@ -349,6 +421,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     if (availableQuantity > 0) {
                         homeResponseArrayList.get(position).setCartQuantity(1);
                     }
+                    sku_temp = homeResponseArrayList.get(position).getSku();
                 }
                 offlineCartProduct.setQty(1);
                 offlineCartProduct.setParentSkuID(homeResponseArrayList.get(position).getSku());
@@ -357,14 +430,14 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                 offlineCartProduct.setImage(homeResponseArrayList.get(position).getImage());
 
                 if (availableQuantity > 0) {
-                    addCartProductOffline(offlineCartProduct);
+                    //addCartProductOffline(offlineCartProduct);
+                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, 1, "insert");
                     holder.cartCountLayout.setVisibility(View.VISIBLE);
                     holder.countTextView.setText(String.valueOf(1));
                     holder.cartAddLayout.setVisibility(View.GONE);
                 } else {
                     Toast.makeText(mContext, "Product is not available in stock to buy", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -404,7 +477,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
         new AddCartProductOffline().execute();
     }
 
-    public void updateCartProductOfflineUsingSkuID(final String skuIDTemp, final int count, final String type) {
+    public void updateCartProductOfflineUsingSkuID(final OfflineCartProduct insertOfflineCartProduct, final String skuIDTemp, final int count, final String type) {
         class AddCartProductOffline extends AsyncTask<Void, Void, List<OfflineCartProduct>> {
             @Override
             protected List<OfflineCartProduct> doInBackground(Void... voids) {
@@ -431,6 +504,21 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                                 .offlineCartDao()
                                 .delete(offlineCartProduct);
                     }
+                } else {
+                    if (type.equalsIgnoreCase("update") || type.equalsIgnoreCase("insert")) {
+                        DatabaseClient
+                                .getInstance(mContext)
+                                .getAppDatabase()
+                                .offlineCartDao()
+                                .insert(insertOfflineCartProduct);
+                    }
+                   /* else{
+                        DatabaseClient
+                                .getInstance(mContext)
+                                .getAppDatabase()
+                                .offlineCartDao()
+                                .delete(offlineCartProduct);
+                    }*/
                 }
                 List<OfflineCartProduct> offlineCartProduct_temp = DatabaseClient
                         .getInstance(mContext)
