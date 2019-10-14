@@ -172,7 +172,8 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     @Override
     protected void onResume() {
         super.onResume();
-        if (activityCount > 0 && shared.getUserID().length() > 0) {
+        if (activityCount > 0) {
+            ghUtil.dismissDialog();
             getCartProductsOffline();
         } else {
             activityCount++;

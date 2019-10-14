@@ -60,6 +60,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         shared = new Shared(mContext);
         // this.cartResponseArrayList = cartResponseArrayList;
         this.fragment = fragment;
+
+        for (int h = 0; h < categoryProducts.size(); h++) {
+            homeProductListAdapterArrayList.add(null);
+        }
     }
 
     public void setClickListener(ItemClickListener itemClickListener) {
@@ -101,11 +105,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
 
         holder.categoryNameTextView.setText(categoryProducts.get(position).getName());
 
-        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
-        holder.productsRecyclerView.setLayoutManager(mLayoutManager1);
-        homeProductListAdapter = new HomeProductListAdapter(mContext, categoryProducts.get(position).getProducts(), position, fragment);
-        holder.productsRecyclerView.setAdapter(homeProductListAdapter);
-        homeProductListAdapterArrayList.add(homeProductListAdapter);
+        if (homeProductListAdapterArrayList.get(position) == null) {
+            LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+            holder.productsRecyclerView.setLayoutManager(mLayoutManager1);
+            homeProductListAdapter = new HomeProductListAdapter(mContext, categoryProducts.get(position).getProducts(), position, fragment);
+            holder.productsRecyclerView.setAdapter(homeProductListAdapter);
+            homeProductListAdapterArrayList.set(position, homeProductListAdapter);
+        } else {
+            homeProductListAdapterArrayList.get(position).notifyDataSetChanged();
+        }
         //offerProductsListAdapter.setClickListener(HomeAdapter.this);
 
     }

@@ -69,6 +69,7 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
     TextView categoryNameTextView, cartCountTextView;
     ArrayList<String> productIsAddedCartArrayList;
     int activityCount = 0;
+    ArrayList<String> skuListTem;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -412,9 +413,6 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
         super.onResume();
         if (activityCount > 0 && shared.getUserID().length() > 0) {
             updateCartProductsCount();
-            if (productsAdapter != null) {
-                productsAdapter.notifyDataSetChanged();
-            }
         } else {
             activityCount++;
         }
@@ -444,6 +442,36 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
                     cartCountTextView.setText(String.valueOf(cartCount));
                 } else {
                     cartCountTextView.setText("0");
+                }
+
+                skuListTem = new ArrayList<String>();
+                for (int g = 0; g < offlineCartProductList.size(); g++) {
+                    skuListTem.add(offlineCartProductList.get(g).getSkuID());
+                }
+
+                if (productsAdapter != null && productsResponseArrayList != null) {
+                    for (int i = 0; i < productsResponseArrayList.size(); i++) {
+                        if (productsResponseArrayList.get(i).getOptions() != null && productsResponseArrayList.get(i).getOptions().size() > 0) {
+                            for (int m = 0; m < productsResponseArrayList.get(i).getOptions().size(); m++) {
+                                if (skuListTem.contains(productsResponseArrayList.get(i).getOptions().get(m).getSku())) {
+                                    for (int t = 0; t < skuListTem.size(); t++) {
+                                        productsResponseArrayList.get(i).getOptions().get(m).setCartQuantity(offlineCartProductList.get(t).getQty());
+                                    }
+                                } else {
+                                    productsResponseArrayList.get(i).getOptions().get(m).setCartQuantity(0);
+                                }
+                            }
+                        } else {
+                            if (skuListTem.contains(productsResponseArrayList.get(i).getSku())) {
+                                for (int t = 0; t < skuListTem.size(); t++) {
+                                    productsResponseArrayList.get(i).setCartQuantity(offlineCartProductList.get(t).getQty());
+                                }
+                            } else {
+                                productsResponseArrayList.get(i).setCartQuantity(0);
+                            }
+                        }
+                    }
+                    productsAdapter.notifyDataSetChanged();
                 }
             }
         }

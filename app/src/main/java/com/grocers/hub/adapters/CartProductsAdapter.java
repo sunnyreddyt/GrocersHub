@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,10 +116,21 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, ProductDetailActivity.class);
-                String skuID = cartResponseArrayList.get(position).getParentSkuID();
-                intent.putExtra("skuID", skuID);
-                mContext.startActivity(intent);
+
+                holder.itemLayout.setEnabled(false);
+                final Handler handle = new Handler();
+                final int delay = 300; //milliseconds
+                handle.postDelayed(new Runnable() {
+                    public void run() {
+                        holder.itemLayout.setEnabled(true);
+                        Intent intent = new Intent(mContext, ProductDetailActivity.class);
+                        String skuID = cartResponseArrayList.get(position).getParentSkuID();
+                        intent.putExtra("skuID", skuID);
+                        mContext.startActivity(intent);
+                    }
+                }, delay);
+
+
             }
         });
 

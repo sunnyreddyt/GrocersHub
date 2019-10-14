@@ -93,6 +93,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
     HomeAdapter homeAdapter;
     ArrayList<CartResponse> cartResponseArrayList = new ArrayList<>();
     private ArrayList<HomeResponse> homeResponseArrayList = new ArrayList<HomeResponse>();
+    ArrayList<String> skuListTem;
 
     @Nullable
     @Override
@@ -462,9 +463,6 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
     public void onResume() {
         super.onResume();
         updateCartProductsCount();
-        if (homeAdapter != null) {
-            homeAdapter.notifyDataSetChanged();
-        }
     }
 
     public void updateCartProductsCount() {
@@ -491,6 +489,39 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
                     cartCountTextView.setText(String.valueOf(cartCount));
                 } else {
                     cartCountTextView.setText("0");
+                }
+
+                skuListTem = new ArrayList<String>();
+                for (int g = 0; g < offlineCartProductList.size(); g++) {
+                    skuListTem.add(offlineCartProductList.get(g).getSkuID());
+                }
+
+                if (homeAdapter != null && homeResponseArrayList != null) {
+                    for (int a = 0; a < homeResponseArrayList.size(); a++) {
+                        for (int b = 0; b < homeResponseArrayList.get(a).getProducts().size(); b++) {
+
+                            if (homeResponseArrayList.get(a).getProducts().get(b).getOptions() != null && homeResponseArrayList.get(a).getProducts().get(b).getOptions().size() > 0) {
+                                for (int m = 0; m < homeResponseArrayList.get(a).getProducts().get(b).getOptions().size(); m++) {
+                                    if (skuListTem.contains(homeResponseArrayList.get(a).getProducts().get(b).getOptions().get(m).getSku())) {
+                                        for (int t = 0; t < skuListTem.size(); t++) {
+                                            homeResponseArrayList.get(a).getProducts().get(b).getOptions().get(m).setCartQuantity(offlineCartProductList.get(t).getQty());
+                                        }
+                                    } else {
+                                        homeResponseArrayList.get(a).getProducts().get(b).getOptions().get(m).setCartQuantity(0);
+                                    }
+                                }
+                            } else {
+                                if (skuListTem.contains(homeResponseArrayList.get(a).getProducts().get(b).getSku())) {
+                                    for (int t = 0; t < skuListTem.size(); t++) {
+                                        homeResponseArrayList.get(a).getProducts().get(b).setCartQuantity(offlineCartProductList.get(t).getQty());
+                                    }
+                                } else {
+                                    homeResponseArrayList.get(a).getProducts().get(b).setCartQuantity(0);
+                                }
+                            }
+                        }
+                    }
+                    homeAdapter.notifyDataSetChanged();
                 }
             }
         }
