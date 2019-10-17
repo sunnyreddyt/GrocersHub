@@ -94,7 +94,7 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
 
         holder.productNameTextView.setText(cartResponseArrayList.get(position).getName());
         Picasso.get().load(cartResponseArrayList.get(position).getImage()).into(holder.productImageView);
-        holder.offerCostTextView.setText(String.valueOf(cartResponseArrayList.get(position).getPrice()));
+        holder.offerCostTextView.setText(String.valueOf(cartResponseArrayList.get(position).getFinalPrice()));
         holder.costTextView.setVisibility(View.INVISIBLE);
         holder.countTextView.setText(String.valueOf(cartResponseArrayList.get(position).getQty()));
         if (cartResponseArrayList.get(position).getDefault_title() != null && cartResponseArrayList.get(position).getDefault_title().length() > 0) {

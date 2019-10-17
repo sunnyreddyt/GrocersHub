@@ -181,7 +181,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                     cartResponse.setQty(offlineCartProductList.get(g).getQty());
                     cartResponse.setName(offlineCartProductList.get(g).getName());
                     cartResponse.setPrice(Double.parseDouble(offlineCartProductList.get(g).getPrice()));
-                    cartResponse.setFinalPrice(Double.parseDouble(offlineCartProductList.get(g).getPrice()));
+                    cartResponse.setFinalPrice(offlineCartProductList.get(g).getFinalPrice());
                     cartResponse.setImage(offlineCartProductList.get(g).getImage());
                     cartResponse.setProduct_type(offlineCartProductList.get(g).getProduct_type());
                     cartResponse.setDefault_title(offlineCartProductList.get(g).getDefault_title());
@@ -191,7 +191,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
 
                 CartActivity.totalAmount = 0;
                 for (int g = 0; g < cartResponseList.size(); g++) {
-                    double priceDouble = cartResponseList.get(g).getPrice();
+                    double priceDouble = cartResponseList.get(g).getFinalPrice();
                     int price = (int) priceDouble;
                     int quantity = cartResponseList.get(g).getQty();
                     int productPrice = price * quantity;

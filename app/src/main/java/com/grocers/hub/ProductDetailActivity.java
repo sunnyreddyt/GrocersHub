@@ -212,20 +212,26 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                             productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(0).getFinalPrice()));
                             double priceDouble = Double.parseDouble(productDetailsResponse.getOptions().get(0).getPrice());
                             int priceInt = (int) priceDouble;
-                            if (priceInt == productDetailsResponse.getData().getFinalPrice()) {
+                            int finalPriceInt = (int) productDetailsResponse.getOptions().get(0).getFinalPrice();
+                            if (priceInt == finalPriceInt) {
                                 productOriginalPriceTextView.setVisibility(View.GONE);
                                 discountLayout.setVisibility(View.GONE);
                             } else {
                                 productOriginalPriceTextView.setVisibility(View.VISIBLE);
+                                productOriginalPriceTextView.setText("₹ " + String.valueOf(priceInt)+" ");
 
                                 int originalPrice = priceInt;
                                 if (originalPrice > 0) {
-                                    int finalPrice = productDetailsResponse.getData().getFinal_price();
+                                    int finalPrice = productDetailsResponse.getOptions().get(0).getFinalPrice();
                                     int decreaseAmount = originalPrice - finalPrice;
-                                    int discount = (decreaseAmount / originalPrice) * 100;
+                                    double divisionValue = (double) decreaseAmount / originalPrice;
+                                    double discount = divisionValue * 100.0;
+                                    //int discount = (decreaseAmount / originalPrice) * 100;
                                     if (discount > 0) {
                                         discountLayout.setVisibility(View.VISIBLE);
                                         discountTextView.setText(String.valueOf(discount) + "% off");
+                                    } else {
+                                        discountLayout.setVisibility(View.GONE);
                                     }
                                 }
                             }
@@ -251,15 +257,19 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                                 discountLayout.setVisibility(View.GONE);
                             } else {
                                 productOriginalPriceTextView.setVisibility(View.VISIBLE);
-
+                                productOriginalPriceTextView.setText("₹ " + String.valueOf(priceInt)+" ");
                                 int originalPrice = priceInt;
                                 if (originalPrice > 0) {
                                     int finalPrice = productDetailsResponse.getData().getFinal_price();
                                     int decreaseAmount = originalPrice - finalPrice;
-                                    int discount = (decreaseAmount / originalPrice) * 100;
+                                    double divisionValue = (double) decreaseAmount / originalPrice;
+                                    double discount = divisionValue * 100.0;
+                                    //int discount = (decreaseAmount / originalPrice) * 100;
                                     if (discount > 0) {
                                         discountLayout.setVisibility(View.VISIBLE);
                                         discountTextView.setText(String.valueOf(discount) + "% off");
+                                    } else {
+                                        discountLayout.setVisibility(View.GONE);
                                     }
                                 }
                             }
@@ -511,15 +521,20 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
             discountLayout.setVisibility(View.GONE);
         } else {
             productOriginalPriceTextView.setVisibility(View.VISIBLE);
+            productOriginalPriceTextView.setText("₹ " + String.valueOf(priceInt)+" ");
 
             int originalPrice = priceInt;
             if (originalPrice > 0) {
                 int finalPrice = productDetailsResponse.getData().getFinal_price();
                 int decreaseAmount = originalPrice - finalPrice;
-                int discount = (decreaseAmount / originalPrice) * 100;
+                double divisionValue = (double) decreaseAmount / originalPrice;
+                double discount = divisionValue * 100.0;
+                //int discount = (decreaseAmount / originalPrice) * 100;
                 if (discount > 0) {
                     discountLayout.setVisibility(View.VISIBLE);
                     discountTextView.setText(String.valueOf(discount) + "% off");
+                } else{
+                    discountLayout.setVisibility(View.GONE);
                 }
             }
         }
