@@ -24,6 +24,15 @@ public class HomeResponse {
     private int cartQuantity;
     private String product_type;
     private int qty;
+    private int maxQtyAllowed;
+
+    public int getMaxQtyAllowed() {
+        return maxQtyAllowed;
+    }
+
+    public void setMaxQtyAllowed(int maxQtyAllowed) {
+        this.maxQtyAllowed = maxQtyAllowed;
+    }
 
     public int getQty() {
         return qty;
@@ -196,8 +205,20 @@ public class HomeResponse {
 
     public class ProductOptions {
         private String sku, price, option_title, default_title, super_attribute_label, value_index, attribute_code, product_id;
-        private int qty, cartQuantity;
+        private int qty, cartQuantity,maxQtyAllowed;
         private double finalPrice;
+
+        public void setFinalPrice(double finalPrice) {
+            this.finalPrice = finalPrice;
+        }
+
+        public int getMaxQtyAllowed() {
+            return maxQtyAllowed;
+        }
+
+        public void setMaxQtyAllowed(int maxQtyAllowed) {
+            this.maxQtyAllowed = maxQtyAllowed;
+        }
 
         public int getCartQuantity() {
             return cartQuantity;

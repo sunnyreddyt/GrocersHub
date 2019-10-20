@@ -1,6 +1,7 @@
 package com.grocers.hub.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.ProductDetailActivity;
@@ -322,8 +324,23 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                 offlineCartProduct.setImage(homeResponseArrayList.get(position).getImage());
 
                 if (availableQuantity >= count) {
-                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, count, "update");
-                    holder.countTextView.setText(String.valueOf(count));
+                    int maxQtyAllowed = 0;
+                    if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
+                        maxQtyAllowed = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed();
+                    } else {
+                        maxQtyAllowed = homeResponseArrayList.get(position).getMaxQtyAllowed();
+                    }
+                    if (maxQtyAllowed > count) {
+                        updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, count, "update");
+                        holder.countTextView.setText(String.valueOf(count));
+                    } else {
+                        new AlertDialog.Builder(mContext).setTitle("Alert").setMessage("Max Allowed quantity per order is:" + String.valueOf(maxQtyAllowed))
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+                    }
                 } else {
                     Toast.makeText(mContext, "Only " + String.valueOf(count - 1) + " are available in stock", Toast.LENGTH_SHORT).show();
                 }
@@ -471,10 +488,25 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
 
                 if (availableQuantity > 0) {
                     //addCartProductOffline(offlineCartProduct);
-                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, 1, "insert");
-                    holder.cartCountLayout.setVisibility(View.VISIBLE);
-                    holder.countTextView.setText(String.valueOf(1));
-                    holder.cartAddLayout.setVisibility(View.GONE);
+                    int maxQtyAllowed = 0;
+                    if (homeResponseArrayList.get(position).getOptions() != null && homeResponseArrayList.get(position).getOptions().size() > 0) {
+                        maxQtyAllowed = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed();
+                    } else {
+                        maxQtyAllowed = homeResponseArrayList.get(position).getMaxQtyAllowed();
+                    }
+                    if (maxQtyAllowed > 1) {
+                        updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, 1, "insert");
+                        holder.cartCountLayout.setVisibility(View.VISIBLE);
+                        holder.countTextView.setText(String.valueOf(1));
+                        holder.cartAddLayout.setVisibility(View.GONE);
+                    } else {
+                        new AlertDialog.Builder(mContext).setTitle("Alert").setMessage("Max Allowed quantity per order is:" + String.valueOf(maxQtyAllowed))
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+                    }
                 } else {
                     Toast.makeText(mContext, "Product is not available in stock to buy", Toast.LENGTH_SHORT).show();
                 }

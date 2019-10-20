@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class ProductDetailsResponse {
 
-    private int qty, final_price,finalPrice;
+    private int qty, final_price,finalPrice, maxQtyAllowed;
     private String price, entity_id, attribute_set_id, type_id, sku, has_options, required_options, name,
             image, value_id, file, product_id, attribute_code, weight, value_index, default_title;
     private ProductDetailsResponse quantity_and_stock_status, data;
@@ -13,6 +13,13 @@ public class ProductDetailsResponse {
     private ArrayList<ProductDetailsResponse> media_gallery_entries;
     private ArrayList<ProductDetailsResponse> options;
 
+    public int getMaxQtyAllowed() {
+        return maxQtyAllowed;
+    }
+
+    public void setMaxQtyAllowed(int maxQtyAllowed) {
+        this.maxQtyAllowed = maxQtyAllowed;
+    }
 
     public int getFinalPrice() {
         return finalPrice;

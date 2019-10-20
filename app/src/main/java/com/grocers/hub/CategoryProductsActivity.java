@@ -106,6 +106,10 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
                 categoryModelArrayList.add(categoryModel.getChildren_data().get(p));
             }
 
+            if (categoryModelArrayList.size() == 0) {
+                selectedSubCategoryId = String.valueOf(categoryModel.getId());
+            }
+
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(CategoryProductsActivity.this, LinearLayoutManager.HORIZONTAL, false);
             subCategoriesRecyclerView.setLayoutManager(mLayoutManager);
             subCategoriesAdapter = new SubCategoriesAdapter(CategoryProductsActivity.this, categoryModelArrayList);

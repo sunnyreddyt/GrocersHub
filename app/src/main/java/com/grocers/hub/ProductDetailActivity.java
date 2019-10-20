@@ -1,6 +1,7 @@
 package com.grocers.hub;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,6 +69,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     public static int selectedUnitPosition = 0;
     List<OfflineCartProduct> offlineCartProductArrayList;
     String productImageUrl = "";
+    int maxQuantityAllowed = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -135,26 +138,35 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                         /*if (shared.getUserID().length() > 0) {
                             getQuoteIDServiceCall();
                         } else {*/
-                        OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
-                        if (productDetailsResponse.getOptions() != null && productDetailsResponse.getOptions().size() > 0) {
-                            offlineCartProduct.setProduct_id(Integer.parseInt(productDetailsResponse.getOptions().get(selectedUnitPosition).getProduct_id()));
-                            offlineCartProduct.setSkuID(productDetailsResponse.getOptions().get(selectedUnitPosition).getSku());
-                            offlineCartProduct.setValue_index(productDetailsResponse.getOptions().get(selectedUnitPosition).getValue_index());
-                            offlineCartProduct.setPrice(productDetailsResponse.getOptions().get(selectedUnitPosition).getPrice());
-                            offlineCartProduct.setFinalPrice(productDetailsResponse.getOptions().get(selectedUnitPosition).getFinalPrice());
-                            offlineCartProduct.setDefault_title(productDetailsResponse.getOptions().get(selectedUnitPosition).getDefault_title());
+                        if (maxQuantityAllowed > 0) {
+                            OfflineCartProduct offlineCartProduct = new OfflineCartProduct();
+                            if (productDetailsResponse.getOptions() != null && productDetailsResponse.getOptions().size() > 0) {
+                                offlineCartProduct.setProduct_id(Integer.parseInt(productDetailsResponse.getOptions().get(selectedUnitPosition).getProduct_id()));
+                                offlineCartProduct.setSkuID(productDetailsResponse.getOptions().get(selectedUnitPosition).getSku());
+                                offlineCartProduct.setValue_index(productDetailsResponse.getOptions().get(selectedUnitPosition).getValue_index());
+                                offlineCartProduct.setPrice(productDetailsResponse.getOptions().get(selectedUnitPosition).getPrice());
+                                offlineCartProduct.setFinalPrice(productDetailsResponse.getOptions().get(selectedUnitPosition).getFinalPrice());
+                                offlineCartProduct.setDefault_title(productDetailsResponse.getOptions().get(selectedUnitPosition).getDefault_title());
 
+                            } else {
+                                offlineCartProduct.setSkuID(productDetailsResponse.getData().getSku());
+                                offlineCartProduct.setPrice(productDetailsResponse.getData().getPrice());
+                                offlineCartProduct.setFinalPrice(productDetailsResponse.getData().getFinal_price());
+                            }
+                            offlineCartProduct.setQty(1);
+                            offlineCartProduct.setName(productDetailsResponse.getData().getName());
+                            offlineCartProduct.setProduct_type(productDetailsResponse.getData().getType_id());
+                            offlineCartProduct.setImage(productImageUrl);
+
+                            addCartProductOffline(offlineCartProduct);
                         } else {
-                            offlineCartProduct.setSkuID(productDetailsResponse.getData().getSku());
-                            offlineCartProduct.setPrice(productDetailsResponse.getData().getPrice());
-                            offlineCartProduct.setFinalPrice(productDetailsResponse.getData().getFinal_price());
+                            new AlertDialog.Builder(context).setTitle("Alert").setMessage("Max Allowed quantity per order is:" + String.valueOf(maxQuantityAllowed))
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).show();
                         }
-                        offlineCartProduct.setQty(1);
-                        offlineCartProduct.setName(productDetailsResponse.getData().getName());
-                        offlineCartProduct.setProduct_type(productDetailsResponse.getData().getType_id());
-                        offlineCartProduct.setImage(productImageUrl);
-
-                        addCartProductOffline(offlineCartProduct);
                         // }
                     }
                 } else {
@@ -207,6 +219,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                         productImagesListAdapter.setClickListener(ProductDetailActivity.this);
 
                         if (productDetailsResponse.getOptions() != null && productDetailsResponse.getOptions().size() > 0) {
+                            maxQuantityAllowed = productDetailsResponse.getOptions().get(0).getMaxQtyAllowed();
                             productUnitsLayout.setVisibility(View.VISIBLE);
                             selectedUnitPosition = 0;
                             productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(0).getFinalPrice()));
@@ -218,7 +231,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                                 discountLayout.setVisibility(View.GONE);
                             } else {
                                 productOriginalPriceTextView.setVisibility(View.VISIBLE);
-                                productOriginalPriceTextView.setText("₹ " + String.valueOf(priceInt)+" ");
+                                productOriginalPriceTextView.setText("₹ " + String.valueOf(priceInt) + " ");
 
                                 int originalPrice = priceInt;
                                 if (originalPrice > 0) {
@@ -257,7 +270,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                                 discountLayout.setVisibility(View.GONE);
                             } else {
                                 productOriginalPriceTextView.setVisibility(View.VISIBLE);
-                                productOriginalPriceTextView.setText("₹ " + String.valueOf(priceInt)+" ");
+                                productOriginalPriceTextView.setText("₹ " + String.valueOf(priceInt) + " ");
                                 int originalPrice = priceInt;
                                 if (originalPrice > 0) {
                                     int finalPrice = productDetailsResponse.getData().getFinal_price();
@@ -514,6 +527,8 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         selectedUnitPosition = position;
         productsUnitsAdapter.notifyDataSetChanged();
         productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getOptions().get(position).getFinalPrice()));
+        maxQuantityAllowed = productDetailsResponse.getOptions().get(position).getMaxQtyAllowed();
+
         double priceDouble = Double.parseDouble(productDetailsResponse.getOptions().get(position).getPrice());
         int priceInt = (int) priceDouble;
         if (priceInt == productDetailsResponse.getData().getFinalPrice()) {
@@ -521,7 +536,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
             discountLayout.setVisibility(View.GONE);
         } else {
             productOriginalPriceTextView.setVisibility(View.VISIBLE);
-            productOriginalPriceTextView.setText("₹ " + String.valueOf(priceInt)+" ");
+            productOriginalPriceTextView.setText("₹ " + String.valueOf(priceInt) + " ");
 
             int originalPrice = priceInt;
             if (originalPrice > 0) {
@@ -533,7 +548,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 if (discount > 0) {
                     discountLayout.setVisibility(View.VISIBLE);
                     discountTextView.setText(String.valueOf(discount) + "% off");
-                } else{
+                } else {
                     discountLayout.setVisibility(View.GONE);
                 }
             }
