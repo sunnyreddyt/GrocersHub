@@ -44,6 +44,17 @@ public class OfflineCartProduct {
     @ColumnInfo(name = "parentSkuID")
     private String parentSkuID;
 
+    @ColumnInfo(name = "maxQtyAllowed")
+    private int maxQtyAllowed;
+
+    public int getMaxQtyAllowed() {
+        return maxQtyAllowed;
+    }
+
+    public void setMaxQtyAllowed(int maxQtyAllowed) {
+        this.maxQtyAllowed = maxQtyAllowed;
+    }
+
     public String getParentSkuID() {
         return parentSkuID;
     }

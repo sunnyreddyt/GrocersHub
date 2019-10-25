@@ -114,9 +114,9 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                 int decreaseAmount = originalPriceInt - finalPriceInt;
                 double divisionValue = (double) decreaseAmount / originalPrice;
                 double discount = divisionValue * 100.0;
-                if ((int)discount > 0) {
+                if ((int) discount > 0) {
                     holder.discountLayout.setVisibility(View.VISIBLE);
-                    holder.discountTextView.setText(String.valueOf((int)discount) + "% off");
+                    holder.discountTextView.setText(String.valueOf((int) discount) + "% off");
                 }
             }
         }
@@ -181,9 +181,9 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                     int decreaseAmount = originalPrice - finalPriceInt;
                     double divisionValue = (double) decreaseAmount / originalPrice;
                     double discount = divisionValue * 100.0;
-                    if ((int)discount > 0) {
+                    if ((int) discount > 0) {
                         holder.discountLayout.setVisibility(View.VISIBLE);
-                        holder.discountTextView.setText(String.valueOf((int)discount) + "% off");
+                        holder.discountTextView.setText(String.valueOf((int) discount) + "% off");
                     }
                 }
             }
@@ -229,9 +229,9 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                             int decreaseAmount = originalPrice - finalPriceInt;
                             double divisionValue = (double) decreaseAmount / originalPrice;
                             double discount = divisionValue * 100.0;
-                            if ((int)discount > 0) {
+                            if ((int) discount > 0) {
                                 holder.discountLayout.setVisibility(View.VISIBLE);
-                                holder.discountTextView.setText(String.valueOf((int)discount) + "% off");
+                                holder.discountTextView.setText(String.valueOf((int) discount) + "% off");
                             }
                         }
                     }
@@ -300,6 +300,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
                     offlineCartProduct.setValue_index(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
                     offlineCartProduct.setPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
                     offlineCartProduct.setDefault_title(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
                     availableQuantity = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
@@ -310,6 +311,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                 } else {
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(homeResponseArrayList.get(position).getPrice()));
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getFinalPrice());
                     availableQuantity = homeResponseArrayList.get(position).getQty();
                     if (availableQuantity >= count) {
@@ -381,6 +383,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
                     offlineCartProduct.setValue_index(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
                     offlineCartProduct.setPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
                     offlineCartProduct.setDefault_title(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
                     availableQuantity = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
@@ -391,6 +394,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                 } else {
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(homeResponseArrayList.get(position).getPrice()));
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getFinalPrice());
                     availableQuantity = homeResponseArrayList.get(position).getQty();
                     if (availableQuantity >= count) {
@@ -463,6 +467,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
                     offlineCartProduct.setValue_index(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
                     offlineCartProduct.setPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
                     offlineCartProduct.setDefault_title(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
                     availableQuantity = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
@@ -473,6 +478,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                 } else {
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(homeResponseArrayList.get(position).getPrice()));
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getFinalPrice());
                     availableQuantity = homeResponseArrayList.get(position).getQty();
                     if (availableQuantity > 0) {
@@ -494,7 +500,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                     } else {
                         maxQtyAllowed = homeResponseArrayList.get(position).getMaxQtyAllowed();
                     }
-                    if (maxQtyAllowed > 1) {
+                    if (maxQtyAllowed > 0) {
                         updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, 1, "insert");
                         holder.cartCountLayout.setVisibility(View.VISIBLE);
                         holder.countTextView.setText(String.valueOf(1));
@@ -578,7 +584,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
                                 .delete(offlineCartProduct);
                     }
                 } else {
-                    if (type.equalsIgnoreCase("update")||type.equalsIgnoreCase("insert")) {
+                    if (type.equalsIgnoreCase("update") || type.equalsIgnoreCase("insert")) {
                         DatabaseClient
                                 .getInstance(mContext)
                                 .getAppDatabase()

@@ -16,6 +16,15 @@ public class CartResponse {
     private String quote_id;
     private String default_title;
     private String parentSkuID;
+    private int maxQtyAllowed;
+
+    public int getMaxQtyAllowed() {
+        return maxQtyAllowed;
+    }
+
+    public void setMaxQtyAllowed(int maxQtyAllowed) {
+        this.maxQtyAllowed = maxQtyAllowed;
+    }
 
     public String getParentSkuID() {
         return parentSkuID;

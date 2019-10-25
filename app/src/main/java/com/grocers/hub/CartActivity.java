@@ -185,6 +185,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                     cartResponse.setImage(offlineCartProductList.get(g).getImage());
                     cartResponse.setProduct_type(offlineCartProductList.get(g).getProduct_type());
                     cartResponse.setDefault_title(offlineCartProductList.get(g).getDefault_title());
+                    cartResponse.setMaxQtyAllowed(offlineCartProductList.get(g).getMaxQtyAllowed());
                     cartResponse.setParentSkuID(offlineCartProductList.get(g).getParentSkuID());
                     cartResponseList.add(cartResponse);
                 }

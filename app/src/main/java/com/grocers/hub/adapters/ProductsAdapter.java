@@ -1,6 +1,7 @@
 package com.grocers.hub.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.CategoryProductsActivity;
@@ -134,7 +136,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                 int availableQuantity = 0;
                 int count = Integer.parseInt(holder.countTextView.getText().toString());
                 count++;
-                holder.countTextView.setText(String.valueOf(count));
 
                 /*String sku_temp = "";
                 if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
@@ -157,6 +158,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                     offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
                     offlineCartProduct.setValue_index(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
                     offlineCartProduct.setPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setMaxQtyAllowed(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
                     offlineCartProduct.setDefault_title(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
                     availableQuantity = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
@@ -167,6 +169,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                 } else {
                     offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(productsResponseArrayList.get(position).getPrice()));
+                    offlineCartProduct.setMaxQtyAllowed(productsResponseArrayList.get(position).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getFinalPrice());
                     availableQuantity = productsResponseArrayList.get(position).getQty();
                     if (availableQuantity >= count) {
@@ -181,7 +184,23 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                 offlineCartProduct.setImage(productsResponseArrayList.get(position).getImage());
 
                 if (availableQuantity > count) {
-                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, count, "update");
+                    int maxQtyAllowed = 0;
+                    if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
+                        maxQtyAllowed = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed();
+                    } else {
+                        maxQtyAllowed = productsResponseArrayList.get(position).getMaxQtyAllowed();
+                    }
+                    if (maxQtyAllowed > count) {
+                        updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, count, "update");
+                        holder.countTextView.setText(String.valueOf(count));
+                    } else {
+                        new AlertDialog.Builder(mContext).setTitle("Alert").setMessage("Max Allowed quantity per order is:" + String.valueOf(maxQtyAllowed))
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+                    }
                 } else {
                     Toast.makeText(mContext, "Only " + String.valueOf(count - 1) + " are available in stock", Toast.LENGTH_SHORT).show();
                 }
@@ -209,6 +228,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                     offlineCartProduct.setProduct_id(Integer.parseInt(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getProduct_id()));
                     offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
                     offlineCartProduct.setValue_index(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
+                    offlineCartProduct.setMaxQtyAllowed(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed());
                     offlineCartProduct.setPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
                     offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
                     offlineCartProduct.setDefault_title(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
@@ -220,7 +240,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                     offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(productsResponseArrayList.get(position).getPrice()));
                     offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getFinalPrice());
-
+                    offlineCartProduct.setMaxQtyAllowed(productsResponseArrayList.get(position).getMaxQtyAllowed());
                     productsResponseArrayList.get(position).setCartQuantity(count);
 
                     sku_temp = productsResponseArrayList.get(position).getSku();
@@ -343,6 +363,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                     offlineCartProduct.setSkuID(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
                     offlineCartProduct.setValue_index(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
                     offlineCartProduct.setPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setMaxQtyAllowed(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
                     offlineCartProduct.setDefault_title(productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
                     availableQuantity = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
@@ -363,16 +384,31 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                 offlineCartProduct.setQty(1);
                 offlineCartProduct.setParentSkuID(productsResponseArrayList.get(position).getSku());
                 offlineCartProduct.setName(productsResponseArrayList.get(position).getName());
+                offlineCartProduct.setMaxQtyAllowed(productsResponseArrayList.get(position).getMaxQtyAllowed());
                 offlineCartProduct.setProduct_type(productsResponseArrayList.get(position).getProduct_type());
                 offlineCartProduct.setImage(productsResponseArrayList.get(position).getImage());
 
                 if (availableQuantity > 0) {
 //                    addCartProductOffline(offlineCartProduct);
-                    updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, 1, "insert");
-
-                    holder.cartCountLayout.setVisibility(View.VISIBLE);
-                    holder.countTextView.setText(String.valueOf(1));
-                    holder.cartAddLayout.setVisibility(View.GONE);
+                    int maxQtyAllowed = 0;
+                    if (productsResponseArrayList.get(position).getOptions() != null && productsResponseArrayList.get(position).getOptions().size() > 0) {
+                        maxQtyAllowed = productsResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed();
+                    } else {
+                        maxQtyAllowed = productsResponseArrayList.get(position).getMaxQtyAllowed();
+                    }
+                    if (maxQtyAllowed > 0) {
+                        updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, 1, "insert");
+                        holder.cartCountLayout.setVisibility(View.VISIBLE);
+                        holder.countTextView.setText(String.valueOf(1));
+                        holder.cartAddLayout.setVisibility(View.GONE);
+                    } else {
+                        new AlertDialog.Builder(mContext).setTitle("Alert").setMessage("Max Allowed quantity per order is:" + String.valueOf(maxQtyAllowed))
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+                    }
                 } else {
                     Toast.makeText(mContext, "Product is not available in stock to buy", Toast.LENGTH_SHORT).show();
                 }

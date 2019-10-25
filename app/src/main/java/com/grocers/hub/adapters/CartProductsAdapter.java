@@ -140,20 +140,30 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
 
                 int count = Integer.parseInt(holder.countTextView.getText().toString());
                 count++;
-                holder.countTextView.setText(String.valueOf(count));
                 /*if (onCartUpdateListener != null) {
                     onCartUpdateListener.onCartUpdate(cartResponseArrayList.get(position), "add", count);
                 }*/
                 offlineCartProductList.get(position).setQty(count);
                 updateCartProductOffline(offlineCartProductList.get(position), "update");
 
-
                 double priceDouble = cartResponseArrayList.get(position).getPrice();
                 int price = (int) priceDouble;
                 int quantity = cartResponseArrayList.get(position).getQty();
                 int productPrice = price * quantity;
                 CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
-                ((CartActivity) mContext).updateCartProductsTotalPrice();
+
+                int maxQuantityAllowed = cartResponseArrayList.get(position).getMaxQtyAllowed();
+                if (maxQuantityAllowed > count) {
+                    holder.countTextView.setText(String.valueOf(count));
+                    ((CartActivity) mContext).updateCartProductsTotalPrice();
+                } else {
+                    new androidx.appcompat.app.AlertDialog.Builder(mContext).setTitle("Alert").setMessage("Max Allowed quantity per order is:" + String.valueOf(cartResponseArrayList.get(position).getMaxQtyAllowed()))
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+                }
 
             }
         });
@@ -165,7 +175,6 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                 int count = Integer.parseInt(holder.countTextView.getText().toString());
                 if (count > 1) {
                     count--;
-                    holder.countTextView.setText(String.valueOf(count));
                    /* if (onCartUpdateListener != null) {
                         onCartUpdateListener.onCartUpdate(cartResponseArrayList.get(position), "remove", count);
                     }*/
@@ -177,6 +186,7 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                     //int quantity = cartResponseArrayList.get(position).getQty();
                     // int productPrice = price * quantity;
                     CartActivity.totalAmount = CartActivity.totalAmount - price;
+                    holder.countTextView.setText(String.valueOf(count));
                     ((CartActivity) mContext).updateCartProductsTotalPrice();
 
                 }

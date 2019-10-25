@@ -302,6 +302,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
                     offlineCartProduct.setValue_index(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
                     offlineCartProduct.setPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
                     offlineCartProduct.setDefault_title(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
                     availableQuantity = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
@@ -313,6 +314,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(homeResponseArrayList.get(position).getPrice()));
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getFinalPrice());
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getMaxQtyAllowed());
                     availableQuantity = homeResponseArrayList.get(position).getQty();
                     if (availableQuantity >= count) {
                         homeResponseArrayList.get(position).setCartQuantity(count);
@@ -383,6 +385,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
                     offlineCartProduct.setValue_index(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
                     offlineCartProduct.setPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
                     offlineCartProduct.setDefault_title(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
                     homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).setCartQuantity(count);
@@ -391,6 +394,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(homeResponseArrayList.get(position).getPrice()));
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getFinalPrice());
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getMaxQtyAllowed());
                     homeResponseArrayList.get(position).setCartQuantity(count);
                     sku_temp = homeResponseArrayList.get(position).getSku();
                 }
@@ -423,6 +427,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getSku());
                     offlineCartProduct.setValue_index(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getValue_index());
                     offlineCartProduct.setPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getPrice());
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getMaxQtyAllowed());
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getFinalPrice());
                     offlineCartProduct.setDefault_title(homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getDefault_title());
                     availableQuantity = homeResponseArrayList.get(position).getOptions().get(holder.optionsSpinner.getSelectedItemPosition()).getQty();
@@ -434,6 +439,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     offlineCartProduct.setSkuID(homeResponseArrayList.get(position).getSku());
                     offlineCartProduct.setPrice(String.valueOf(homeResponseArrayList.get(position).getPrice()));
                     offlineCartProduct.setFinalPrice(homeResponseArrayList.get(position).getFinalPrice());
+                    offlineCartProduct.setMaxQtyAllowed(homeResponseArrayList.get(position).getMaxQtyAllowed());
                     availableQuantity = homeResponseArrayList.get(position).getQty();
                     if (availableQuantity > 0) {
                         homeResponseArrayList.get(position).setCartQuantity(1);
@@ -454,7 +460,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                     } else {
                         maxQtyAllowed = homeResponseArrayList.get(position).getMaxQtyAllowed();
                     }
-                    if (maxQtyAllowed > 1) {
+                    if (maxQtyAllowed > 0) {
                         updateCartProductOfflineUsingSkuID(offlineCartProduct, sku_temp, 1, "insert");
                         holder.cartCountLayout.setVisibility(View.VISIBLE);
                         holder.countTextView.setText(String.valueOf(1));

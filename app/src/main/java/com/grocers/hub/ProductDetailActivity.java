@@ -235,14 +235,15 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
                                 int originalPrice = priceInt;
                                 if (originalPrice > 0) {
-                                    int finalPrice = productDetailsResponse.getOptions().get(0).getFinalPrice();
-                                    int decreaseAmount = originalPrice - finalPrice;
+                                    double finalPrice = productDetailsResponse.getOptions().get(0).getFinalPrice();
+                                    int finalPriceIntTwo = (int) finalPrice;
+                                    int decreaseAmount = originalPrice - finalPriceIntTwo;
                                     double divisionValue = (double) decreaseAmount / originalPrice;
                                     double discount = divisionValue * 100.0;
                                     //int discount = (decreaseAmount / originalPrice) * 100;
-                                    if (discount > 0) {
+                                    if ((int)discount > 0) {
                                         discountLayout.setVisibility(View.VISIBLE);
-                                        discountTextView.setText(String.valueOf(discount) + "% off");
+                                        discountTextView.setText(String.valueOf((int)discount) + "% off");
                                     } else {
                                         discountLayout.setVisibility(View.GONE);
                                     }
@@ -273,14 +274,15 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                                 productOriginalPriceTextView.setText("₹ " + String.valueOf(priceInt) + " ");
                                 int originalPrice = priceInt;
                                 if (originalPrice > 0) {
-                                    int finalPrice = productDetailsResponse.getData().getFinal_price();
-                                    int decreaseAmount = originalPrice - finalPrice;
+                                    double finalPrice = productDetailsResponse.getData().getFinal_price();
+                                    int finalPriceIntTwo = (int) finalPrice;
+                                    int decreaseAmount = originalPrice - finalPriceIntTwo;
                                     double divisionValue = (double) decreaseAmount / originalPrice;
                                     double discount = divisionValue * 100.0;
                                     //int discount = (decreaseAmount / originalPrice) * 100;
-                                    if (discount > 0) {
+                                    if ((int)discount > 0) {
                                         discountLayout.setVisibility(View.VISIBLE);
-                                        discountTextView.setText(String.valueOf(discount) + "% off");
+                                        discountTextView.setText(String.valueOf((int)discount) + "% off");
                                     } else {
                                         discountLayout.setVisibility(View.GONE);
                                     }
@@ -531,7 +533,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
         double priceDouble = Double.parseDouble(productDetailsResponse.getOptions().get(position).getPrice());
         int priceInt = (int) priceDouble;
-        if (priceInt == productDetailsResponse.getData().getFinalPrice()) {
+        if (priceInt == productDetailsResponse.getOptions().get(position).getFinalPrice()) {
             productOriginalPriceTextView.setVisibility(View.GONE);
             discountLayout.setVisibility(View.GONE);
         } else {
@@ -540,14 +542,15 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
 
             int originalPrice = priceInt;
             if (originalPrice > 0) {
-                int finalPrice = productDetailsResponse.getData().getFinal_price();
-                int decreaseAmount = originalPrice - finalPrice;
+                double finalPrice = productDetailsResponse.getOptions().get(position).getFinalPrice();
+                int finalPriceIntTwo = (int) finalPrice;
+                int decreaseAmount = originalPrice - finalPriceIntTwo;
                 double divisionValue = (double) decreaseAmount / originalPrice;
                 double discount = divisionValue * 100.0;
                 //int discount = (decreaseAmount / originalPrice) * 100;
-                if (discount > 0) {
+                if ((int)discount > 0) {
                     discountLayout.setVisibility(View.VISIBLE);
-                    discountTextView.setText(String.valueOf(discount) + "% off");
+                    discountTextView.setText(String.valueOf((int)discount) + "% off");
                 } else {
                     discountLayout.setVisibility(View.GONE);
                 }
