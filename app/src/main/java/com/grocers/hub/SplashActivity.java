@@ -1,5 +1,6 @@
 package com.grocers.hub;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -71,6 +73,9 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
     public void PermissionGranted(int request_code) {
         Log.i("PERMISSION", "GRANTED");
         animate();
+        /*TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);;
+        String IMEI_Number_Holder = telephonyManager.getDeviceId();
+        Toast.makeText(SplashActivity.this, ":::" + IMEI_Number_Holder, Toast.LENGTH_SHORT).show();*/
     }
 
     @Override
@@ -113,14 +118,15 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
-        double divisionValue = (double) 20/80;
-        Log.v("division_values",String.valueOf(divisionValue));
+        double divisionValue = (double) 20 / 80;
+        Log.v("division_values", String.valueOf(divisionValue));
 
         ghUtil = GHUtil.getInstance(SplashActivity.this);
         shared = new Shared(SplashActivity.this);
         permissionUtils = new PermissionUtils(SplashActivity.this);
         permissions.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        permissions.add(Manifest.permission.READ_PHONE_STATE);
 
         appNameTextView = (TextView) findViewById(R.id.appNameTextView);
         appIconImageView = (ImageView) findViewById(R.id.appIconImageView);
@@ -140,6 +146,7 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
             //animate();
             animation();
         }
+
 
     }
 

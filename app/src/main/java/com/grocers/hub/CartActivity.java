@@ -536,7 +536,6 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                         HttpPost httppost = new HttpPost("https://www.grocershub.in/homeapi/multiplecart?token=" + shared.getToken());
 
                         StringEntity se = null;
-
                         se = new StringEntity(cartRequestArray.toString());
                         Log.v("cartRequestArray", cartRequestArray.toString());
 

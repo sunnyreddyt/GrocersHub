@@ -154,6 +154,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                                 offlineCartProduct.setFinalPrice(productDetailsResponse.getData().getFinal_price());
                             }
                             offlineCartProduct.setQty(1);
+                            offlineCartProduct.setMaxQtyAllowed(productDetailsResponse.getMaxQtyAllowed());
                             offlineCartProduct.setName(productDetailsResponse.getData().getName());
                             offlineCartProduct.setProduct_type(productDetailsResponse.getData().getType_id());
                             offlineCartProduct.setImage(productImageUrl);

@@ -144,7 +144,6 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                     onCartUpdateListener.onCartUpdate(cartResponseArrayList.get(position), "add", count);
                 }*/
                 offlineCartProductList.get(position).setQty(count);
-                updateCartProductOffline(offlineCartProductList.get(position), "update");
 
                 double priceDouble = cartResponseArrayList.get(position).getPrice();
                 int price = (int) priceDouble;
@@ -154,6 +153,7 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
 
                 int maxQuantityAllowed = cartResponseArrayList.get(position).getMaxQtyAllowed();
                 if (maxQuantityAllowed > count) {
+                    updateCartProductOffline(offlineCartProductList.get(position), "update");
                     holder.countTextView.setText(String.valueOf(count));
                     ((CartActivity) mContext).updateCartProductsTotalPrice();
                 } else {
