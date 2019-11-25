@@ -73,9 +73,6 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
     public void PermissionGranted(int request_code) {
         Log.i("PERMISSION", "GRANTED");
         animate();
-        /*TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);;
-        String IMEI_Number_Holder = telephonyManager.getDeviceId();
-        Toast.makeText(SplashActivity.this, ":::" + IMEI_Number_Holder, Toast.LENGTH_SHORT).show();*/
     }
 
     @Override
@@ -126,7 +123,7 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
         permissionUtils = new PermissionUtils(SplashActivity.this);
         permissions.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(android.Manifest.permission.ACCESS_COARSE_LOCATION);
-        permissions.add(Manifest.permission.READ_PHONE_STATE);
+        //permissions.add(Manifest.permission.READ_PHONE_STATE);
 
         appNameTextView = (TextView) findViewById(R.id.appNameTextView);
         appIconImageView = (ImageView) findViewById(R.id.appIconImageView);
