@@ -242,9 +242,9 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                                     double divisionValue = (double) decreaseAmount / originalPrice;
                                     double discount = divisionValue * 100.0;
                                     //int discount = (decreaseAmount / originalPrice) * 100;
-                                    if ((int)discount > 0) {
+                                    if ((int) discount > 0) {
                                         discountLayout.setVisibility(View.VISIBLE);
-                                        discountTextView.setText(String.valueOf((int)discount) + "% off");
+                                        discountTextView.setText(String.valueOf((int) discount) + "% off");
                                     } else {
                                         discountLayout.setVisibility(View.GONE);
                                     }
@@ -263,7 +263,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                             childSkuID = productDetailsResponse.getOptions().get(0).getSku();
 
                         } else {
-
+                            maxQuantityAllowed = productDetailsResponse.getMaxQtyAllowed();
                             productPriceTextView.setText("₹ " + String.valueOf(productDetailsResponse.getData().getFinal_price()));
                             double priceDouble = Double.parseDouble(productDetailsResponse.getData().getPrice());
                             int priceInt = (int) priceDouble;
@@ -281,9 +281,9 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                                     double divisionValue = (double) decreaseAmount / originalPrice;
                                     double discount = divisionValue * 100.0;
                                     //int discount = (decreaseAmount / originalPrice) * 100;
-                                    if ((int)discount > 0) {
+                                    if ((int) discount > 0) {
                                         discountLayout.setVisibility(View.VISIBLE);
-                                        discountTextView.setText(String.valueOf((int)discount) + "% off");
+                                        discountTextView.setText(String.valueOf((int) discount) + "% off");
                                     } else {
                                         discountLayout.setVisibility(View.GONE);
                                     }
@@ -549,9 +549,9 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                 double divisionValue = (double) decreaseAmount / originalPrice;
                 double discount = divisionValue * 100.0;
                 //int discount = (decreaseAmount / originalPrice) * 100;
-                if ((int)discount > 0) {
+                if ((int) discount > 0) {
                     discountLayout.setVisibility(View.VISIBLE);
-                    discountTextView.setText(String.valueOf((int)discount) + "% off");
+                    discountTextView.setText(String.valueOf((int) discount) + "% off");
                 } else {
                     discountLayout.setVisibility(View.GONE);
                 }
