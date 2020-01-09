@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -42,13 +43,13 @@ public class AllCategoriesListAdapter extends RecyclerView.Adapter<AllCategories
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout itemLayout;
+        LinearLayout itemLayout;
         TextView categoryNameTextView;
         ImageView categoryImageView;
 
         public MyViewHolder(View view) {
             super(view);
-            itemLayout = (RelativeLayout) view.findViewById(R.id.itemLayout);
+            itemLayout = (LinearLayout) view.findViewById(R.id.itemLayout);
             categoryNameTextView = (TextView) view.findViewById(R.id.categoryNameTextView);
             categoryImageView = (ImageView) view.findViewById(R.id.categoryImageView);
         }
