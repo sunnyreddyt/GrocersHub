@@ -6,22 +6,24 @@
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_95sdp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_6sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:layout_marginRight="@dimen/_6sdp"
+        android:layout_marginLeft="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_marginRight="@dimen/_4sdp"
         android:background="@color/white"
         android:orientation="vertical"
         app:cardCornerRadius="@dimen/_2sdp">
 
         <LinearLayout
             android:id="@+id/itemLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_4sdp"
             android:layout_marginRight="@dimen/_4sdp"
             android:gravity="center"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
             android:orientation="vertical">
 
             <!--   <ImageView
@@ -33,10 +35,10 @@
 
             <ImageView
                 android:id="@+id/categoryImageView"
-                android:layout_width="@dimen/_95sdp"
-                android:layout_height="@dimen/_90sdp"
+                android:layout_width="@dimen/_68sdp"
+                android:layout_height="@dimen/_68sdp"
                 android:layout_marginTop="@dimen/_2sdp"
-                android:padding="@dimen/_3sdp" />
+                android:src="@color/grey" />
 
             <TextView
                 android:id="@+id/categoryNameTextView"
@@ -45,8 +47,7 @@
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="2"
-                android:minHeight="@dimen/_30sdp"
-                android:paddingTop="@dimen/_1sdp"
+                android:minHeight="@dimen/_28sdp"
                 android:text="All Categories"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_10sdp"

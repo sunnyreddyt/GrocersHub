@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/_6sdp"
         android:background="@color/white"
+        android:layout_marginTop="@dimen/_4sdp"
         android:elevation="@dimen/_3sdp"
         android:orientation="vertical"
         android:paddingBottom="@dimen/_8sdp">

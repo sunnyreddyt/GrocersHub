@@ -62,10 +62,12 @@ public class SubCategoriesAdapter extends RecyclerView.Adapter<SubCategoriesAdap
         CategoryModel categoryModel = categoryModelArrayList.get(position);
         holder.categoryNameTextView.setText(categoryModel.getName());
         if (categoryModel.isCategoryBackground()) {
-            holder.itemLayout.setBackgroundColor(Color.parseColor("#01d365"));
+            //holder.itemLayout.setBackgroundColor(Color.parseColor("#01d365"));
+            holder.itemLayout.setBackgroundResource(R.drawable.green_square_rounded);
             holder.categoryNameTextView.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
         } else {
-            holder.itemLayout.setBackgroundColor(Color.parseColor("#8b8b8b"));
+            //holder.itemLayout.setBackgroundColor(Color.parseColor("#8b8b8b"));
+            holder.itemLayout.setBackgroundResource(R.drawable.grey_square_rounded);
             holder.categoryNameTextView.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
         }
 

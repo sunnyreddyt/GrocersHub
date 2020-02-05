@@ -59,10 +59,12 @@ public class ProductsUnitsAdapter extends RecyclerView.Adapter<ProductsUnitsAdap
 
         if (ProductDetailActivity.selectedUnitPosition == position) {
             holder.productUnitTextView.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.productUnitTextView.setBackgroundColor(Color.parseColor("#01d365"));
+            //holder.productUnitTextView.setBackgroundColor(Color.parseColor("#01d365"));
+            holder.productUnitTextView.setBackgroundResource(R.drawable.green_square_rounded);
         } else {
-            holder.productUnitTextView.setTextColor(Color.parseColor("#000000"));
-            holder.productUnitTextView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            holder.productUnitTextView.setTextColor(Color.parseColor("#FFFFFF"));
+            //holder.productUnitTextView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            holder.productUnitTextView.setBackgroundResource(R.drawable.grey_square_rounded);
         }
         holder.productUnitTextView.setText(options.get(position).getDefault_title());
 

@@ -8,8 +8,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/_6sdp"
-        android:background="@drawable/item_border">
+        android:layout_marginRight="@dimen/_6sdp">
 
         <TextView
             android:id="@+id/productUnitTextView"
@@ -17,11 +16,9 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/_1sdp"
             android:gravity="center"
-            android:minWidth="@dimen/_80sdp"
+            android:minWidth="@dimen/_40sdp"
             android:paddingLeft="@dimen/_4sdp"
-            android:paddingTop="@dimen/_2sdp"
             android:paddingRight="@dimen/_4sdp"
-            android:paddingBottom="@dimen/_2sdp"
             android:text="1 Litre"
             android:textSize="@dimen/_10sdp"
             app:fontFamily="@font/roboto_medium" />

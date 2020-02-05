@@ -84,7 +84,7 @@ public class OfferProductsListAdapter extends RecyclerView.Adapter<OfferProducts
     @Override
     public OfferProductsListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.offer_products_list_item, parent, false);
+                .inflate(R.layout.offers_products_list_item, parent, false);
 
         return new OfferProductsListAdapter.MyViewHolder(itemView);
     }

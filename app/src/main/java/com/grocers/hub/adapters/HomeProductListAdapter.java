@@ -52,7 +52,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout itemLayout, cartCountLayout;
+        LinearLayout itemLayout, cartCountLayout, emptyLayout;
         Spinner optionsSpinner;
         ImageView productImageView;
         RelativeLayout optionsLayout, cartAddLayout, discountLayout;
@@ -65,6 +65,7 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
             categoryBackgroundImageView = (ImageView) view.findViewById(R.id.categoryBackgroundImageView);
             */
             productImageView = (ImageView) view.findViewById(R.id.productImageView);
+            emptyLayout = (LinearLayout) view.findViewById(R.id.emptyLayout);
             productNameTextView = (TextView) view.findViewById(R.id.productNameTextView);
             offerCostTextView = (TextView) view.findViewById(R.id.offerCostTextView);
             optionsSpinner = (Spinner) view.findViewById(R.id.optionsSpinner);
@@ -137,6 +138,10 @@ public class HomeProductListAdapter extends RecyclerView.Adapter<HomeProductList
                 holder.cartCountLayout.setVisibility(View.GONE);
                 holder.cartAddLayout.setVisibility(View.VISIBLE);
             }
+        }
+
+        if (position == 0) {
+            holder.emptyLayout.setVisibility(View.VISIBLE);
         }
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
