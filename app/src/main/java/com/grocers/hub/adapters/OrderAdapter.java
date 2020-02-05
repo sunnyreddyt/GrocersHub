@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,8 +33,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout orderLayout;
-        TextView orderIDTextView, orderAmountTextView, productsHeadingTextView;
+        TextView orderIDTextView, orderAmountTextView/*, productsHeadingTextView*/;
         RecyclerView productsRecyclerView;
+        ImageView arrowImageView;
 
         public MyViewHolder(View view) {
             super(view);
@@ -41,7 +43,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             orderIDTextView = (TextView) view.findViewById(R.id.orderIDTextView);
             orderAmountTextView = (TextView) view.findViewById(R.id.orderAmountTextView);
             productsRecyclerView = (RecyclerView) view.findViewById(R.id.productsRecyclerView);
-            productsHeadingTextView = (TextView) view.findViewById(R.id.productsHeadingTextView);
+            arrowImageView = (ImageView) view.findViewById(R.id.arrowImageView);
         }
     }
 
@@ -59,7 +61,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
         holder.orderIDTextView.setText(ordersResponseArrayList.get(position).getOrderId());
         double totalAmountDouble = Double.parseDouble(ordersResponseArrayList.get(position).getGrandTotal());
         int totalAmount = (int) totalAmountDouble;
-        holder.orderAmountTextView.setText("₹ " + totalAmount);
+        holder.orderAmountTextView.setText(String.valueOf(totalAmount));
 
         final LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         holder.productsRecyclerView.setLayoutManager(mLayoutManager1);
@@ -75,7 +77,25 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             }
         });
 
-        holder.productsHeadingTextView.setOnClickListener(new View.OnClickListener() {
+        holder.productsRecyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, OrderDetailActivity.class);
+                intent.putExtra("orderID", ordersResponseArrayList.get(position).getOrderId());
+                mContext.startActivity(intent);
+            }
+        });
+
+        holder.productsRecyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, OrderDetailActivity.class);
+                intent.putExtra("orderID", ordersResponseArrayList.get(position).getOrderId());
+                mContext.startActivity(intent);
+            }
+        });
+
+        holder.arrowImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, OrderDetailActivity.class);

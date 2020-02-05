@@ -59,7 +59,9 @@ public class OrderDetailsProductAdapter extends RecyclerView.Adapter<OrderDetail
         double priceDouble = Double.parseDouble(items.get(position).getPrice());
         String price = new DecimalFormat("##.##").format(priceDouble);
         holder.costTextView.setText("₹ " + price);
-        holder.countTextView.setText("Qty: " + String.valueOf(items.get(position).getQty()));
+        double qtyDouble = Double.parseDouble(items.get(position).getQty());
+        int qtyInt = (int) qtyDouble;
+        holder.countTextView.setText("Qty: " + String.valueOf(qtyInt));
 
     }
 

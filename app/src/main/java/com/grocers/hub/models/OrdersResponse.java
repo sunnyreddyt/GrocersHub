@@ -8,7 +8,6 @@ public class OrdersResponse {
     private ArrayList<OrdersResponse> orders, items;
     private String orderId, grandTotal, total_qty_ordered, price, sku, name, qty, image;
 
-
     public int getStaus() {
         return staus;
     }

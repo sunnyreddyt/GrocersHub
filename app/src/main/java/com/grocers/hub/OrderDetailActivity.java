@@ -2,6 +2,7 @@ package com.grocers.hub;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +22,9 @@ import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -97,7 +101,18 @@ public class OrderDetailActivity extends AppCompatActivity {
                     productsRecyclerView.setAdapter(orderDetailsProductAdapter);
 
                     orderStatus.setText(response.body().getOrders().get(0).getData().getStatus());
-                    orderDateTextView.setText(response.body().getOrders().get(0).getData().getCreated_at());
+
+
+                    Log.v("order_date",response.body().getOrders().get(0).getData().getCreated_at());
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    SimpleDateFormat newFormatter = new SimpleDateFormat("dd-MMM-yyyy");
+                    try {
+                        Date date = formatter.parse(response.body().getOrders().get(0).getData().getCreated_at());
+                        String timeString = newFormatter.format(date);
+                        orderDateTextView.setText(timeString);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
 
                     double discountDouble = Double.parseDouble(response.body().getOrders().get(0).getData().getDiscount_amount());
                     String discount = new DecimalFormat("##.##").format(discountDouble);
