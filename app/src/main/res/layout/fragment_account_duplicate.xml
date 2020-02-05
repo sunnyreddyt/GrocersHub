@@ -71,7 +71,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/topLayout"
         android:fillViewport="true"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -151,6 +151,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginLeft="@dimen/_4sdp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -163,8 +164,8 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/order_requested_icon"
                         android:tint="#989898" />
@@ -176,6 +177,7 @@
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:fontFamily="@font/roboto"
                         android:text="My Orders"
+                        android:textSize="@dimen/_11sdp"
                         android:textColor="@color/black" />
 
                 </LinearLayout>
@@ -194,8 +196,8 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/ic_location"
                         android:tint="#989898" />
@@ -205,6 +207,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
+                        android:textSize="@dimen/_11sdp"
                         android:fontFamily="@font/roboto"
                         android:text="My Addresses"
                         android:textColor="@color/black" />
@@ -224,6 +227,7 @@
                             android:fontFamily="@font/roboto_medium"
                             android:text="Change Location"
                             android:textColor="#343E83"
+                            android:textSize="@dimen/_11sdp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -244,8 +248,8 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/notification_icon"
                         android:tint="#989898" />
@@ -255,6 +259,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:fontFamily="@font/roboto"
+                        android:textSize="@dimen/_11sdp"
                         android:text="Notifications"
                         android:textColor="@color/black" />
 
@@ -274,8 +279,8 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/feedback_icon"
                         android:tint="#989898" />
@@ -285,6 +290,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:fontFamily="@font/roboto"
+                        android:textSize="@dimen/_11sdp"
                         android:text="Feedback"
                         android:textColor="@color/black" />
 
@@ -304,8 +310,8 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
                         android:padding="@dimen/_4sdp"
                         android:src="@drawable/rate_icon"
                         android:tint="#989898" />
@@ -316,6 +322,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:fontFamily="@font/roboto"
+                        android:textSize="@dimen/_11sdp"
                         android:text="Rate Us"
                         android:textColor="@color/black" />
 
@@ -335,8 +342,8 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/about_us_icon"
                         android:tint="#989898" />
@@ -346,6 +353,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:fontFamily="@font/roboto"
+                        android:textSize="@dimen/_11sdp"
                         android:text="About Us"
                         android:textColor="@color/black" />
 
@@ -366,8 +374,8 @@
                     android:paddingBottom="@dimen/_2sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
                         android:padding="@dimen/_3sdp"
                         android:src="@drawable/ic_logout"
                         android:tint="#989898" />
@@ -377,6 +385,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:fontFamily="@font/roboto"
+                        android:textSize="@dimen/_11sdp"
                         android:text="Sign Out"
                         android:textColor="@color/black" />
 
@@ -402,7 +411,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/bottomLayout"
