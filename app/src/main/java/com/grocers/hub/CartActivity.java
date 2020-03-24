@@ -60,7 +60,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
     Shared shared;
     Context context;
     GHUtil ghUtil;
-    public static int totalAmount;
+    public int totalAmount;
     List<OfflineCartProduct> offlineCartProductArrayList;
     int cartProductsAddedCount = 0;
     String quoteID = "";
@@ -190,14 +190,15 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                     cartResponseList.add(cartResponse);
                 }
 
-                CartActivity.totalAmount = 0;
+                totalAmount = 0;
                 for (int g = 0; g < cartResponseList.size(); g++) {
                     double priceDouble = cartResponseList.get(g).getFinalPrice();
                     int price = (int) priceDouble;
                     int quantity = cartResponseList.get(g).getQty();
                     int productPrice = price * quantity;
-                    CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
+                    totalAmount = totalAmount + productPrice;
                 }
+                totalAmountTextView.setText(String.valueOf(totalAmount));
 
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(CartActivity.this, RecyclerView.VERTICAL, false);
                 cartRecyclerView.setLayoutManager(mLayoutManager);
@@ -573,6 +574,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
     }
 
     public void updateCartProductsTotalPrice() {
-        totalAmountTextView.setText(String.valueOf(totalAmount));
+        getCartProductsOfline();
+        //totalAmountTextView.setText(String.valueOf(totalAmount));
     }
 }

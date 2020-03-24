@@ -225,6 +225,14 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/skuIDTextView"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_marginRight="@dimen/_10sdp"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productImagesRecyclerView"
                 android:layout_width="match_parent"

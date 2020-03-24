@@ -112,7 +112,7 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
         CartActivity.totalAmount = CartActivity.totalAmount + productPrice;*/
 
 
-        ((CartActivity) mContext).updateCartProductsTotalPrice();
+        //((CartActivity) mContext).updateCartProductsTotalPrice();
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,11 +145,11 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                 }*/
                 offlineCartProductList.get(position).setQty(count);
 
-                double priceDouble = cartResponseArrayList.get(position).getPrice();
+                double priceDouble = cartResponseArrayList.get(position).getFinalPrice();
                 int price = (int) priceDouble;
                 int quantity = cartResponseArrayList.get(position).getQty();
                 int productPrice = price * quantity;
-                CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
+               // CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
 
                 int maxQuantityAllowed = cartResponseArrayList.get(position).getMaxQtyAllowed();
                 if (maxQuantityAllowed > count) {
@@ -181,14 +181,13 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                     offlineCartProductList.get(position).setQty(count);
                     updateCartProductOffline(offlineCartProductList.get(position), "update");
 
-                    double priceDouble = cartResponseArrayList.get(position).getPrice();
+                    double priceDouble = cartResponseArrayList.get(position).getFinalPrice();
                     int price = (int) priceDouble;
                     //int quantity = cartResponseArrayList.get(position).getQty();
                     // int productPrice = price * quantity;
-                    CartActivity.totalAmount = CartActivity.totalAmount - price;
+                    //CartActivity.totalAmount = CartActivity.totalAmount - price;
                     holder.countTextView.setText(String.valueOf(count));
                     ((CartActivity) mContext).updateCartProductsTotalPrice();
-
                 }
             }
         });

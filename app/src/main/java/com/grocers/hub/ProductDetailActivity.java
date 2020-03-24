@@ -59,7 +59,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
     LinearLayout productUnitsLayout, similarProductsLayout;
     ImageView backImageView, productImageView;
     String skuID = "", childSkuID = "";
-    TextView productNameTextView, discountTextView, productOriginalPriceTextView, stockQuantityTextView, productPriceTextView, cartTextView, cartCountTextView, noSimilarProductsTextView;
+    TextView skuIDTextView, productNameTextView, discountTextView, productOriginalPriceTextView, stockQuantityTextView, productPriceTextView, cartTextView, cartCountTextView, noSimilarProductsTextView;
     ProductDetailsResponse productDetailsResponse;
     Context context;
     Shared shared;
@@ -81,6 +81,7 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         discountLayout = (RelativeLayout) findViewById(R.id.discountLayout);
         similarProductsLayout = (LinearLayout) findViewById(R.id.similarProductsLayout);
         backImageView = (ImageView) findViewById(R.id.backImageView);
+        skuIDTextView = (TextView) findViewById(R.id.skuIDTextView);
         productOriginalPriceTextView = (TextView) findViewById(R.id.productOriginalPriceTextView);
         noSimilarProductsTextView = (TextView) findViewById(R.id.noSimilarProductsTextView);
         productImagesRecyclerView = (RecyclerView) findViewById(R.id.productImagesRecyclerView);
@@ -95,12 +96,15 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
         stockQuantityTextView = (TextView) findViewById(R.id.stockQuantityTextView);
         productImageView = (ImageView) findViewById(R.id.productImageView);
         productUnitsLayout = (LinearLayout) findViewById(R.id.productUnitsLayout);
-
         Intent intent = getIntent();
         skuID = intent.getStringExtra("skuID");
         childSkuID = skuID;
         Log.v("skuID", skuID);
         getProductDetailServiceCall();
+
+        if (skuID != null) {
+            skuIDTextView.setText("Sku: " + skuID);
+        }
 
         cartLayout.setOnClickListener(new View.OnClickListener() {
             @Override
