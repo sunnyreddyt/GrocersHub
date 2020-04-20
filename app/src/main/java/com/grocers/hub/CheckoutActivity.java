@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,10 +28,15 @@ import com.grocers.hub.adapters.OrderProductsAdapter;
 import com.grocers.hub.adapters.PaymentAdapter;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.database.DatabaseClient;
+import com.grocers.hub.instamojo.Instamojo;
+import com.grocers.hub.instamojo.helpers.Constants;
 import com.grocers.hub.models.ApplyCouponResponse;
 import com.grocers.hub.models.CouponListResponseModel;
 import com.grocers.hub.models.DeleteCartResponse;
 import com.grocers.hub.models.FinalOrderResponse;
+import com.grocers.hub.models.GatewayOrderStatus;
+import com.grocers.hub.models.GetOrderIDRequest;
+import com.grocers.hub.models.GetOrderIDResponse;
 import com.grocers.hub.models.PaymentRequest;
 import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.models.ShippingResponse;
@@ -38,13 +44,20 @@ import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-public class CheckoutActivity extends AppCompatActivity implements ItemClickListener, OnCouponClick {
+public class CheckoutActivity extends AppCompatActivity implements ItemClickListener, OnCouponClick, Instamojo.InstamojoPaymentCallback  {
 
     ImageView backImageView;
     RecyclerView paymentMethodsRecyclerView, productsRecyclerView;
@@ -52,7 +65,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     TextView orderTextView, couponMessageTextView, subTotalTextView, discountTextView, shippingTextView, taxTextView, grandTotalTextView, applyCouponTextView;
     Context context;
     Shared shared;
-    String quoteID = "";
+    String quoteID = "", orderID = "";
     String email, phone, postcode, address, name;
     Dialog couponDialog, orderSuccessDialog;
     String selectedPaymentMethod = "";
@@ -61,6 +74,12 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     ShippingResponse shippingResponse;
     ArrayList<CouponListResponseModel> couponListResponseModelArrayList;
     EditText couponCodeEditText;
+    private MyBackendService myBackendService;
+    private AlertDialog dialog;
+    private Instamojo.Environment mCurrentEnv;
+    FinalOrderResponse finalOrderResponse;
+    private String orderAmount="0";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,6 +101,20 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         grandTotalTextView = (TextView) findViewById(R.id.grandTotalTextView);
         subTotalTextView = (TextView) findViewById(R.id.subTotalTextView);
         couponMessageTextView = (TextView) findViewById(R.id.couponMessageTextView);
+
+        mCurrentEnv = Instamojo.Environment.PRODUCTION;
+        Instamojo.getInstance().initialize(CheckoutActivity.this, mCurrentEnv);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false); // if you want user to wait for some process to finish,
+        builder.setView(R.layout.layout_loading_dialog);
+        dialog = builder.create();
+        // Initialize the backend service client
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://sample-sdk-server.instamojo.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        myBackendService = retrofit.create(MyBackendService.class);
 
         Intent intent = getIntent();
         email = intent.getStringExtra("email");
@@ -106,7 +139,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         shippingTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getBase_shipping_amount()));
         taxTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getTax_amount()));
         grandTotalTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getGrand_total()));
-
+        orderAmount = String.valueOf(shippingResponse.getTotals().getGrand_total());
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -187,9 +220,17 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
             @Override
             public void onResponse(Call<FinalOrderResponse> call, Response<FinalOrderResponse> response) {
                 ghUtil.dismissDialog();
-                if (response.code() == 200) {
-                    orderSuccessDialog(response.body());
-                    clearOfflineCart();
+                if (response.code() == 200&&response.body().getStatus()!=400) {
+                    orderID = response.body().getOrderId();
+                    finalOrderResponse = response.body();
+                    if (selectedPaymentMethod.equalsIgnoreCase("instamojo")){
+                        //createOrderOnServer();
+                        initiateSDKPayment(response.body().getInstamojo_order_id());
+                    }
+                    else{
+                        orderSuccessDialog(response.body());
+                        clearOfflineCart();
+                    }
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -202,7 +243,6 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
             }
         });
     }
-
 
     public void clearOfflineCart() {
         class ClearCartProductOffline extends AsyncTask<Void, Void, String> {
@@ -403,4 +443,211 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     public void onCouponClick(int position) {
         couponCodeEditText.setText(couponListResponseModelArrayList.get(position).getCode());
     }
+
+    private void createOrderOnServer() {
+        GetOrderIDRequest request = new GetOrderIDRequest();
+        request.setEnv(mCurrentEnv.name());
+        request.setBuyerName(name);
+        request.setBuyerEmail(email);
+        request.setBuyerPhone(phone);
+        request.setDescription(orderID+"payment");
+        request.setAmount(/*orderAmount*/"10");
+
+        initiateSDKPayment(orderID);
+        /*Call<GetOrderIDResponse> getOrderIDCall = myBackendService.createOrder(request);
+        getOrderIDCall.enqueue(new retrofit2.Callback<GetOrderIDResponse>() {
+            @Override
+            public void onResponse(Call<GetOrderIDResponse> call, Response<GetOrderIDResponse> response) {
+                if (response.isSuccessful()) {
+                    String orderId = response.body().getOrderID();
+
+                    //if (!mCustomUIFlow) {
+                        // Initiate the default SDK-provided payment activity
+                        initiateSDKPayment(orderId);
+*//*
+                    } else {
+                        // OR initiate a custom UI activity
+                        initiateCustomPayment(orderId);
+                    }*//*
+
+                } else {
+                    // Handle api errors
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Log.d("payment", "Error in response" + jObjError.toString());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetOrderIDResponse> call, Throwable t) {
+                // Handle call failure
+                Log.d("payment", "Failure");
+            }
+        });*/
+    }
+
+    private void initiateSDKPayment(String orderID) {
+        Instamojo.getInstance().initiatePayment(CheckoutActivity.this, orderID, this);
+    }
+
+    private void initiateCustomPayment(String orderID) {
+        /*Intent intent = new Intent(getBaseContext(), CustomUIActivity.class);
+        intent.putExtra(Constants.ORDER_ID, orderID);
+        startActivityForResult(intent, Constants.REQUEST_CODE);*/
+    }
+
+    private void showToast(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /**
+     * Will check for the transaction status of a particular Transaction
+     *
+     * @param transactionID Unique identifier of a transaction ID
+     */
+    private void checkPaymentStatus(final String transactionID, final String orderID) {
+        if (transactionID == null && orderID == null) {
+            return;
+        }
+
+        if (dialog != null && !dialog.isShowing()) {
+            dialog.show();
+        }
+
+        showToast("Checking transaction status");
+        Call<GatewayOrderStatus> getOrderStatusCall = myBackendService.orderStatus(mCurrentEnv.name().toLowerCase(),
+                orderID, transactionID);
+        getOrderStatusCall.enqueue(new retrofit2.Callback<GatewayOrderStatus>() {
+            @Override
+            public void onResponse(Call<GatewayOrderStatus> call, final Response<GatewayOrderStatus> response) {
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+
+                if (response.isSuccessful()) {
+                    GatewayOrderStatus orderStatus = response.body();
+                    if (orderStatus.getStatus().equalsIgnoreCase("successful")) {
+                        if (finalOrderResponse!=null) {
+                            orderSuccessDialog(finalOrderResponse);
+                        }
+                        clearOfflineCart();
+                        showToast("Transaction still pending");
+                        return;
+                    }
+
+                    showToast("Transaction successful for id - " + orderStatus.getPaymentID());
+                    refundTheAmount(transactionID, orderStatus.getAmount());
+
+                } else {
+                    showToast("Error occurred while fetching transaction status");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GatewayOrderStatus> call, Throwable t) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        showToast("Failed to fetch the transaction status");
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Will initiate a refund for a given transaction with given amount
+     *
+     * @param transactionID Unique identifier for the transaction
+     * @param amount        amount to be refunded
+     */
+    private void refundTheAmount(String transactionID, String amount) {
+        if (transactionID == null || amount == null) {
+            return;
+        }
+
+        if (dialog != null && !dialog.isShowing()) {
+            dialog.show();
+        }
+
+        showToast("Initiating a refund for - " + amount);
+        Call<ResponseBody> refundCall = myBackendService.refundAmount(
+                mCurrentEnv.name().toLowerCase(),
+                transactionID, amount);
+        refundCall.enqueue(new retrofit2.Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+
+                if (response.isSuccessful()) {
+                    showToast("Refund initiated successfully");
+
+                } else {
+                    showToast("Failed to initiate a refund");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+
+                showToast("Failed to Initiate a refund");
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.REQUEST_CODE && data != null) {
+            String orderID = data.getStringExtra(Constants.ORDER_ID);
+            String transactionID = data.getStringExtra(Constants.TRANSACTION_ID);
+            String paymentID = data.getStringExtra(Constants.PAYMENT_ID);
+
+            // Check transactionID, orderID, and orderID for null before using them to check the Payment status.
+            if (transactionID != null || paymentID != null) {
+                checkPaymentStatus(transactionID, orderID);
+            } else {
+                showToast("Oops!! Payment was cancelled");
+            }
+        }
+    }
+
+    @Override
+    public void onInstamojoPaymentComplete(String orderID, String transactionID, String paymentID, String paymentStatus) {
+        Log.d("payment", "Payment complete");
+        showToast("Payment complete. Order ID: " + orderID + ", Transaction ID: " + transactionID
+                + ", Payment ID:" + paymentID + ", Status: " + paymentStatus);
+    }
+
+    @Override
+    public void onPaymentCancelled() {
+        Log.d("payment", "Payment cancelled");
+        showToast("Payment cancelled by user");
+    }
+
+    @Override
+    public void onInitiatePaymentFailure(String errorMessage) {
+        Log.d("payment", "Initiate payment failed");
+        showToast("Initiating payment failed. Error: " + errorMessage);
+    }
+
 }

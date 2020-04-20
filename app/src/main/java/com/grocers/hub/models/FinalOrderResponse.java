@@ -5,6 +5,15 @@ public class FinalOrderResponse {
     private int status;
     private String orderId;
     private String message;
+    private String instamojo_order_id;
+
+    public String getInstamojo_order_id() {
+        return instamojo_order_id;
+    }
+
+    public void setInstamojo_order_id(String instamojo_order_id) {
+        this.instamojo_order_id = instamojo_order_id;
+    }
 
     public int getStatus() {
         return status;
