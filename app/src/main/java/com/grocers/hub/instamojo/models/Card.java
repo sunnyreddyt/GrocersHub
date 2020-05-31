@@ -1,6 +1,5 @@
 package com.grocers.hub.instamojo.models;
 
-
 import androidx.annotation.NonNull;
 
 import com.grocers.hub.instamojo.helpers.CardUtil;
@@ -91,7 +90,7 @@ public class Card {
      */
     public boolean isDateValid() {
         if (date != null && !date.isEmpty()) {
-            return !CardUtil.isDateExpired(this.date);
+            return !CardUtil.isDateInValid(this.date);
         }
 
         // Expiry is optional for MAESTRO card

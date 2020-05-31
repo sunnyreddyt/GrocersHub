@@ -1,9 +1,6 @@
 package com.grocers.hub.instamojo.helpers;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Calendar;
 
 /**
  * Utility class to validate card details.
@@ -82,24 +79,14 @@ public class CardUtil {
         return CardType.UNKNOWN;
     }
 
-    /**
-     * Check method to see if the card expiry date is valid.
-     *
-     * @param expiryDateStr Date string in the format - MM/yy.
-     * @return True if the Date is expired else False.
-     */
 
-    public static boolean isDateExpired(String expiryDateStr) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/yy", Locale.ENGLISH);
-        dateFormat.setLenient(false);
-        try {
-            Date expiryDate = dateFormat.parse(expiryDateStr);
-            return expiryDate.before(new Date());
-
-        } catch (ParseException e) {
-            Logger.e(TAG, "Invalid Date - " + expiryDateStr);
+    public static boolean isDateInValid(String date) {
+        if(!date.contains("/")){
+            return true;
         }
-
-        return false;
+        DateValidator dateValidator = new DateValidator(Calendar.getInstance());
+        String [] strings =  date.split("/");
+        return !dateValidator.isValidHelper(strings[0],strings[1]);
     }
+
 }

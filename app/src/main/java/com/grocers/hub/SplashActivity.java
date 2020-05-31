@@ -1,6 +1,5 @@
 package com.grocers.hub;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -34,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.constants.Shared;
+import com.grocers.hub.fragments.MainActivity;
 import com.grocers.hub.models.LocationsModel;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;

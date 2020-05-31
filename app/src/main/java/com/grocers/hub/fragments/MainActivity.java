@@ -1,4 +1,4 @@
-package com.grocers.hub;
+package com.grocers.hub.fragments;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.grocers.hub.R;
 import com.grocers.hub.fragments.AccountFragment;
 import com.grocers.hub.fragments.OffersFragment;
 import com.grocers.hub.fragments.HomeFragment;
@@ -81,28 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
-                fragment = new CategoriesFragment();
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.mainFramelayout, fragment);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.commitAllowingStateLoss();
-
-
-                homeImageView.setImageResource(R.drawable.ic_home_black);
-                searchImageView.setImageResource(R.drawable.ic_search_black);
-                categoriesImageView.setImageResource(R.drawable.ic_category);
-                offersImageView.setImageResource(R.drawable.ic_offers_black);
-                accountImageView.setImageResource(R.drawable.ic_account_black);
-
-
-                homeTextview.setTextColor(Color.parseColor("#000000"));
-                searchTextview.setTextColor(Color.parseColor("#000000"));
-                categoriesTextview.setTextColor(Color.parseColor("#01d365"));
-                offersTextView.setTextColor(Color.parseColor("#000000"));
-                accountTextview.setTextColor(Color.parseColor("#000000"));
-
+                loadCategoriesFragment();
 
             }
         });
@@ -248,5 +228,28 @@ public class MainActivity extends AppCompatActivity {
         categoriesTextview.setTextColor(Color.parseColor("#000000"));
         offersTextView.setTextColor(Color.parseColor("#000000"));
         accountTextview.setTextColor(Color.parseColor("#000000"));
+    }
+
+    public void loadCategoriesFragment() {
+        fragment = new CategoriesFragment();
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.mainFramelayout, fragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.commitAllowingStateLoss();
+
+        homeImageView.setImageResource(R.drawable.ic_home_black);
+        searchImageView.setImageResource(R.drawable.ic_search_black);
+        categoriesImageView.setImageResource(R.drawable.ic_category);
+        offersImageView.setImageResource(R.drawable.ic_offers_black);
+        accountImageView.setImageResource(R.drawable.ic_account_black);
+
+
+        homeTextview.setTextColor(Color.parseColor("#000000"));
+        searchTextview.setTextColor(Color.parseColor("#000000"));
+        categoriesTextview.setTextColor(Color.parseColor("#01d365"));
+        offersTextView.setTextColor(Color.parseColor("#000000"));
+        accountTextview.setTextColor(Color.parseColor("#000000"));
+
     }
 }

@@ -44,7 +44,7 @@ public class Validators {
 
         @Override
         public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
-            return !CardUtil.isDateExpired(text.toString());
+            return !CardUtil.isDateInValid(text.toString());
         }
     }
 

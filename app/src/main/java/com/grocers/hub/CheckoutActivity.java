@@ -28,26 +28,24 @@ import com.grocers.hub.adapters.OrderProductsAdapter;
 import com.grocers.hub.adapters.PaymentAdapter;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.database.DatabaseClient;
+import com.grocers.hub.fragments.MainActivity;
 import com.grocers.hub.instamojo.Instamojo;
 import com.grocers.hub.instamojo.helpers.Constants;
 import com.grocers.hub.models.ApplyCouponResponse;
 import com.grocers.hub.models.CouponListResponseModel;
-import com.grocers.hub.models.DeleteCartResponse;
 import com.grocers.hub.models.FinalOrderResponse;
 import com.grocers.hub.models.GatewayOrderStatus;
 import com.grocers.hub.models.GetOrderIDRequest;
-import com.grocers.hub.models.GetOrderIDResponse;
+import com.grocers.hub.models.Payment;
 import com.grocers.hub.models.PaymentRequest;
 import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.models.ShippingResponse;
+import com.grocers.hub.models.UpdateOrderStatusRequest;
+import com.grocers.hub.models.UpdateOrderStatusResponse;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 import okhttp3.ResponseBody;
@@ -57,7 +55,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class CheckoutActivity extends AppCompatActivity implements ItemClickListener, OnCouponClick, Instamojo.InstamojoPaymentCallback  {
+public class CheckoutActivity extends AppCompatActivity implements ItemClickListener, OnCouponClick, Instamojo.InstamojoPaymentCallback {
 
     ImageView backImageView;
     RecyclerView paymentMethodsRecyclerView, productsRecyclerView;
@@ -78,7 +76,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     private AlertDialog dialog;
     private Instamojo.Environment mCurrentEnv;
     FinalOrderResponse finalOrderResponse;
-    private String orderAmount="0";
+    private String orderAmount = "0";
 
 
     @Override
@@ -220,16 +218,14 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
             @Override
             public void onResponse(Call<FinalOrderResponse> call, Response<FinalOrderResponse> response) {
                 ghUtil.dismissDialog();
-                if (response.code() == 200&&response.body().getStatus()!=400) {
+                if (response.code() == 200 && response.body().getStatus() != 400) {
                     orderID = response.body().getOrderId();
                     finalOrderResponse = response.body();
-                    if (selectedPaymentMethod.equalsIgnoreCase("instamojo")){
+                    if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
                         //createOrderOnServer();
                         initiateSDKPayment(response.body().getInstamojo_order_id());
-                    }
-                    else{
+                    } else {
                         orderSuccessDialog(response.body());
-                        clearOfflineCart();
                     }
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -354,7 +350,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                 startActivity(intent);
             }
         });
-
+        clearOfflineCart();
         orderSuccessDialog.show();
     }
 
@@ -396,6 +392,35 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void onlineOrderSuccessDialog(FinalOrderResponse finalOrderResponse) {
+        orderSuccessDialog = new Dialog(CheckoutActivity.this);
+        orderSuccessDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        orderSuccessDialog.setContentView(R.layout.dialog_online_order_success);
+        orderSuccessDialog.setCancelable(false);
+        orderSuccessDialog.setCanceledOnTouchOutside(false);
+
+        TextView titleTextView = (TextView) orderSuccessDialog.findViewById(R.id.titleTextView);
+        TextView okTextView = (TextView) orderSuccessDialog.findViewById(R.id.okTextView);
+        TextView orderIDEditText = (TextView) orderSuccessDialog.findViewById(R.id.orderIDEditText);
+
+        if (finalOrderResponse.getOrderId() != null) {
+            orderIDEditText.setText("Order ID: " + finalOrderResponse.getOrderId());
+        }
+        titleTextView.setText("Hi " + shared.getUserFirstName() + ", ");
+
+        okTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                orderSuccessDialog.dismiss();
+                Intent intent = new Intent(CheckoutActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+        clearOfflineCart();
+        orderSuccessDialog.show();
     }
 
     @Override
@@ -450,7 +475,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         request.setBuyerName(name);
         request.setBuyerEmail(email);
         request.setBuyerPhone(phone);
-        request.setDescription(orderID+"payment");
+        request.setDescription(orderID + "payment");
         request.setAmount(/*orderAmount*/"10");
 
         initiateSDKPayment(orderID);
@@ -538,8 +563,8 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                 if (response.isSuccessful()) {
                     GatewayOrderStatus orderStatus = response.body();
                     if (orderStatus.getStatus().equalsIgnoreCase("successful")) {
-                        if (finalOrderResponse!=null) {
-                            orderSuccessDialog(finalOrderResponse);
+                        if (finalOrderResponse != null) {
+                            //orderSuccessDialog(finalOrderResponse);
                         }
                         clearOfflineCart();
                         showToast("Transaction still pending");
@@ -636,6 +661,13 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         Log.d("payment", "Payment complete");
         showToast("Payment complete. Order ID: " + orderID + ", Transaction ID: " + transactionID
                 + ", Payment ID:" + paymentID + ", Status: " + paymentStatus);
+        if (transactionID != null || paymentID != null) {
+            ghUtil.showDialog(CheckoutActivity.this);
+            updateOrderStatus(paymentID, paymentStatus);
+            //checkPaymentStatus(transactionID, orderID);
+        } else {
+            showToast("Oops!! Payment was cancelled");
+        }
     }
 
     @Override
@@ -648,6 +680,40 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     public void onInitiatePaymentFailure(String errorMessage) {
         Log.d("payment", "Initiate payment failed");
         showToast("Initiating payment failed. Error: " + errorMessage);
+    }
+
+    public void updateOrderStatus(String paymentID, final String paymentStatus) {
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        final Payment payment = new Payment();
+        payment.setOrder_id(orderID);
+        payment.setPayment_id(paymentID);
+        payment.setPayment_status(paymentStatus);
+        UpdateOrderStatusRequest updateOrderStatusRequest = new UpdateOrderStatusRequest();
+        updateOrderStatusRequest.setPayment(payment);
+        Gson gson = new Gson();
+        Log.v("updateOrderStatus", gson.toJson(updateOrderStatusRequest));
+        Call<UpdateOrderStatusResponse> loginResponseCall = service.updateOrderStatus(shared.getToken(), updateOrderStatusRequest);
+        loginResponseCall.enqueue(new Callback<UpdateOrderStatusResponse>() {
+            @Override
+            public void onResponse(Call<UpdateOrderStatusResponse> call, Response<UpdateOrderStatusResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200 && response.body().getStatus() != 400) {
+                    if (paymentStatus.equalsIgnoreCase("Credit")) {
+                        onlineOrderSuccessDialog(finalOrderResponse);
+                    } else {
+                        Toast.makeText(CheckoutActivity.this, "Payment failed, please try again", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(context, "Failed to update payment status", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdateOrderStatusResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Failed to update payment status", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

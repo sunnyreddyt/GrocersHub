@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,23 +45,10 @@ import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -73,27 +60,32 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements ItemClickListener, OnCategoryClickListener, OnCartChangeListener {
 
-    RecyclerView categoriesRecyclerView, homeRecyclerView;
+    private RecyclerView categoriesRecyclerView, homeRecyclerView;
     public static ImageView recyclerLayout;
-    TextView locationTextView, cartCountTextView;
-    GHUtil ghUtil;
-    Shared shared;
-    RelativeLayout cartLayout;
-    CategoriesListAdapter categoriesListAdapter;
-    OfferProductsListAdapter offerProductsListAdapter;
-    ArrayList<CategoryModel> categoryModelArrayList;
-    ViewPager viewPager;
-    Context context;
-    ArrayList<LocationsModel> cityArrayList;
-    LinearLayout sliderDotspanel, locationLayout;
+    private TextView locationTextView, cartCountTextView;
+    private GHUtil ghUtil;
+    private Shared shared;
+    private RelativeLayout cartLayout;
+    private CategoriesListAdapter categoriesListAdapter;
+    private OfferProductsListAdapter offerProductsListAdapter;
+    private ArrayList<CategoryModel> categoryModelArrayList;
+    private AutoScrollViewPager viewPager;
+    private Context context;
+    private ArrayList<LocationsModel> cityArrayList;
+    private LinearLayout sliderDotspanel, locationLayout;
     private int dotscount;
     private ImageView[] dots;
-    ViewPagerAdapter viewPagerAdapter;
-    Dialog citiesDialog;
-    HomeAdapter homeAdapter;
+    private ViewPagerAdapter viewPagerAdapter;
+    private Dialog citiesDialog;
+    private HomeAdapter homeAdapter;
     ArrayList<CartResponse> cartResponseArrayList = new ArrayList<>();
     private ArrayList<HomeResponse> homeResponseArrayList = new ArrayList<HomeResponse>();
-    ArrayList<String> skuListTem;
+    private ArrayList<String> skuListTem;
+
+    int currentPage = 0;
+    Timer timer;
+    final long DELAY_MS = 500;//delay in milliseconds before task is to be executed
+    final long PERIOD_MS = 3000;
 
     @Nullable
     @Override
@@ -141,7 +133,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
         homeRecyclerView = (RecyclerView) view.findViewById(R.id.homeRecyclerView);
         locationTextView = (TextView) view.findViewById(R.id.locationTextView);
         cartLayout = (RelativeLayout) view.findViewById(R.id.cartLayout);
-        viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+        viewPager = (AutoScrollViewPager) view.findViewById(R.id.viewPager);
         cartCountTextView = (TextView) view.findViewById(R.id.cartCountTextView);
         locationLayout = (LinearLayout) view.findViewById(R.id.locationLayout);
 
@@ -239,9 +231,13 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
 
                 if (response.code() == 200) {
 
+                    viewPager.startAutoScroll();
+                    viewPager.setInterval(3000);
+                    viewPager.setCycle(true);
+                    viewPager.setStopScrollWhenTouch(true);
                     viewPagerAdapter = new ViewPagerAdapter(getActivity(), response.body().getBanners());
                     viewPager.setAdapter(viewPagerAdapter);
-                    setUpViewPager();
+                    //setUpViewPager();
 
                     homeResponseArrayList = response.body().getCategoryProducts();
 
@@ -295,6 +291,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
 
                 }
             });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -349,16 +346,20 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
 
     @Override
     public void onCategoryClick(int position) {
-        for (int p = 0; p < categoryModelArrayList.size(); p++) {
-            CategoryModel categoryModel = categoryModelArrayList.get(p);
-            if (p == position) {
-                categoryModel.setCategoryBackground(true);
-            } else {
-                categoryModel.setCategoryBackground(false);
+        if (position == 0) {
+            ((MainActivity) getActivity()).loadCategoriesFragment();
+        } else {
+            for (int p = 0; p < categoryModelArrayList.size(); p++) {
+                CategoryModel categoryModel = categoryModelArrayList.get(p);
+                if (p == position) {
+                    categoryModel.setCategoryBackground(true);
+                } else {
+                    categoryModel.setCategoryBackground(false);
+                }
+                categoryModelArrayList.set(p, categoryModel);
             }
-            categoryModelArrayList.set(p, categoryModel);
+            categoriesListAdapter.notifyDataSetChanged();
         }
-        categoriesListAdapter.notifyDataSetChanged();
     }
 
     /*public void getCartProductsServiceCall() {

@@ -84,11 +84,10 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (onCategoryClickListener != null) {
+                    onCategoryClickListener.onCategoryClick(position);
+                }
                 if (position != 0) {
-
-                    if (onCategoryClickListener != null) {
-                        onCategoryClickListener.onCategoryClick(position);
-                    }
                     Intent intent = new Intent(mContext, CategoryProductsActivity.class);
                     intent.putExtra("id", String.valueOf(categoryModelArrayList.get(position).getId()));
                     intent.putExtra("name", categoryModelArrayList.get(position).getName());

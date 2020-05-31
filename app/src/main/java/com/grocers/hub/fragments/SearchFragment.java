@@ -1,6 +1,5 @@
 package com.grocers.hub.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.grocers.hub.MainActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.SearchProductsAdapter;
 import com.grocers.hub.constants.Shared;

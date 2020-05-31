@@ -4,11 +4,16 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
@@ -40,9 +45,11 @@ public class PaymentDetailsActivity extends BaseActivity {
     private SearchView.OnQueryTextListener onQueryTextListener;
     private String hintText;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBarColor();
         setContentView(R.layout.activity_payment_details_instamojo);
         inflateXML();
 
@@ -56,6 +63,14 @@ public class PaymentDetailsActivity extends BaseActivity {
 
         IntentFilter filter = new IntentFilter(Instamojo.ACTION_INTENT_FILTER);
         registerReceiver(Instamojo.getInstance(), filter);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setStatusBarColor() {
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.primary_color));
     }
 
     private void fetchOrder(String orderID) {
@@ -188,6 +203,7 @@ public class PaymentDetailsActivity extends BaseActivity {
         fragmentTransaction.commit();
         Logger.d(TAG, "Loaded Fragment - " + fragment.getClass().getSimpleName());
     }
+
 
     public void showSearchOption(String hintText, SearchView.OnQueryTextListener queryTextListener) {
         this.showSearch = true;

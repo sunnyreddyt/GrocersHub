@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.grocers.hub.EditProfileActivity;
 import com.grocers.hub.LoginActivity;
-import com.grocers.hub.MainActivity;
 import com.grocers.hub.OrderHistoryActivity;
 import com.grocers.hub.R;
 import com.grocers.hub.adapters.CityListAdapter;

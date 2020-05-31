@@ -86,7 +86,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
             @Override
             public void onClick(View view) {
                 if (shared.getUserID().length() > 0) {
-                    if (totalAmount > 300) {
+                    if (totalAmount > 0) {
                         getQuoteIDServiceCall();
                     } else {
                         Toast.makeText(context, "Minimum order should be greater than Rs.300", Toast.LENGTH_SHORT).show();

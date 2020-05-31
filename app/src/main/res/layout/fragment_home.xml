@@ -183,10 +183,10 @@
                 android:layout_marginTop="@dimen/_1sdp"
                 android:orientation="vertical">
 
-                <androidx.viewpager.widget.ViewPager
+                <com.grocers.hub.fragments.AutoScrollViewPager
                     android:id="@+id/viewPager"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"></androidx.viewpager.widget.ViewPager>
+                    android:layout_height="match_parent"/>
 
                 <LinearLayout
                     android:id="@+id/SliderDots"
