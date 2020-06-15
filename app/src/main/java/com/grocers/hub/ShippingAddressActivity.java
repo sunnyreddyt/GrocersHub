@@ -177,31 +177,45 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         final EditText addressEditText = (EditText) addAddressDialog.findViewById(R.id.addressEditText);
         final EditText cityEditText = (EditText) addAddressDialog.findViewById(R.id.cityEditText);
 
-
         addAddressTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (cityEditText.getText().toString().length() > 0 && nameEditText.getText().toString().length() > 0 && emailEditText.getText().toString().length() > 0 && pincodeEditText.getText().toString().length() > 0 && addressEditText.getText().toString().length() > 0 && phoneEditText.getText().toString().length() > 0) {
 
-                    AddAddressRequest addAddressRequest = new AddAddressRequest();
-                    AddAddressRequest address = new AddAddressRequest();
-                    AddAddressRequest region = new AddAddressRequest();
-                    region.setRegion_code("TG");
-                    region.setRegion_id(564);
-                    address.setCustomer_id(Integer.parseInt(shared.getUserID()));
-                    address.setRegion(region);
-                    address.setRegion_id(0);
-                    address.setCountry_id("IN");
-                    address.setStreet(addressEditText.getText().toString());
-                    address.setTelephone(phoneEditText.getText().toString());
-                    address.setPostcode(pincodeEditText.getText().toString());
-                    address.setCity(cityEditText.getText().toString());
-                    address.setFirstname(nameEditText.getText().toString());
-                    address.setLastname(nameEditText.getText().toString());
-                    address.setDefault_billing(true);
-                    address.setDefault_shipping(true);
-                    addAddressRequest.setAddress(address);
-                    addAddressServiceCall(addAddressRequest);
+                    if (pincodeEditText.getText().toString().length() == 6) {
+
+                        if (ghUtil.isValidEmail(emailEditText.getText().toString())) {
+
+                            if (ghUtil.isValidPhone(phoneEditText.getText().toString())) {
+                                AddAddressRequest addAddressRequest = new AddAddressRequest();
+                                AddAddressRequest address = new AddAddressRequest();
+                                AddAddressRequest region = new AddAddressRequest();
+                                region.setRegion_code("TG");
+                                region.setRegion_id(564);
+                                address.setCustomer_id(Integer.parseInt(shared.getUserID()));
+                                address.setRegion(region);
+                                address.setRegion_id(0);
+                                address.setCountry_id("IN");
+                                address.setStreet(addressEditText.getText().toString());
+                                address.setTelephone(phoneEditText.getText().toString());
+                                address.setPostcode(pincodeEditText.getText().toString());
+                                address.setCity(cityEditText.getText().toString());
+                                address.setFirstname(nameEditText.getText().toString());
+                                address.setLastname(nameEditText.getText().toString());
+                                address.setDefault_billing(true);
+                                address.setDefault_shipping(true);
+                                addAddressRequest.setAddress(address);
+                                addAddressServiceCall(addAddressRequest);
+                            } else {
+                                Toast.makeText(ShippingAddressActivity.this, "Please provide valid phone", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(ShippingAddressActivity.this, "Please provide valid email", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else {
+                        Toast.makeText(ShippingAddressActivity.this, "Please provide valid pincode", Toast.LENGTH_SHORT).show();
+                    }
 
                 } else {
                     Toast.makeText(context, "Please enter all values", Toast.LENGTH_SHORT).show();

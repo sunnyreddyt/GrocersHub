@@ -184,7 +184,11 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
             startActivity(intent);
             finish();
         } else {
-            getLocations();
+            if (ghUtil.isConnectingToInternet()) {
+                getLocations();
+            } else {
+                Toast.makeText(SplashActivity.this, "Please check internet connection", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

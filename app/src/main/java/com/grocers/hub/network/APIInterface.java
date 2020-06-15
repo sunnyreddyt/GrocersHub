@@ -68,7 +68,7 @@ public interface APIInterface {
 
     @Headers({"Accept: application/json"})
     @GET("homeapi?")
-    Call<HomeResponse> getHomeDetails(@Query("city") String city);
+    Call<HomeResponse> getHomeDetails(@Query("zipcode") String city);
 
     @Headers({"Accept: application/json"})
     @GET("homeapi/offersscreen?")

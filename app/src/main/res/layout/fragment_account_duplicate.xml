@@ -321,7 +321,7 @@
 
                 </LinearLayout>-->
 
-                <View
+                <!--<View
                     android:layout_width="match_parent"
                     android:layout_height="0.1pt"
                     android:background="#b9b9b9"></View>
@@ -349,7 +349,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/_11sdp" />
 
-                </LinearLayout>
+                </LinearLayout>-->
 
                 <View
                     android:layout_width="match_parent"
@@ -357,6 +357,7 @@
                     android:background="#b9b9b9"></View>
 
                 <LinearLayout
+                    android:id="@+id/feedbackLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -387,6 +388,7 @@
                     android:background="#b9b9b9"></View>
 
                 <LinearLayout
+                    android:id="@+id/rateUsLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -418,6 +420,7 @@
                     android:background="#b9b9b9"></View>
 
                 <LinearLayout
+                    android:id="@+id/aboutUsLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -476,6 +479,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/versionNameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_20sdp"

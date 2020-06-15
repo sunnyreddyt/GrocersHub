@@ -70,17 +70,11 @@ public class LoginActivity extends AppCompatActivity {
         loginTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (userNameEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
-                    //  if (ghUtil.isPasswordValid(passwordEditText.getText().toString().trim())) {
                     loginServiceCall();
-                   /* } else {
-                        Toast.makeText(context, "Inavlid Password", Toast.LENGTH_SHORT).show();
-                    }*/
                 } else {
                     Toast.makeText(context, "Enter Username and Password", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 

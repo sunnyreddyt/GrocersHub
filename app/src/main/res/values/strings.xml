@@ -8,6 +8,9 @@
     <string name="please_wait">Please wait&#8230;</string>
     <string name="title_fragment_choose_payment_option">Choose a Payment Option</string>
     <string name="title_fragment_credit_card_form">Credit Card</string>
+    <string name="privacy_policy_link"><u>Privacy Policy </u></string>
+    <string name="terms_conditions_link"><u>Terms &amp; Conditions </u></string>
+    <string name="forgot_password"><u>forgot password? </u></string>
     <string name="title_fragment_debit_card_form">Debit Card</string>
     <string name="title_fragment_emi_form">EMI</string>
     <string name="title_fragment_upi">Enter VPA</string>

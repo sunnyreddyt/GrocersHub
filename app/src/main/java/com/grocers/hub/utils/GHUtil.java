@@ -412,22 +412,20 @@ public class GHUtil {
     }
 
 
-    // validating email id
-    public static boolean isValidEmail(String email) {
-        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    // validating phone number
+    public static boolean isValidPhone(String phone) {
+        if (/*!Pattern.matches("[a-zA-Z]+", phone)&&*/Pattern.matches("[0-9]+", phone)) {
 
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(email);
-
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-
-        // return matcher.matches();
+            if (phone.length() == 10 && (phone.startsWith("6") || phone.startsWith("7") || phone.startsWith("8") || phone.startsWith("9"))) {
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
 
-    //by madhu
-    public static boolean isValidEmail2(String email) {
+    public static boolean isValidEmail(String email) {
         String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
@@ -435,7 +433,6 @@ public class GHUtil {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-
 
     public static boolean isPasswordValid(String input) {
         boolean inputMatches = true;

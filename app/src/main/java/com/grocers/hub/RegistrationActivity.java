@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,12 +36,13 @@ import retrofit2.Response;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    EditText firstNameEditText, lastNameEditText, emailEditText, passwordEditText, mobileEditText, confirmPasswordEditText;
-    TextView registerTextView, loginTextView;
-    GHUtil ghUtil;
-    Shared shared;
-    ImageView backImageView;
-    Context context;
+    private EditText firstNameEditText, lastNameEditText, emailEditText, passwordEditText, mobileEditText, confirmPasswordEditText;
+    private TextView registerTextView, loginTextView, privacyPolicyTextView, termsConditionsTextView;
+    private GHUtil ghUtil;
+    private Shared shared;
+    private ImageView backImageView;
+    private Context context;
+    private CheckBox privacyPolicyCheckbox, termsConditionsCheckbox;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +54,8 @@ public class RegistrationActivity extends AppCompatActivity {
         shared = new Shared(context);
         mobileEditText = (EditText) findViewById(R.id.mobileEditText);
         firstNameEditText = (EditText) findViewById(R.id.firstNameEditText);
+        privacyPolicyCheckbox = (CheckBox) findViewById(R.id.privacyPolicyCheckbox);
+        termsConditionsCheckbox = (CheckBox) findViewById(R.id.termsConditionsCheckbox);
         loginTextView = (TextView) findViewById(R.id.loginTextView);
         confirmPasswordEditText = (EditText) findViewById(R.id.confirmPasswordEditText);
         lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
@@ -59,6 +63,26 @@ public class RegistrationActivity extends AppCompatActivity {
         emailEditText = (EditText) findViewById(R.id.emailEditText);
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         registerTextView = (TextView) findViewById(R.id.registerTextView);
+        privacyPolicyTextView = (TextView) findViewById(R.id.privacyPolicyTextView);
+        termsConditionsTextView = (TextView) findViewById(R.id.termsConditionsTextView);
+
+        privacyPolicyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RegistrationActivity.this, WebViewActivity.class);
+                intent.putExtra("url", "https://www.grocershub.in/privacy-policy-cookie-restriction-mode");
+                startActivity(intent);
+            }
+        });
+
+        termsConditionsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RegistrationActivity.this, WebViewActivity.class);
+                intent.putExtra("url", "https://www.grocershub.in/terms-conditions");
+                startActivity(intent);
+            }
+        });
 
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,13 +93,28 @@ public class RegistrationActivity extends AppCompatActivity {
         registerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (mobileEditText.getText().toString().length() > 0 && firstNameEditText.getText().toString().length() > 0 && lastNameEditText.getText().toString().length() > 0 && emailEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
                     if (ghUtil.isPasswordValid(passwordEditText.getText().toString().trim()) && passwordEditText.getText().toString().length() >= 8) {
-                        if (passwordEditText.getText().toString().equalsIgnoreCase(confirmPasswordEditText.getText().toString())) {
-                            registerServiceCall();
+                        if (ghUtil.isValidPhone(mobileEditText.getText().toString())) {
+                            if (ghUtil.isValidEmail(emailEditText.getText().toString())) {
+                                if (passwordEditText.getText().toString().equalsIgnoreCase(confirmPasswordEditText.getText().toString())) {
+                                    if (privacyPolicyCheckbox.isChecked()) {
+                                        if (termsConditionsCheckbox.isChecked()) {
+                                            registerServiceCall();
+                                        } else {
+                                            Toast.makeText(context, "Please confirm Terms & Conditions", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(context, "Please confirm privacy policy", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(context, "Password and Confirm password should be same", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(RegistrationActivity.this, "Please provide valid email", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            Toast.makeText(context, "Password and Confirm password should be same", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegistrationActivity.this, "Please provide valid mobile number", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(context, "Password must have min. 8 characters with digits,special Characters,Small and Caps", Toast.LENGTH_SHORT).show();

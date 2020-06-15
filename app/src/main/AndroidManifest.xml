@@ -10,7 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Telephony is optional (Auto-read SMS) -->
-    <uses-feature android:name="android.hardware.telephony" android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <application
         android:name=".BaseApplication"
@@ -20,12 +22,12 @@
         android:largeHeap="true"
         android:roundIcon="@drawable/gh_logo"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
 
         <uses-library
             android:name="org.apache.http.legacy"
-            android:required="false"/>
+            android:required="false" />
 
         <activity android:name=".SplashActivity">
             <intent-filter>
@@ -41,54 +43,59 @@
         <activity
             android:name=".fragments.MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".RegistrationActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"/>
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
 
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".ShippingAddressActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".CategoryProductsActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ProductDetailActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".CartActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".WebViewActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ForgotPasswordActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".EditProfileActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".CheckoutActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".OrderHistoryActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".OrderDetailActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".OrderDetailActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".instamojo.activities.PaymentDetailsActivity"

@@ -1,9 +1,13 @@
 package com.grocers.hub.fragments;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,6 +30,7 @@ import com.grocers.hub.EditProfileActivity;
 import com.grocers.hub.LoginActivity;
 import com.grocers.hub.OrderHistoryActivity;
 import com.grocers.hub.R;
+import com.grocers.hub.WebViewActivity;
 import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.constants.Shared;
@@ -49,17 +54,18 @@ import static android.view.View.GONE;
 
 public class AccountFragment extends Fragment implements ItemClickListener {
 
-    LinearLayout signOutLayout, ordersLayout;
-    Shared shared;
-    ScrollView loginLayout;
-    RelativeLayout logoutLayout;
-    RelativeLayout editLayout;
-    String[] cities = {"Hyderabad", "Khammam", "Mahabubnagar", "Karimnagar", "Secunderabad", "Kurnool", "Tirupathi", "Adilabad", "Vijayawada", "Vizag"};
-    ArrayList<LocationsModel> cityArrayList;
-    Dialog citiesDialog;
-    Context context;
-    GHUtil ghUtil;
-    TextView userNameTextView, loginTextView, userMobileTextView, userMailTextView, changeLocationTextView, selectedLocation;
+    private LinearLayout signOutLayout, ordersLayout, rateUsLinearLayout, feedbackLinearLayout,
+            aboutUsLinearLayout;
+    private Shared shared;
+    private ScrollView loginLayout;
+    private RelativeLayout logoutLayout;
+    private RelativeLayout editLayout;
+    private String[] cities = {"Hyderabad", "Khammam", "Mahabubnagar", "Karimnagar", "Secunderabad", "Kurnool", "Tirupathi", "Adilabad", "Vijayawada", "Vizag"};
+    private ArrayList<LocationsModel> cityArrayList;
+    private Dialog citiesDialog;
+    private Context context;
+    private GHUtil ghUtil;
+    private TextView versionNameTextView, userNameTextView, loginTextView, userMobileTextView, userMailTextView, changeLocationTextView, selectedLocation;
 
     @Nullable
     @Override
@@ -69,15 +75,19 @@ public class AccountFragment extends Fragment implements ItemClickListener {
         ghUtil = GHUtil.getInstance(getActivity());
         signOutLayout = (LinearLayout) view.findViewById(R.id.signOutLayout);
         userNameTextView = (TextView) view.findViewById(R.id.userNameTextView);
+        versionNameTextView = (TextView) view.findViewById(R.id.versionNameTextView);
         loginTextView = (TextView) view.findViewById(R.id.loginTextView);
         userMobileTextView = (TextView) view.findViewById(R.id.userMobileTextView);
         changeLocationTextView = (TextView) view.findViewById(R.id.changeLocationTextView);
         editLayout = (RelativeLayout) view.findViewById(R.id.editLayout);
         userMailTextView = (TextView) view.findViewById(R.id.userMailTextView);
         selectedLocation = (TextView) view.findViewById(R.id.selectedLocation);
+        rateUsLinearLayout = (LinearLayout) view.findViewById(R.id.rateUsLinearLayout);
         ordersLayout = (LinearLayout) view.findViewById(R.id.ordersLayout);
         loginLayout = (ScrollView) view.findViewById(R.id.loginLayout);
         logoutLayout = (RelativeLayout) view.findViewById(R.id.logoutLayout);
+        aboutUsLinearLayout = (LinearLayout) view.findViewById(R.id.aboutUsLinearLayout);
+        feedbackLinearLayout = (LinearLayout) view.findViewById(R.id.feedbackLinearLayout);
         context = getActivity();
         shared = new Shared(getActivity());
 
@@ -96,6 +106,36 @@ public class AccountFragment extends Fragment implements ItemClickListener {
             }
         });
 
+        aboutUsLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("url", "https://www.grocershub.in/about-us");
+                startActivity(intent);
+            }
+        });
+
+        feedbackLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rateOnPlaystore();
+            }
+        });
+
+        rateUsLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rateOnPlaystore();
+            }
+        });
+
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            String version = pInfo.versionName;
+            versionNameTextView.setText("Version: " + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
        /* userNameTextView.setText(shared.getUserName());
         userNumberTextView.setText(shared.getUserMobile());
@@ -146,6 +186,23 @@ public class AccountFragment extends Fragment implements ItemClickListener {
 
         return view;
     }
+
+    public void rateOnPlaystore() {
+        Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
+        }
+    }
+
 
     @Override
     public void onResume() {

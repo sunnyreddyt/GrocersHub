@@ -441,7 +441,6 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                 ghUtil.dismissDialog();
                 if (response.code() == 200) {
                     if (response.body().getItems() != null && response.body().getItems().size() > 0) {
-
                         couponListResponseModelArrayList = new ArrayList<>();
                         couponListResponseModelArrayList = response.body().getItems();
 
