@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView homeImageView, searchImageView, offersImageView, accountImageView, categoriesImageView;
     TextView homeTextview, searchTextview, offersTextView, accountTextview, categoriesTextview;
     Fragment fragment;
+    int currentFragment = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,37 +54,14 @@ public class MainActivity extends AppCompatActivity {
         categoriesTextview = (TextView) findViewById(R.id.categoriesTextview);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
             loadHomeFragment();
-           /* homeImageView.setImageResource(R.drawable.ic_home);
-            searchImageView.setImageResource(R.drawable.ic_search_black);
-            categoriesImageView.setImageResource(R.drawable.ic_categories_black);
-            offersImageView.setImageResource(R.drawable.ic_offers_black);
-            accountImageView.setImageResource(R.drawable.ic_account_black);
-
-
-            homeTextview.setTextColor(Color.parseColor("#01d365"));
-            searchTextview.setTextColor(Color.parseColor("#000000"));
-            categoriesTextview.setTextColor(Color.parseColor("#000000"));
-            offersTextView.setTextColor(Color.parseColor("#000000"));
-            accountTextview.setTextColor(Color.parseColor("#000000"));
-
-            fragment = new HomeFragment();
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.mainFramelayout, fragment);
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ft.commitAllowingStateLoss();*/
-
         }
 
 
         categoriesImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 loadCategoriesFragment();
-
             }
         });
 
@@ -91,35 +69,14 @@ public class MainActivity extends AppCompatActivity {
         homeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 loadHomeFragment();
-                /*fragment = new HomeFragment();
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.mainFramelayout, fragment);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.commitAllowingStateLoss();
-
-                homeImageView.setImageResource(R.drawable.ic_home);
-                searchImageView.setImageResource(R.drawable.ic_search_black);
-                categoriesImageView.setImageResource(R.drawable.ic_categories_black);
-                offersImageView.setImageResource(R.drawable.ic_offers_black);
-                accountImageView.setImageResource(R.drawable.ic_account_black);
-
-
-                homeTextview.setTextColor(Color.parseColor("#01d365"));
-                searchTextview.setTextColor(Color.parseColor("#000000"));
-                categoriesTextview.setTextColor(Color.parseColor("#000000"));
-                offersTextView.setTextColor(Color.parseColor("#000000"));
-                accountTextview.setTextColor(Color.parseColor("#000000"));*/
-
             }
         });
 
         searchLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                currentFragment = 2;
                 fragment = new SearchFragment();
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
@@ -145,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         offersLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                currentFragment = 4;
                 fragment = new OffersFragment();
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
@@ -171,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         accountLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                currentFragment = 5;
                 fragment = new AccountFragment();
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
@@ -200,16 +157,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.addCategory("android.intent.category.HOME");
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
-        System.exit(0);
+        //super.onBackPressed();
+        if (currentFragment == 1) {
+            Intent intent = new Intent("android.intent.action.MAIN");
+            intent.addCategory("android.intent.category.HOME");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            System.exit(0);
+        } else {
+            loadHomeFragment();
+        }
     }
 
     public void loadHomeFragment() {
+        currentFragment = 1;
         fragment = new HomeFragment();
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -231,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadCategoriesFragment() {
+        currentFragment = 3;
         fragment = new CategoriesFragment();
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();

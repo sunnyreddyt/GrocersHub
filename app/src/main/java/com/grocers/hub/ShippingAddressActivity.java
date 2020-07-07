@@ -3,6 +3,7 @@ package com.grocers.hub;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.grocers.hub.adapters.AddressListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.AddAddressRequest;
+import com.grocers.hub.models.FinalOrderResponse;
 import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.models.ShippingAddressRequest;
 import com.grocers.hub.models.ShippingResponse;
@@ -31,6 +33,17 @@ import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -46,7 +59,7 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
     ImageView backImageView;
     Dialog addAddressDialog;
     RecyclerView addressRecyclerView;
-    String name = "", phone = "", pincode = "", address = "", city = "";
+    String name = "", phone = "", pincode = "", address = "", city = "", addressId = "";
     ArrayList<UserAddressListModel> userAddressListModelArrayList;
     public static int selectedAddressPosition;
     AddressListAdapter addressListAdapter;
@@ -81,7 +94,9 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
                     Toast.makeText(context, "Please select any address", Toast.LENGTH_SHORT).show();
                 } else {
                     if (name.length() > 0 && phone.length() > 0 && pincode.length() > 0 && address.length() > 0 && city.length() > 0) {
-                        setShippingAddressServiceCall();
+                        new ShippingAddressServiceCall().execute();
+                        ghUtil.showDialog(ShippingAddressActivity.this);
+                        //setShippingAddressServiceCall();
                     } else {
                         Toast.makeText(context, "Please choose one address", Toast.LENGTH_SHORT).show();
                     }
@@ -103,28 +118,48 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         }
     }
 
-    public void setShippingAddressServiceCall() {
+    /*public void setShippingAddressServiceCall() {
         ghUtil.showDialog(ShippingAddressActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
         ShippingAddressRequest shippingAddressRequest = new ShippingAddressRequest();
 
         ShippingAddressRequest.Shipping_address shipping_address = new ShippingAddressRequest.Shipping_address();
+        shipping_address.setCustomerAddressId(addressId);
+        shipping_address.setCountryId("IN");
+        shipping_address.setRegionId("564");
+        shipping_address.setRegionCode("TG");
         shipping_address.setRegion("Telangana");
-        shipping_address.setRegion_id(564);
-        shipping_address.setRegion_code("TN");
-        shipping_address.setCountry_id("IN");
-        shipping_address.setCity(city);
+        shipping_address.setCustomerId(shared.getUserID());
+        shipping_address.setStreet(address);
+        shipping_address.setTelephone(phone);
         shipping_address.setPostcode(pincode);
+        shipping_address.setCity(city);
         shipping_address.setFirstname(name);
         shipping_address.setLastname(name);
-        shipping_address.setEmail(shared.getUserEmail());
-        shipping_address.setTelephone(phone);
-        shipping_address.setSame_as_billing(1);
-        shipping_address.setStreet(address);
+
+
+        ShippingAddressRequest.Billing_address billing_address = new ShippingAddressRequest.Billing_address();
+        billing_address.setCustomerAddressId(addressId);
+        billing_address.setCountryId("IN");
+        billing_address.setRegionId("564");
+        billing_address.setRegionCode("TG");
+        billing_address.setRegion("Telangana");
+        billing_address.setCustomerId(shared.getUserID());
+        billing_address.setStreet(address);
+        billing_address.setTelephone(phone);
+        billing_address.setPostcode(pincode);
+        billing_address.setCity(city);
+        billing_address.setFirstname(name);
+        billing_address.setLastname(name);
+        billing_address.setSaveInAddressBook(null);
+
+        ShippingAddressRequest.ExtensionAttributes extensionAttributes = new ShippingAddressRequest.ExtensionAttributes();
 
 //address info
         ShippingAddressRequest.AddressInformation addressInformation = new ShippingAddressRequest.AddressInformation();
         addressInformation.setShipping_address(shipping_address);
+        addressInformation.setExtension_attributes(extensionAttributes);
+        addressInformation.setBilling_address(billing_address);
         addressInformation.setShipping_carrier_code("flatrate");
         addressInformation.setShipping_method_code("flatrate");
         shippingAddressRequest.setAddressInformation(addressInformation);
@@ -145,10 +180,12 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
                     Log.v("ShippingResponse", gson.toJson(response.body()));
                     Intent intent = new Intent(ShippingAddressActivity.this, CheckoutActivity.class);
                     intent.putExtra("email", shared.getUserEmail());
+                    intent.putExtra("city", city);
                     intent.putExtra("phone", phone);
                     intent.putExtra("postcode", pincode);
                     intent.putExtra("address", address);
                     intent.putExtra("name", name);
+                    intent.putExtra("addressId", addressId);
                     startActivity(intent);
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -161,6 +198,147 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
                 Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
             }
         });
+    }*/
+
+    private class ShippingAddressServiceCall extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            String str = postData();
+            return str;
+        }
+
+        protected void onPostExecute(String json) {
+
+            try {
+                ghUtil.dismissDialog();
+
+                if (json.length() > 0) {
+                    Log.v("mainObject:response", json);
+                    JSONObject jsonObjectMain;
+
+                    try {
+                        jsonObjectMain = new JSONObject(json);
+
+                        if (jsonObjectMain.has("payment_methods") && jsonObjectMain.has("totals")) {
+                            ghUtil.setShippingResponse(json);
+                            Gson gson = new Gson();
+                            Log.v("ShippingResponse", gson.toJson(json));
+                            Intent intent = new Intent(ShippingAddressActivity.this, CheckoutActivity.class);
+                            intent.putExtra("email", shared.getUserEmail());
+                            intent.putExtra("city", city);
+                            intent.putExtra("phone", phone);
+                            intent.putExtra("postcode", pincode);
+                            intent.putExtra("address", address);
+                            intent.putExtra("name", name);
+                            intent.putExtra("addressId", addressId);
+                            startActivity(intent);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                    }
+
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+
+            } catch (Exception e) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+        }
+
+        @SuppressWarnings("deprecation")
+        public String postData() {
+            // Create a new HttpClient and Post Header
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("https://www.grocershub.in/homeapi/shippinginfo?token=" + shared.getToken());
+            JSONObject mainObject = new JSONObject();
+
+            try {
+                JSONObject billing_address = new JSONObject();
+                billing_address.put("city", city);
+                billing_address.put("countryId", "IN");
+                billing_address.put("customerAddressId", addressId);
+                billing_address.put("customerId", shared.getUserID());
+                billing_address.put("firstname", name);
+                billing_address.put("lastname", name);
+                billing_address.put("postcode", pincode);
+                billing_address.put("region", "Telangana");
+                billing_address.put("region_code", "TG");
+                billing_address.put("region_id", "564");
+                billing_address.put("street", address);
+                billing_address.put("telephone", phone);
+
+                JSONObject shipping_address = new JSONObject();
+                shipping_address.put("city", city);
+                shipping_address.put("countryId", "IN");
+                shipping_address.put("customerAddressId", addressId);
+                shipping_address.put("customerId", shared.getUserID());
+                shipping_address.put("firstname", name);
+                shipping_address.put("lastname", name);
+                shipping_address.put("postcode", pincode);
+                shipping_address.put("region", "Telangana");
+                shipping_address.put("region_code", "TG");
+                shipping_address.put("region_id", "564");
+                shipping_address.put("street", address);
+                shipping_address.put("telephone", phone);
+
+
+                JSONObject extension_attributes = new JSONObject();
+
+                JSONObject addressInformation = new JSONObject();
+                addressInformation.put("billing_address", billing_address);
+                addressInformation.put("shipping_address", shipping_address);
+                addressInformation.put("extension_attributes", extension_attributes);
+                addressInformation.put("shipping_carrier_code", "flatrate");
+                addressInformation.put("shipping_method_code", "flatrate");
+
+                mainObject.put("addressInformation", addressInformation);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Log.v("mainObject:request", mainObject.toString());
+            StringEntity se = null;
+            try {
+                se = new StringEntity(mainObject.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            httpPost.setEntity(se);
+            httpPost.setHeader("Content-type", "application/json");
+            String json = "";
+            try {
+
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httpPost);
+                HttpEntity httpEntity = response.getEntity();
+                InputStream is = httpEntity.getContent();
+
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(is, "iso-8859-1"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                is.close();
+                json = sb.toString();
+                //  Log.e("objJsonMain", "" + json);
+            } catch (Exception e) {
+                ghUtil.dismissDialog();
+                e.printStackTrace();
+            }
+            return json;
+        }
     }
 
     public void addAddressDialog() {
@@ -304,6 +482,7 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         address = userAddressListModelArrayList.get(position).getStreet();
         city = userAddressListModelArrayList.get(position).getCity();
         selectedAddressPosition = position;
+        addressId = String.valueOf(userAddressListModelArrayList.get(position).getId());
         addressListAdapter.notifyDataSetChanged();
     }
 }

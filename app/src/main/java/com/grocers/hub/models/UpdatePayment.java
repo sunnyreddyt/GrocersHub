@@ -1,11 +1,11 @@
 package com.grocers.hub.models;
 
-public class PaymentRequest {
+public class UpdatePayment {
 
     private String cartId;
-    private String instamojo_order_id;
+    private String grant_total;
+    private Billing_address billing_address;
     private PaymentMethod paymentMethod;
-    private BillingAddress billing_address;
 
     public String getCartId() {
         return cartId;
@@ -15,12 +15,20 @@ public class PaymentRequest {
         this.cartId = cartId;
     }
 
-    public String getInstamojo_order_id() {
-        return instamojo_order_id;
+    public String getGrant_total() {
+        return grant_total;
     }
 
-    public void setInstamojo_order_id(String instamojo_order_id) {
-        this.instamojo_order_id = instamojo_order_id;
+    public void setGrant_total(String grant_total) {
+        this.grant_total = grant_total;
+    }
+
+    public Billing_address getBilling_address() {
+        return billing_address;
+    }
+
+    public void setBilling_address(Billing_address billing_address) {
+        this.billing_address = billing_address;
     }
 
     public PaymentMethod getPaymentMethod() {
@@ -31,48 +39,9 @@ public class PaymentRequest {
         this.paymentMethod = paymentMethod;
     }
 
-    public BillingAddress getBilling_address() {
-        return billing_address;
-    }
-
-    public void setBilling_address(BillingAddress billing_address) {
-        this.billing_address = billing_address;
-    }
-
-    public static class PaymentMethod {
-
-        private String method;
-        private String po_number;
-        private String additional_data;
-
-        public String getPo_number() {
-            return po_number;
-        }
-
-        public void setPo_number(String po_number) {
-            this.po_number = po_number;
-        }
-
-        public String getAdditional_data() {
-            return additional_data;
-        }
-
-        public void setAdditional_data(String additional_data) {
-            this.additional_data = additional_data;
-        }
-
-        public String getMethod() {
-            return method;
-        }
-
-        public void setMethod(String method) {
-            this.method = method;
-        }
-    }
-
-    public static class BillingAddress {
-
+    public static class Billing_address {
         private String customerAddressId;
+        private String email;
         private String countryId;
         private String regionId;
         private String regionCode;
@@ -85,7 +54,31 @@ public class PaymentRequest {
         private String firstname;
         private String lastname;
         private String saveInAddressBook;
-        private PaymentRequest.ExtensionAttributes extension_attributes;
+        private ExtensionAttributes extension_attributes;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public ExtensionAttributes getExtension_attributes() {
+            return extension_attributes;
+        }
+
+        public void setExtension_attributes(ExtensionAttributes extension_attributes) {
+            this.extension_attributes = extension_attributes;
+        }
+
+        public String getSaveInAddressBook() {
+            return saveInAddressBook;
+        }
+
+        public void setSaveInAddressBook(String saveInAddressBook) {
+            this.saveInAddressBook = saveInAddressBook;
+        }
 
         public String getCustomerAddressId() {
             return customerAddressId;
@@ -182,25 +175,39 @@ public class PaymentRequest {
         public void setLastname(String lastname) {
             this.lastname = lastname;
         }
-
-        public String getSaveInAddressBook() {
-            return saveInAddressBook;
-        }
-
-        public void setSaveInAddressBook(String saveInAddressBook) {
-            this.saveInAddressBook = saveInAddressBook;
-        }
-
-        public ExtensionAttributes getExtension_attributes() {
-            return extension_attributes;
-        }
-
-        public void setExtension_attributes(ExtensionAttributes extension_attributes) {
-            this.extension_attributes = extension_attributes;
-        }
     }
 
     public static class ExtensionAttributes {
 
+    }
+
+    public static class PaymentMethod {
+        private String method;
+        private String po_number;
+        private String additional_data;
+
+        public String getMethod() {
+            return method;
+        }
+
+        public void setMethod(String method) {
+            this.method = method;
+        }
+
+        public String getPo_number() {
+            return po_number;
+        }
+
+        public void setPo_number(String po_number) {
+            this.po_number = po_number;
+        }
+
+        public String getAdditional_data() {
+            return additional_data;
+        }
+
+        public void setAdditional_data(String additional_data) {
+            this.additional_data = additional_data;
+        }
     }
 }

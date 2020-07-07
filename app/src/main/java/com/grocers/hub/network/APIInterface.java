@@ -27,6 +27,7 @@ import com.grocers.hub.models.SimilarProductsResponse;
 import com.grocers.hub.models.UpdateCartRequest;
 import com.grocers.hub.models.UpdateOrderStatusRequest;
 import com.grocers.hub.models.UpdateOrderStatusResponse;
+import com.grocers.hub.models.UpdatePayment;
 import com.grocers.hub.models.UpdateProfileRequest;
 
 import retrofit2.Call;
@@ -68,7 +69,7 @@ public interface APIInterface {
 
     @Headers({"Accept: application/json"})
     @GET("homeapi?")
-    Call<HomeResponse> getHomeDetails(@Query("zipcode") String city);
+    Call<HomeResponse> getHomeDetails(@Query("city") String city);
 
     @Headers({"Accept: application/json"})
     @GET("homeapi/offersscreen?")
@@ -110,6 +111,10 @@ public interface APIInterface {
     @Headers({"Accept: application/json"})
     @POST("homeapi/placeorder?")
     Call<FinalOrderResponse> setPayment(@Query("token") String token, @Body PaymentRequest paymentRequest);
+
+    @Headers({"Accept: application/json"})
+    @POST("homeapi/updatepayment?")
+    Call<FinalOrderResponse> setPaymentUpdate(@Query("token") String token, @Body UpdatePayment updatePayment);
 
     @Headers({"Accept: application/json"})
     @POST("homeapi/updateorder?")

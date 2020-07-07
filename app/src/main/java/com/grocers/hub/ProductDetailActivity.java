@@ -300,7 +300,6 @@ public class ProductDetailActivity extends AppCompatActivity implements ItemClic
                             productUnitsLayout.setVisibility(View.GONE);
                         }
                     }
-
                     getSimilarProductsServiceCall();
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();

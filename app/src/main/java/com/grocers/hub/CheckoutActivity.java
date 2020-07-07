@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,10 +43,23 @@ import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.models.ShippingResponse;
 import com.grocers.hub.models.UpdateOrderStatusRequest;
 import com.grocers.hub.models.UpdateOrderStatusResponse;
+import com.grocers.hub.models.UpdatePayment;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
 import com.grocers.hub.utils.GHUtil;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import okhttp3.ResponseBody;
@@ -60,13 +74,14 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     ImageView backImageView;
     RecyclerView paymentMethodsRecyclerView, productsRecyclerView;
     GHUtil ghUtil;
-    TextView orderTextView, couponMessageTextView, subTotalTextView, discountTextView, shippingTextView, taxTextView, grandTotalTextView, applyCouponTextView;
+    TextView orderTextView, couponMessageTextView, couponTotalTextView, subTotalTextView, discountTextView, shippingTextView, taxTextView, grandTotalTextView, applyCouponTextView;
     Context context;
     Shared shared;
     String quoteID = "", orderID = "";
     String email, phone, postcode, address, name;
     Dialog couponDialog, orderSuccessDialog;
     String selectedPaymentMethod = "";
+    LinearLayout couponAmountLayout;
     public static int selectedPaymentPosition = -1;
     PaymentAdapter paymentAdapter;
     ShippingResponse shippingResponse;
@@ -76,8 +91,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     private AlertDialog dialog;
     private Instamojo.Environment mCurrentEnv;
     FinalOrderResponse finalOrderResponse;
-    private String orderAmount = "0";
-
+    private String orderAmount = "0", addressId = "", instamojo_order_id = null, city = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,6 +113,8 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         grandTotalTextView = (TextView) findViewById(R.id.grandTotalTextView);
         subTotalTextView = (TextView) findViewById(R.id.subTotalTextView);
         couponMessageTextView = (TextView) findViewById(R.id.couponMessageTextView);
+        couponAmountLayout = (LinearLayout) findViewById(R.id.couponAmountLayout);
+        couponTotalTextView = (TextView) findViewById(R.id.couponTotalTextView);
 
         mCurrentEnv = Instamojo.Environment.PRODUCTION;
         Instamojo.getInstance().initialize(CheckoutActivity.this, mCurrentEnv);
@@ -113,6 +129,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         myBackendService = retrofit.create(MyBackendService.class);
+        selectedPaymentPosition = -1;
 
         Intent intent = getIntent();
         email = intent.getStringExtra("email");
@@ -120,6 +137,8 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         postcode = intent.getStringExtra("postcode");
         address = intent.getStringExtra("address");
         name = intent.getStringExtra("name");
+        addressId = intent.getStringExtra("addressId");
+        city = intent.getStringExtra("city");
 
         shippingResponse = ghUtil.getShippingResponse();
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
@@ -151,7 +170,13 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                 if (selectedPaymentPosition != -1) {
                     if (quoteID.length() > 0) {
                         if (ghUtil.isConnectingToInternet()) {
-                            setPaymentServiceCall();
+                            if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
+                                setPaymentServiceCall();
+                            } else {
+                                new ConfirmPaymentServiceCall().execute();
+                                ghUtil.showDialog(CheckoutActivity.this);
+                                //confirmPaymentServiceCall();
+                            }
                         } else {
                             Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
                         }
@@ -188,45 +213,50 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     public void setPaymentServiceCall() {
         ghUtil.showDialog(CheckoutActivity.this);
         APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        PaymentRequest paymentRequest = new PaymentRequest();
-        paymentRequest.setCartId(Integer.parseInt(quoteID));
 
-        PaymentRequest.PaymentMethod paymentMethod = new PaymentRequest.PaymentMethod();
+        UpdatePayment updatePayment = new UpdatePayment();
+        updatePayment.setCartId(quoteID);
+        updatePayment.setGrant_total(String.valueOf(shippingResponse.getTotals().getGrand_total()));
+
+        UpdatePayment.Billing_address billing_address = new UpdatePayment.Billing_address();
+        billing_address.setCustomerAddressId(addressId);
+        billing_address.setEmail(email);
+        billing_address.setCountryId("IN");
+        billing_address.setRegionId("564");
+        billing_address.setRegionCode("TG");
+        billing_address.setRegion("Telangana");
+        billing_address.setCustomerId(shared.getUserID());
+        billing_address.setStreet(address);
+        billing_address.setTelephone(phone);
+        billing_address.setPostcode(postcode);
+        billing_address.setCity(shared.getCity());
+        billing_address.setFirstname(name);
+        billing_address.setLastname(name);
+        billing_address.setSaveInAddressBook(null);
+
+        UpdatePayment.ExtensionAttributes extensionAttributes = new UpdatePayment.ExtensionAttributes();
+        billing_address.setExtension_attributes(extensionAttributes);
+
+        UpdatePayment.PaymentMethod paymentMethod = new UpdatePayment.PaymentMethod();
         paymentMethod.setMethod(selectedPaymentMethod);
+        paymentMethod.setPo_number(null);
+        paymentMethod.setAdditional_data(null);
 
-        PaymentRequest.BillingAddress billingAddress = new PaymentRequest.BillingAddress();
-        billingAddress.setEmail(email);
-        billingAddress.setRegion("Telangana");
-        billingAddress.setRegion_id(564);
-        billingAddress.setRegion_code("TG");
-        billingAddress.setCountry_id("IN");
-        billingAddress.setStreet(address);
-        billingAddress.setPostcode(postcode);
-        billingAddress.setCity(shared.getCity());
-        billingAddress.setTelephone(phone);
-        billingAddress.setFirstname(name);
-        billingAddress.setLastname(name);
+        updatePayment.setBilling_address(billing_address);
+        updatePayment.setPaymentMethod(paymentMethod);
 
-        paymentRequest.setBilling_address(billingAddress);
-        paymentRequest.setPaymentMethod(paymentMethod);
 
         Gson gson = new Gson();
-        Log.v("paymentRequest", gson.toJson(paymentRequest));
+        Log.v("updatePayment", gson.toJson(updatePayment));
 
-        Call<FinalOrderResponse> loginResponseCall = service.setPayment(shared.getToken(), paymentRequest);
+        Call<FinalOrderResponse> loginResponseCall = service.setPaymentUpdate(shared.getToken(), updatePayment);
         loginResponseCall.enqueue(new Callback<FinalOrderResponse>() {
             @Override
             public void onResponse(Call<FinalOrderResponse> call, Response<FinalOrderResponse> response) {
                 ghUtil.dismissDialog();
                 if (response.code() == 200 && response.body().getStatus() != 400) {
-                    orderID = response.body().getOrderId();
-                    finalOrderResponse = response.body();
-                    if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
-                        //createOrderOnServer();
-                        initiateSDKPayment(response.body().getInstamojo_order_id());
-                    } else {
-                        orderSuccessDialog(response.body());
-                    }
+                    instamojo_order_id = response.body().getInstamojo_order_id();
+                    initiateSDKPayment(response.body().getInstamojo_order_id());
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -300,7 +330,6 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         TextView applyTextView = (TextView) couponDialog.findViewById(R.id.applyTextView);
         RecyclerView couponListRecyclerView = (RecyclerView) couponDialog.findViewById(R.id.couponListRecyclerView);
 
-
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(CheckoutActivity.this, LinearLayoutManager.HORIZONTAL, false);
         couponListRecyclerView.setLayoutManager(mLayoutManager);
         CouponListAdapter couponListAdapter = new CouponListAdapter(CheckoutActivity.this, couponListResponseModelArrayList);
@@ -368,8 +397,8 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                     couponDialog.dismiss();
 
                     if (response.body().getCartDetails() != null && response.body().getStatus() == 200) {
-                        // discountTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_discount_amount()));
-                        shippingTextView.setText("₹ " + String.valueOf(response.body().getCartDetails().getBase_shipping_amount()));
+                         discountTextView.setText("₹ " + String.valueOf(response.body().getCartDetails().getBase_shipping_amount()));
+                        //shippingTextView.setText("₹ " + String.valueOf(response.body().getCartDetails().getBase_shipping_amount()));
                         // taxTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_tax_amount()));
                         grandTotalTextView.setText("₹ " + String.valueOf(response.body().getCartDetails().getBase_subtotal_with_discount()));
 
@@ -381,6 +410,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                         couponMessageTextView.setTextColor(Color.parseColor("#ff0013"));
                     }
                     couponMessageTextView.setVisibility(View.VISIBLE);
+                    couponTotalTextView.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -661,8 +691,9 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         showToast("Payment complete. Order ID: " + orderID + ", Transaction ID: " + transactionID
                 + ", Payment ID:" + paymentID + ", Status: " + paymentStatus);
         if (transactionID != null || paymentID != null) {
+            new ConfirmPaymentServiceCall().execute();
             ghUtil.showDialog(CheckoutActivity.this);
-            updateOrderStatus(paymentID, paymentStatus);
+            //confirmPaymentServiceCall();
             //checkPaymentStatus(transactionID, orderID);
         } else {
             showToast("Oops!! Payment was cancelled");
@@ -715,4 +746,218 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         });
     }
 
+    public void confirmPaymentServiceCall() {
+        ghUtil.showDialog(CheckoutActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setCartId(quoteID);
+        paymentRequest.setInstamojo_order_id(instamojo_order_id);
+
+        PaymentRequest.PaymentMethod paymentMethod = new PaymentRequest.PaymentMethod();
+        paymentMethod.setMethod(selectedPaymentMethod);
+        paymentMethod.setPo_number(null);
+        paymentMethod.setAdditional_data(null);
+
+        PaymentRequest.BillingAddress billing_address = new PaymentRequest.BillingAddress();
+        billing_address.setCustomerAddressId(addressId);
+        billing_address.setCountryId("IN");
+        billing_address.setRegionId("564");
+        billing_address.setRegionCode("TG");
+        billing_address.setRegion("Telangana");
+        billing_address.setCustomerId(shared.getUserID());
+        billing_address.setStreet(address);
+        billing_address.setTelephone(phone);
+        billing_address.setPostcode(postcode);
+        billing_address.setCity(shared.getCity());
+        billing_address.setFirstname(name);
+        billing_address.setLastname(name);
+        billing_address.setSaveInAddressBook(null);
+
+        paymentRequest.setBilling_address(billing_address);
+        paymentRequest.setPaymentMethod(paymentMethod);
+
+        Gson gson = new Gson();
+        Log.v("paymentRequest", shared.getToken() + ":::" + gson.toJson(paymentRequest));
+
+        Call<FinalOrderResponse> loginResponseCall = service.setPayment(shared.getToken(), paymentRequest);
+        loginResponseCall.enqueue(new Callback<FinalOrderResponse>() {
+            @Override
+            public void onResponse(Call<FinalOrderResponse> call, Response<FinalOrderResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200 && response.body().getStatus() != 400) {
+                    orderID = response.body().getOrderId();
+                    finalOrderResponse = response.body();
+                    if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
+                        onlineOrderSuccessDialog(finalOrderResponse);
+                    } else {
+                        orderSuccessDialog(finalOrderResponse);
+                    }
+                } else {
+                    Toast.makeText(context, "Order placing failed, please contact customer care if money got decucted", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FinalOrderResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Order placing failed, please contact customer care if money got decucted", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private class ConfirmPaymentServiceCall extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            String str = postData();
+            return str;
+        }
+
+        protected void onPostExecute(String json) {
+
+            try {
+                ghUtil.dismissDialog();
+
+                if (json.length() > 0) {
+                    Log.v("mainObject:response", json);
+                    JSONObject jsonObjectMain;
+
+                    try {
+                        jsonObjectMain = new JSONObject(json);
+                        String path = "";
+
+                        FinalOrderResponse finalOrderResponseDup = new FinalOrderResponse();
+
+                        if (jsonObjectMain.has("status") && jsonObjectMain.getInt("status") == 200) {
+                            finalOrderResponseDup.setStatus(jsonObjectMain.getInt("status"));
+                            if (jsonObjectMain.has("orderId")) {
+                                finalOrderResponseDup.setOrderId(jsonObjectMain.getString("orderId"));
+                            }
+                            if (jsonObjectMain.has("message")) {
+                                finalOrderResponseDup.setMessage(jsonObjectMain.getString("message"));
+                            }
+                            if (jsonObjectMain.has("instamojo_order_id")) {
+                                finalOrderResponseDup.setInstamojo_order_id(jsonObjectMain.getString("instamojo_order_id"));
+                            }
+
+                            if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
+                                onlineOrderSuccessDialog(finalOrderResponseDup);
+                            } else {
+                                orderSuccessDialog(finalOrderResponseDup);
+                            }
+                        }
+                        else{
+                            if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
+                                Toast.makeText(context, "Order placing failed, please contact customer care if money got decucted", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Order placing failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
+                            Toast.makeText(context, "Order placing failed, please contact customer care if money got decucted", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "Order placing failed", Toast.LENGTH_SHORT).show();
+                        }                    }
+
+                } else {
+                    if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
+                        Toast.makeText(context, "Order placing failed, please contact customer care if money got decucted", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "Order placing failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            } catch (Exception e) {
+                ghUtil.dismissDialog();
+                if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
+                    Toast.makeText(context, "Order placing failed, please contact customer care if money got decucted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Order placing failed", Toast.LENGTH_SHORT).show();
+                }                e.printStackTrace();
+            }
+
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+        }
+
+        @SuppressWarnings("deprecation")
+        public String postData() {
+            // Create a new HttpClient and Post Header
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("https://www.grocershub.in/homeapi/placeorder?token=" + shared.getToken());
+            JSONObject mainObject = new JSONObject();
+
+            try {
+                JSONObject billing_address = new JSONObject();
+                billing_address.put("customerAddressId", addressId);
+                billing_address.put("countryId", "IN");
+                billing_address.put("region_id", "564");
+                billing_address.put("region_code", "TG");
+                billing_address.put("region", "Telangana");
+                billing_address.put("customerId", shared.getUserID());
+                billing_address.put("street", address);
+                billing_address.put("telephone", phone);
+                billing_address.put("postcode", postcode);
+                billing_address.put("city", city);
+                billing_address.put("firstname", shared.getUserFirstName());
+                billing_address.put("lastname", shared.getUserLastName());
+                billing_address.put("saveInAddressBook", JSONObject.NULL);
+                JSONObject extension_attributes = new JSONObject();
+                billing_address.put("extension_attributes", extension_attributes);
+
+                mainObject.put("billing_address", billing_address);
+                mainObject.put("cartId", quoteID);
+                if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
+                    mainObject.put("instamojo_order_id", instamojo_order_id);
+                }
+
+                JSONObject paymentMethod = new JSONObject();
+                paymentMethod.put("method", selectedPaymentMethod);
+                paymentMethod.put("po_number", JSONObject.NULL);
+                paymentMethod.put("additional_data", JSONObject.NULL);
+
+                mainObject.put("paymentMethod", paymentMethod);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Log.v("mainObject:request", mainObject.toString());
+            StringEntity se = null;
+            try {
+                se = new StringEntity(mainObject.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            httpPost.setEntity(se);
+            httpPost.setHeader("Content-type", "application/json");
+            String json = "";
+            try {
+
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httpPost);
+                HttpEntity httpEntity = response.getEntity();
+                InputStream is = httpEntity.getContent();
+
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(is, "iso-8859-1"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                is.close();
+                json = sb.toString();
+                //  Log.e("objJsonMain", "" + json);
+            } catch (Exception e) {
+                ghUtil.dismissDialog();
+                e.printStackTrace();
+                Toast.makeText(context, "Order placing failed, please contact customer care if money got decucted", Toast.LENGTH_SHORT).show();
+            }
+            return json;
+        }
+    }
 }

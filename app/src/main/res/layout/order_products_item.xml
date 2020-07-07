@@ -18,9 +18,10 @@
             android:id="@+id/productImageView"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_50sdp"
+            android:scaleType="center"
             android:layout_centerInParent="true"
-            android:background="#CECDCD"
-            android:src="#CFCFCF" />
+            android:background="#F8F7F7"
+            android:src="#F8F7F7" />
 
         <LinearLayout
             android:layout_width="match_parent"

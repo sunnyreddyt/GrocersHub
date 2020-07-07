@@ -347,12 +347,12 @@ public class GHUtil {
 
     */
 
-    public void setShippingResponse(ShippingResponse shippingResponse) {
+    public void setShippingResponse(String shippingResponse) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefsEditor = preferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(shippingResponse); // myObject - instance of MyObject
-        prefsEditor.putString("shippingResponse", json);
+        //Gson gson = new Gson();
+        //String json = gson.toJson(shippingResponse); // myObject - instance of MyObject
+        prefsEditor.putString("shippingResponse", shippingResponse);
         prefsEditor.commit();
     }
 

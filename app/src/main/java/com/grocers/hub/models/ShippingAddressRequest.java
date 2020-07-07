@@ -12,10 +12,30 @@ public class ShippingAddressRequest {
         this.addressInformation = addressInformation;
     }
 
+
+
     public static class AddressInformation {
         private Shipping_address shipping_address;
+        private ExtensionAttributes extension_attributes;
+        private Billing_address billing_address;
         private String shipping_carrier_code;
         private String shipping_method_code;
+
+        public ExtensionAttributes getExtension_attributes() {
+            return extension_attributes;
+        }
+
+        public void setExtension_attributes(ExtensionAttributes extension_attributes) {
+            this.extension_attributes = extension_attributes;
+        }
+
+        public Billing_address getBilling_address() {
+            return billing_address;
+        }
+
+        public void setBilling_address(Billing_address billing_address) {
+            this.billing_address = billing_address;
+        }
 
         public Shipping_address getShipping_address() {
             return shipping_address;
@@ -42,19 +62,55 @@ public class ShippingAddressRequest {
         }
     }
 
+    public static class ExtensionAttributes{
+
+    }
+
     public static class Shipping_address {
+        private String customerAddressId;
+        private String countryId;
+        private String regionId;
+        private String regionCode;
         private String region;
-        private int region_id;
-        private String region_code;
-        private String country_id;
+        private String customerId;
         private String street;
+        private String telephone;
         private String postcode;
         private String city;
         private String firstname;
         private String lastname;
-        private String email;
-        private String telephone;
-        private int same_as_billing;
+
+        public String getCustomerAddressId() {
+            return customerAddressId;
+        }
+
+        public void setCustomerAddressId(String customerAddressId) {
+            this.customerAddressId = customerAddressId;
+        }
+
+        public String getCountryId() {
+            return countryId;
+        }
+
+        public void setCountryId(String countryId) {
+            this.countryId = countryId;
+        }
+
+        public String getRegionId() {
+            return regionId;
+        }
+
+        public void setRegionId(String regionId) {
+            this.regionId = regionId;
+        }
+
+        public String getRegionCode() {
+            return regionCode;
+        }
+
+        public void setRegionCode(String regionCode) {
+            this.regionCode = regionCode;
+        }
 
         public String getRegion() {
             return region;
@@ -64,28 +120,12 @@ public class ShippingAddressRequest {
             this.region = region;
         }
 
-        public int getRegion_id() {
-            return region_id;
+        public String getCustomerId() {
+            return customerId;
         }
 
-        public void setRegion_id(int region_id) {
-            this.region_id = region_id;
-        }
-
-        public String getRegion_code() {
-            return region_code;
-        }
-
-        public void setRegion_code(String region_code) {
-            this.region_code = region_code;
-        }
-
-        public String getCountry_id() {
-            return country_id;
-        }
-
-        public void setCountry_id(String country_id) {
-            this.country_id = country_id;
+        public void setCustomerId(String customerId) {
+            this.customerId = customerId;
         }
 
         public String getStreet() {
@@ -94,6 +134,14 @@ public class ShippingAddressRequest {
 
         public void setStreet(String street) {
             this.street = street;
+        }
+
+        public String getTelephone() {
+            return telephone;
+        }
+
+        public void setTelephone(String telephone) {
+            this.telephone = telephone;
         }
 
         public String getPostcode() {
@@ -127,13 +175,86 @@ public class ShippingAddressRequest {
         public void setLastname(String lastname) {
             this.lastname = lastname;
         }
+    }
 
-        public String getEmail() {
-            return email;
+
+    public static class Billing_address {
+        private String customerAddressId;
+        private String countryId;
+        private String regionId;
+        private String regionCode;
+        private String region;
+        private String customerId;
+        private String street;
+        private String telephone;
+        private String postcode;
+        private String city;
+        private String firstname;
+        private String lastname;
+        private String saveInAddressBook;
+
+        public String getSaveInAddressBook() {
+            return saveInAddressBook;
         }
 
-        public void setEmail(String email) {
-            this.email = email;
+        public void setSaveInAddressBook(String saveInAddressBook) {
+            this.saveInAddressBook = saveInAddressBook;
+        }
+
+        public String getCustomerAddressId() {
+            return customerAddressId;
+        }
+
+        public void setCustomerAddressId(String customerAddressId) {
+            this.customerAddressId = customerAddressId;
+        }
+
+        public String getCountryId() {
+            return countryId;
+        }
+
+        public void setCountryId(String countryId) {
+            this.countryId = countryId;
+        }
+
+        public String getRegionId() {
+            return regionId;
+        }
+
+        public void setRegionId(String regionId) {
+            this.regionId = regionId;
+        }
+
+        public String getRegionCode() {
+            return regionCode;
+        }
+
+        public void setRegionCode(String regionCode) {
+            this.regionCode = regionCode;
+        }
+
+        public String getRegion() {
+            return region;
+        }
+
+        public void setRegion(String region) {
+            this.region = region;
+        }
+
+        public String getCustomerId() {
+            return customerId;
+        }
+
+        public void setCustomerId(String customerId) {
+            this.customerId = customerId;
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
         }
 
         public String getTelephone() {
@@ -144,12 +265,36 @@ public class ShippingAddressRequest {
             this.telephone = telephone;
         }
 
-        public int getSame_as_billing() {
-            return same_as_billing;
+        public String getPostcode() {
+            return postcode;
         }
 
-        public void setSame_as_billing(int same_as_billing) {
-            this.same_as_billing = same_as_billing;
+        public void setPostcode(String postcode) {
+            this.postcode = postcode;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public String getFirstname() {
+            return firstname;
+        }
+
+        public void setFirstname(String firstname) {
+            this.firstname = firstname;
+        }
+
+        public String getLastname() {
+            return lastname;
+        }
+
+        public void setLastname(String lastname) {
+            this.lastname = lastname;
         }
     }
 
