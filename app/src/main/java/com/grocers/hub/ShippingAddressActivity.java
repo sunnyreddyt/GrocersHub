@@ -365,11 +365,12 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
                         if (ghUtil.isValidEmail(emailEditText.getText().toString())) {
 
                             if (ghUtil.isValidPhone(phoneEditText.getText().toString())) {
-                                AddAddressRequest addAddressRequest = new AddAddressRequest();
+                                /*AddAddressRequest addAddressRequest = new AddAddressRequest();
                                 AddAddressRequest address = new AddAddressRequest();
                                 AddAddressRequest region = new AddAddressRequest();
                                 region.setRegion_code("TG");
                                 region.setRegion_id(564);
+
                                 address.setCustomer_id(Integer.parseInt(shared.getUserID()));
                                 address.setRegion(region);
                                 address.setRegion_id(0);
@@ -382,8 +383,13 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
                                 address.setLastname(nameEditText.getText().toString());
                                 address.setDefault_billing(true);
                                 address.setDefault_shipping(true);
+
+
                                 addAddressRequest.setAddress(address);
-                                addAddressServiceCall(addAddressRequest);
+                                addAddressServiceCall(addAddressRequest);*/
+                                addAddressDialog.dismiss();
+                                addAddress(addressEditText.getText().toString(), phoneEditText.getText().toString(), pincodeEditText.getText().toString(), cityEditText.getText().toString(), nameEditText.getText().toString());
+
                             } else {
                                 Toast.makeText(ShippingAddressActivity.this, "Please provide valid phone", Toast.LENGTH_SHORT).show();
                             }
@@ -485,4 +491,133 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         addressId = String.valueOf(userAddressListModelArrayList.get(position).getId());
         addressListAdapter.notifyDataSetChanged();
     }
+
+    public void addAddress(final String addressString, final String phone, final String pincode, final String city, final String name) {
+        class AddAddressServiceCall extends AsyncTask<String, Integer, String> {
+
+            @Override
+            protected String doInBackground(String... params) {
+                // TODO Auto-generated method stub
+                String str = postData();
+                return str;
+            }
+
+            protected void onPostExecute(String json) {
+
+                try {
+                    ghUtil.dismissDialog();
+
+                    if (json.length() > 0) {
+                        Log.v("mainObject:response", json);
+                        JSONObject jsonObjectMain;
+
+                        try {
+                            jsonObjectMain = new JSONObject(json);
+
+                            if (jsonObjectMain.has("status") && jsonObjectMain.getInt("status") == 200) {
+                                Toast.makeText(ShippingAddressActivity.this, "Added", Toast.LENGTH_SHORT).show();
+                                if (ghUtil.isConnectingToInternet()) {
+                                    customerDetailsServiceCall();
+                                } else {
+                                    Toast.makeText(ShippingAddressActivity.this, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(context, "Adding address failed, please try after sometime", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else {
+                        Toast.makeText(context, "Adding address failed, please try after sometime", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    ghUtil.dismissDialog();
+                    Toast.makeText(context, "Adding address failed, please try after sometime", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+
+            }
+
+            protected void onProgressUpdate(Integer... progress) {
+            }
+
+            @SuppressWarnings("deprecation")
+            public String postData() {
+                // Create a new HttpClient and Post Header
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httpPost = new HttpPost("https://www.grocershub.in/homeapi/Customeraddress?customer_id=" + shared.getToken());
+                JSONObject mainObject = new JSONObject();
+
+                try {
+                    JSONObject address = new JSONObject();
+                    address.put("customer_id", Integer.parseInt(shared.getUserID()));
+                    address.put("region_id", "564");
+                    address.put("country_id", "IN");
+                    address.put("street", addressString);
+                    address.put("company", "");
+                    address.put("telephone", phone);
+                    address.put("fax", "");
+                    address.put("postcode", pincode);
+                    address.put("city", city);
+                    address.put("firstname", name);
+                    address.put("lastname", name);
+                    address.put("middlename", "");
+                    address.put("prefix", "");
+                    address.put("suffix", "");
+                    address.put("vat_id", "");
+                    address.put("default_shipping", true);
+                    address.put("default_billing", true);
+
+                    JSONObject region = new JSONObject();
+                    region.put("region_code", "TG");
+                    region.put("region", "Telangana");
+                    region.put("region_id", "564");
+                    address.put("region", region);
+
+
+                    mainObject.put("address", address);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Log.v("mainObject:request", mainObject.toString());
+                StringEntity se = null;
+                try {
+                    se = new StringEntity(mainObject.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                httpPost.setEntity(se);
+                httpPost.setHeader("Content-type", "application/json");
+                String json = "";
+                try {
+
+                    // Execute HTTP Post Request
+                    HttpResponse response = httpclient.execute(httpPost);
+                    HttpEntity httpEntity = response.getEntity();
+                    InputStream is = httpEntity.getContent();
+
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(is, "iso-8859-1"), 8);
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+                    is.close();
+                    json = sb.toString();
+                    //  Log.e("objJsonMain", "" + json);
+                } catch (Exception e) {
+                    ghUtil.dismissDialog();
+                    e.printStackTrace();
+                    Toast.makeText(context, "Adding address failed, please try after sometime", Toast.LENGTH_SHORT).show();
+                }
+                return json;
+            }
+        }
+        new AddAddressServiceCall().execute();
+        ghUtil.showDialog(ShippingAddressActivity.this);
+    }
+
 }
