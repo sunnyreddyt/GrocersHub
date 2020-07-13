@@ -26,6 +26,7 @@ import com.grocers.hub.models.AddToCartOptionRequest;
 import com.grocers.hub.models.AddToCartRequest;
 import com.grocers.hub.models.AddToCartResponse;
 import com.grocers.hub.models.CartResponse;
+import com.grocers.hub.models.MinimumOrderResponse;
 import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
@@ -39,6 +40,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -56,7 +58,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
     RecyclerView cartRecyclerView;
     ImageView backImageView;
     RelativeLayout checkoutLayout;
-    TextView paymentTextView, noDataTextView, totalAmountTextView;
+    TextView paymentTextView, noDataTextView, totalAmountTextView, minimumOrderAmount;
     Shared shared;
     Context context;
     GHUtil ghUtil;
@@ -65,6 +67,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
     int cartProductsAddedCount = 0;
     String quoteID = "";
     JSONArray cartRequestArray;
+    private int minimumOrder = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +82,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
         paymentTextView = (TextView) findViewById(R.id.paymentTextView);
         totalAmountTextView = (TextView) findViewById(R.id.totalAmountTextView);
         checkoutLayout = (RelativeLayout) findViewById(R.id.checkoutLayout);
+        minimumOrderAmount = (TextView) findViewById(R.id.minimumOrderAmount);
 
         totalAmount = 0;
 
@@ -86,10 +90,15 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
             @Override
             public void onClick(View view) {
                 if (shared.getUserID().length() > 0) {
-                    if (totalAmount > 0) {
-                        getQuoteIDServiceCall();
+                    if (minimumOrder == 0) {
+                        getMinAmountServiceCall();
+                        paymentTextView.performClick();
                     } else {
-                        Toast.makeText(context, "Minimum order should be greater than Rs.300", Toast.LENGTH_SHORT).show();
+                        if (totalAmount > minimumOrder) {
+                            getQuoteIDServiceCall();
+                        } else {
+                            Toast.makeText(context, "Minimum order should be greater than Rs." + String.valueOf(minimumOrder), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 } else {
                     Intent intent = new Intent(CartActivity.this, LoginActivity.class);
@@ -105,6 +114,7 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                 getCartProductsOfline();
             }*/
             getCartProductsOfline();
+            getMinAmountServiceCall();
         } else {
             Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
         }
@@ -497,7 +507,6 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
         }
     }
 
-
     public void addAllProducts() {
         try {
             class AddAllProductsToCart extends AsyncTask<String, Integer, String> {
@@ -576,5 +585,31 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
     public void updateCartProductsTotalPrice() {
         getCartProductsOfline();
         //totalAmountTextView.setText(String.valueOf(totalAmount));
+    }
+
+    public void getMinAmountServiceCall() {
+        ghUtil.showDialog(CartActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<MinimumOrderResponse> loginResponseCall = service.getMinimumOrder();
+        loginResponseCall.enqueue(new Callback<MinimumOrderResponse>() {
+            @Override
+            public void onResponse(Call<MinimumOrderResponse> call, Response<MinimumOrderResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    if (response.body().getSuccess() == 200) {
+                        minimumOrder = response.body().getData().getMinimumOrder();
+                        minimumOrderAmount.setText("Minimum order Amount Rs." + String.valueOf(minimumOrder));
+                    }
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MinimumOrderResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

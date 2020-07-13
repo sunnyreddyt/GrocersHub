@@ -15,6 +15,7 @@ import com.grocers.hub.models.GeneralRequest;
 import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.models.HomeResponse;
 import com.grocers.hub.models.LocationsModel;
+import com.grocers.hub.models.MinimumOrderResponse;
 import com.grocers.hub.models.OrderDetailsResponse;
 import com.grocers.hub.models.OrdersResponse;
 import com.grocers.hub.models.PaymentRequest;
@@ -91,6 +92,10 @@ public interface APIInterface {
     @Headers({"Accept: application/json"})
     @GET("homeapi/Quoteid?")
     Call<QuoteIDResponse> getQuoteID(@Query("token") String token, @Query("customer_id") String customer_id);
+
+    @Headers({"Accept: application/json"})
+    @GET("minOrder.php")
+    Call<MinimumOrderResponse> getMinimumOrder();
 
     @Headers({"Accept: application/json"})
     @POST("rest/V1/carts/mine/items")

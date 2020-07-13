@@ -94,7 +94,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mobileEditText.getText().toString().length() > 0 && firstNameEditText.getText().toString().length() > 0 && lastNameEditText.getText().toString().length() > 0 && emailEditText.getText().toString().length() > 0 && passwordEditText.getText().toString().length() > 0) {
-                    if (ghUtil.isPasswordValid(passwordEditText.getText().toString().trim()) && passwordEditText.getText().toString().length() >= 8) {
+                    if (/*ghUtil.isPasswordValid(passwordEditText.getText().toString().trim()) &&*/ passwordEditText.getText().toString().length() >= 6) {
                         if (ghUtil.isValidPhone(mobileEditText.getText().toString())) {
                             if (ghUtil.isValidEmail(emailEditText.getText().toString())) {
                                 if (passwordEditText.getText().toString().equalsIgnoreCase(confirmPasswordEditText.getText().toString())) {
@@ -117,7 +117,7 @@ public class RegistrationActivity extends AppCompatActivity {
                             Toast.makeText(RegistrationActivity.this, "Please provide valid mobile number", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(context, "Password must have min. 8 characters with digits,special Characters,Small and Caps", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Password must have min. 6 characters with digits", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(context, "Enter Valid Details", Toast.LENGTH_SHORT).show();

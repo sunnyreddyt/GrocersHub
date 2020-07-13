@@ -106,6 +106,13 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
             }
         });
 
+        locationTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getLocations();
+            }
+        });
+
         cartLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -51,8 +51,8 @@
             <RelativeLayout
                 android:layout_width="@dimen/_26sdp"
                 android:layout_height="@dimen/_26sdp"
-                android:visibility="invisible"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:visibility="invisible">
 
                 <ImageView
                     android:layout_width="@dimen/_16sdp"
@@ -87,8 +87,8 @@
         android:id="@+id/cartRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/topLayout"
         android:layout_above="@+id/checkoutLayout"
+        android:layout_below="@+id/topLayout"
         android:layout_marginLeft="@dimen/_6sdp"
         android:layout_marginRight="@dimen/_6sdp"
         android:visibility="visible"></androidx.recyclerview.widget.RecyclerView>
@@ -109,9 +109,9 @@
         android:visibility="gone"></TextView>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_38sdp"
         android:id="@+id/checkoutLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_42sdp"
         android:layout_alignParentBottom="true"
         android:background="#17435C">
 
@@ -127,6 +127,7 @@
             android:visibility="visible" />
 
         <LinearLayout
+            android:id="@+id/totalLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -159,6 +160,21 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/minimumOrderAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_4sdp"
+            android:fontFamily="@font/roboto_medium"
+            android:gravity="center"
+            android:text="Minimum order Amount"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_8sdp"
+            android:textStyle="bold"
+            android:visibility="visible" />
 
     </RelativeLayout>
 
