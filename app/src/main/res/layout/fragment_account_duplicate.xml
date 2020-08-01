@@ -269,6 +269,38 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1pt"
+                    android:background="#b9b9b9"></View>
+
+                <LinearLayout
+                    android:id="@+id/wtsappLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
+                        android:padding="@dimen/_2sdp"
+                        android:src="@drawable/ic_wts_app"
+                        android:tint="#4B4949" />
+                    <!--6ea4e6-->
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text="Order on WhatsApp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_11sdp" />
+
+                </LinearLayout>
+
                 <!--<View
                     android:layout_width="match_parent"
                     android:layout_height="0.1pt"

@@ -55,7 +55,7 @@ import static android.view.View.GONE;
 public class AccountFragment extends Fragment implements ItemClickListener {
 
     private LinearLayout signOutLayout, ordersLayout, rateUsLinearLayout, feedbackLinearLayout,
-            aboutUsLinearLayout;
+            aboutUsLinearLayout, wtsappLayout;
     private Shared shared;
     private ScrollView loginLayout;
     private RelativeLayout logoutLayout;
@@ -86,6 +86,7 @@ public class AccountFragment extends Fragment implements ItemClickListener {
         ordersLayout = (LinearLayout) view.findViewById(R.id.ordersLayout);
         loginLayout = (ScrollView) view.findViewById(R.id.loginLayout);
         logoutLayout = (RelativeLayout) view.findViewById(R.id.logoutLayout);
+        wtsappLayout = (LinearLayout) view.findViewById(R.id.wtsappLayout);
         aboutUsLinearLayout = (LinearLayout) view.findViewById(R.id.aboutUsLinearLayout);
         feedbackLinearLayout = (LinearLayout) view.findViewById(R.id.feedbackLinearLayout);
         context = getActivity();
@@ -95,6 +96,21 @@ public class AccountFragment extends Fragment implements ItemClickListener {
             @Override
             public void onClick(View view) {
                 getLocations();
+            }
+        });
+
+        wtsappLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    String url = "https://api.whatsapp.com/send?phone=" + "+91 8341836105";
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), "Something went wrong please try after sometime", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
             }
         });
 
