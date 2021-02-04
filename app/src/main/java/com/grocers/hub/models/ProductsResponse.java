@@ -7,9 +7,17 @@ public class ProductsResponse {
     private String status;
     private ArrayList<ProductsResponse> products;
     private int qty, id, cartQuantity,maxQtyAllowed;
-    private double price, finalPrice;
+    private double price, finalPrice, discountPercentage;
     private String name, sku, image, product_type;
     ArrayList<ProductOptions> options;
+
+    public double getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(double discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
 
     public int getMaxQtyAllowed() {
         return maxQtyAllowed;
@@ -118,7 +126,15 @@ public class ProductsResponse {
     public class ProductOptions {
         private String sku, price, option_title, default_title, super_attribute_label, value_index, attribute_code, product_id;
         private int qty, cartQuantity,maxQtyAllowed;
-        private double finalPrice;
+        private double finalPrice,discountPercentage;
+
+        public double getDiscountPercentage() {
+            return discountPercentage;
+        }
+
+        public void setDiscountPercentage(double discountPercentage) {
+            this.discountPercentage = discountPercentage;
+        }
 
         public int getMaxQtyAllowed() {
             return maxQtyAllowed;

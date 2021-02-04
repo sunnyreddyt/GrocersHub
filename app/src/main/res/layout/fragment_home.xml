@@ -135,7 +135,6 @@
                         android:inputType="textCapWords"
                         android:maxEms="30"
                         android:maxLines="1"
-                        android:text="Madhapur Petrol Pump..."
                         android:textColor="#33383f"
                         android:textSize="@dimen/_11sdp"
                         android:textStyle="bold" />

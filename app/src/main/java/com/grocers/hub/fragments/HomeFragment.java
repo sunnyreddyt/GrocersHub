@@ -26,6 +26,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.grocers.hub.CartActivity;
 import com.grocers.hub.R;
+import com.grocers.hub.SplashActivity;
 import com.grocers.hub.ViewPagerAdapter;
 import com.grocers.hub.adapters.CategoriesListAdapter;
 import com.grocers.hub.adapters.CityListAdapter;
@@ -125,10 +126,19 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
             }
         });
 
-        if (ghUtil.isConnectingToInternet()) {
-            getCategoriesServiceCall();
+
+        if (!(shared.getCity() != null && shared.getCity().length() > 0)) {
+            if (ghUtil.isConnectingToInternet()) {
+                getLocations();
+            } else {
+                Toast.makeText(getActivity(), "Please check internet connection", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+            if (ghUtil.isConnectingToInternet()) {
+                getCategoriesServiceCall();
+            } else {
+                Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+            }
         }
 
         return view;
@@ -321,8 +331,19 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
                         locationsModel.setPostcode(response.body().getData().get(p).getPostcode());
                         cityArrayList.add(locationsModel);
                     }
-                    if (cityArrayList.size() > 0)
+
+                    if (cityArrayList.size() == 1) {
+                        shared.setCity(cityArrayList.get(0).getCity());
+                        shared.setZipCode(cityArrayList.get(0).getPostcode());
+                        locationTextView.setText(shared.getCity());
+                        if (ghUtil.isConnectingToInternet()) {
+                            getCategoriesServiceCall();
+                        } else {
+                            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                    } else if (cityArrayList.size() > 0) {
                         selectCity(cityArrayList);
+                    }
 
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -340,6 +361,8 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
     public void selectCity(ArrayList<LocationsModel> tempCityArrayList) {
         citiesDialog = new Dialog(getActivity());
         citiesDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        citiesDialog.setCancelable(false);
+        citiesDialog.setCanceledOnTouchOutside(false);
         citiesDialog.setContentView(R.layout.dialog_cities);
 
         RecyclerView citiesRecyclerView = citiesDialog.findViewById(R.id.citiesRecyclerView);
@@ -368,42 +391,6 @@ public class HomeFragment extends Fragment implements ItemClickListener, OnCateg
             categoriesListAdapter.notifyDataSetChanged();
         }
     }
-
-    /*public void getCartProductsServiceCall() {
-        ghUtil.showDialog(getActivity());
-        APIInterface service = ApiClient.getClient().create(APIInterface.class);
-        Call<CartResponse> loginResponseCall = service.getCartProducts("Bearer " + shared.getToken());
-        loginResponseCall.enqueue(new Callback<CartResponse>() {
-            @Override
-            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
-                ghUtil.dismissDialog();
-                cartResponseArrayList = new ArrayList<CartResponse>();
-                if (response.code() == 200) {
-
-                    int cartCount = response.body().getItems().size();
-                    if (cartCount > 0) {
-                        cartResponseArrayList = response.body().getItems();
-                        cartCountTextView.setText(String.valueOf(cartCount));
-                    } else {
-                        cartCountTextView.setText("0");
-                    }
-                } else {
-                    //  Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
-                }
-                getHomeDetailsServiceCall();
-            }
-
-            @Override
-            public void onFailure(Call<CartResponse> call, Throwable t) {
-                cartCountTextView.setText("0");
-                ghUtil.dismissDialog();
-                cartResponseArrayList = new ArrayList<CartResponse>();
-                getHomeDetailsServiceCall();
-
-                //  Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
 
     @Override
     public void onCartChange(int count) {

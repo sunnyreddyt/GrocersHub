@@ -31,7 +31,7 @@ public class OrderProductsAdapter extends RecyclerView.Adapter<OrderProductsAdap
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         CardView itemLayout;
-        TextView costTextView, countTextView, productNameTextView;
+        TextView costTextView, originalPriceTextView, countTextView, productNameTextView;
 
         public MyViewHolder(View view) {
             super(view);
@@ -39,6 +39,7 @@ public class OrderProductsAdapter extends RecyclerView.Adapter<OrderProductsAdap
             countTextView = (TextView) view.findViewById(R.id.countTextView);
             productNameTextView = (TextView) view.findViewById(R.id.productNameTextView);
             costTextView = (TextView) view.findViewById(R.id.costTextView);
+            originalPriceTextView = (TextView) view.findViewById(R.id.originalPriceTextView);
         }
     }
 
@@ -56,7 +57,22 @@ public class OrderProductsAdapter extends RecyclerView.Adapter<OrderProductsAdap
 
         holder.productNameTextView.setText(items.get(position).getName());
         holder.costTextView.setText("₹ " + String.valueOf(items.get(position).getRow_total()));
-        holder.countTextView.setText("Qty: " + String.valueOf(items.get(position).getQty()));
+        int quantity = (int) items.get(position).getQty();
+        holder.countTextView.setText("Qty: " + String.valueOf(quantity));
+
+        int productFinalPrice = (int) items.get(position).getRow_total();
+        double productPriceDouble = items.get(position).getBase_price();
+        int productPriceInt = (int) productPriceDouble;
+        double specialPriceDouble = items.get(position).getSpecial_price();
+        int specialPriceInt = (int) specialPriceDouble;
+        int productOriginalPrice = productPriceInt + specialPriceInt;
+        int productOriginalPriceTotal = productOriginalPrice * quantity;
+        if (productOriginalPriceTotal > 0 && (productFinalPrice != productOriginalPriceTotal)) {
+            holder.originalPriceTextView.setVisibility(View.VISIBLE);
+            holder.originalPriceTextView.setText("₹ " + productOriginalPriceTotal);
+        } else {
+            holder.originalPriceTextView.setVisibility(View.INVISIBLE);
+        }
 
     }
 

@@ -58,11 +58,12 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
     RecyclerView cartRecyclerView;
     ImageView backImageView;
     RelativeLayout checkoutLayout;
-    TextView paymentTextView, noDataTextView, totalAmountTextView, minimumOrderAmount;
+    TextView paymentTextView, noDataTextView, totalAmountTextView, originalAmountTextView, minimumOrderAmount;
     Shared shared;
     Context context;
     GHUtil ghUtil;
     public int totalAmount;
+    public int originalAmount;
     List<OfflineCartProduct> offlineCartProductArrayList;
     int cartProductsAddedCount = 0;
     String quoteID = "";
@@ -81,10 +82,9 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
         cartRecyclerView = (RecyclerView) findViewById(R.id.cartRecyclerView);
         paymentTextView = (TextView) findViewById(R.id.paymentTextView);
         totalAmountTextView = (TextView) findViewById(R.id.totalAmountTextView);
+        originalAmountTextView = (TextView) findViewById(R.id.originalAmountTextView);
         checkoutLayout = (RelativeLayout) findViewById(R.id.checkoutLayout);
         minimumOrderAmount = (TextView) findViewById(R.id.minimumOrderAmount);
-
-        totalAmount = 0;
 
         paymentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,14 +201,23 @@ public class CartActivity extends AppCompatActivity implements OnCartUpdateListe
                 }
 
                 totalAmount = 0;
+                originalAmount = 0;
+
                 for (int g = 0; g < cartResponseList.size(); g++) {
                     double priceDouble = cartResponseList.get(g).getFinalPrice();
                     int price = (int) priceDouble;
                     int quantity = cartResponseList.get(g).getQty();
                     int productPrice = price * quantity;
                     totalAmount = totalAmount + productPrice;
+
+
+                    double originalPriceDouble = cartResponseList.get(g).getPrice();
+                    int originalPrice = (int) originalPriceDouble;
+                    int originalProductPrice = originalPrice * quantity;
+                    originalAmount = originalAmount + originalProductPrice;
                 }
                 totalAmountTextView.setText(String.valueOf(totalAmount));
+                originalAmountTextView.setText(" ("+String.valueOf(originalAmount)+") ");
 
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(CartActivity.this, RecyclerView.VERTICAL, false);
                 cartRecyclerView.setLayoutManager(mLayoutManager);

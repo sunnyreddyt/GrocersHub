@@ -18,6 +18,15 @@ public class GeneralResponse {
     private String value;
     private GeneralResponse result;
     private ArrayList<UserAddressListModel> addresses;
+    private String updated_version;
+
+    public String getUpdated_version() {
+        return updated_version;
+    }
+
+    public void setUpdated_version(String updated_version) {
+        this.updated_version = updated_version;
+    }
 
     public ArrayList<UserAddressListModel> getAddresses() {
         return addresses;

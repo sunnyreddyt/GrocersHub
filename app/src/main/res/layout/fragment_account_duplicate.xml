@@ -52,11 +52,11 @@
     </RelativeLayout>
 
     <ScrollView
-        android:id="@+id/loginLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/topLayout"
         android:fillViewport="true"
+        android:scrollbars="none"
         android:visibility="visible">
 
         <LinearLayout
@@ -65,9 +65,11 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/loginLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/green"
+                android:visibility="gone"
                 android:orientation="vertical"
                 android:paddingTop="@dimen/_20sdp"
                 android:paddingBottom="@dimen/_10sdp">
@@ -230,6 +232,41 @@
                             android:textSize="@dimen/_9sdp" />
 
                     </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/logoutLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical"
+                android:background="#F0EEEE"
+                android:weightSum="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/loginTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/item_border"
+                        android:fontFamily="@font/roboto_medium"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/_12sdp"
+                        android:paddingTop="@dimen/_8sdp"
+                        android:paddingRight="@dimen/_12sdp"
+                        android:paddingBottom="@dimen/_8sdp"
+                        android:text="Login/Register"
+                        android:textColor="@color/green" />
 
                 </LinearLayout>
 
@@ -483,6 +520,192 @@
                     android:background="#b9b9b9"></View>
 
                 <LinearLayout
+                    android:id="@+id/supportLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
+                        android:padding="@dimen/_3sdp"
+                        android:src="@drawable/support"
+                        android:tint="#989898" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text="Help &amp; Support"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_11sdp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1pt"
+                    android:background="#b9b9b9"></View>
+
+                <LinearLayout
+                    android:id="@+id/contactUsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
+                        android:padding="@dimen/_4sdp"
+                        android:src="@drawable/contactus"
+                        android:tint="#989898" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text="Contact Us"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_11sdp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1pt"
+                    android:background="#b9b9b9"></View>
+
+                <LinearLayout
+                    android:id="@+id/suggestionLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
+                        android:padding="@dimen/_4sdp"
+                        android:src="@drawable/suggestion"
+                        android:tint="#989898" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text="Suggestions"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_11sdp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1pt"
+                    android:background="#b9b9b9"></View>
+
+                <LinearLayout
+                    android:id="@+id/tncLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
+                        android:padding="@dimen/_4sdp"
+                        android:src="@drawable/tnc"
+                        android:tint="#989898" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text="Terms &amp; Conditions"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_11sdp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1pt"
+                    android:background="#b9b9b9"></View>
+
+                <LinearLayout
+                    android:id="@+id/privacyPolicyLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
+                        android:padding="@dimen/_4sdp"
+                        android:src="@drawable/privacy_policy"
+                        android:tint="#989898" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text="Privacy Policy"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_11sdp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1pt"
+                    android:background="#b9b9b9"></View>
+
+                <LinearLayout
+                    android:id="@+id/shareLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
+                        android:padding="@dimen/_3sdp"
+                        android:src="@drawable/share"
+                        android:tint="#989898" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text="Share"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_11sdp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1pt"
+                    android:background="#b9b9b9"></View>
+
+                <LinearLayout
                     android:id="@+id/signOutLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -524,38 +747,33 @@
 
     </ScrollView>
 
-    <RelativeLayout
+   <!-- <RelativeLayout
         android:id="@+id/logoutLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone">
 
-        <ImageView
+      &lt;!&ndash;  <ImageView
             android:id="@+id/bottomLayout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_150sdp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/bottom_background" />
-
+&ndash;&gt;
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/bottomLayout"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="vertical"
             android:weightSum="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.4"></LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.6"
+                android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
                 android:orientation="vertical">
 
                 <TextView
@@ -584,6 +802,6 @@
         </LinearLayout>
 
 
-    </RelativeLayout>
+    </RelativeLayout>-->
 
 </LinearLayout>

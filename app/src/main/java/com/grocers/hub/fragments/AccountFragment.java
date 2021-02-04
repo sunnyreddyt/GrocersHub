@@ -17,6 +17,7 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,8 @@ import com.grocers.hub.EditProfileActivity;
 import com.grocers.hub.LoginActivity;
 import com.grocers.hub.OrderHistoryActivity;
 import com.grocers.hub.R;
+import com.grocers.hub.SuggestionsActivity;
+import com.grocers.hub.SupportActivity;
 import com.grocers.hub.WebViewActivity;
 import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
@@ -55,10 +58,11 @@ import static android.view.View.GONE;
 public class AccountFragment extends Fragment implements ItemClickListener {
 
     private LinearLayout signOutLayout, ordersLayout, rateUsLinearLayout, feedbackLinearLayout,
-            aboutUsLinearLayout, wtsappLayout;
+            aboutUsLinearLayout, wtsappLayout, shareLayout, tncLayout, privacyPolicyLayout,
+            suggestionLayout, supportLayout, contactUsLayout;
     private Shared shared;
-    private ScrollView loginLayout;
-    private RelativeLayout logoutLayout;
+    private LinearLayout loginLayout;
+    private LinearLayout logoutLayout;
     private RelativeLayout editLayout;
     private String[] cities = {"Hyderabad", "Khammam", "Mahabubnagar", "Karimnagar", "Secunderabad", "Kurnool", "Tirupathi", "Adilabad", "Vijayawada", "Vizag"};
     private ArrayList<LocationsModel> cityArrayList;
@@ -73,6 +77,8 @@ public class AccountFragment extends Fragment implements ItemClickListener {
         View view = inflater.inflate(R.layout.fragment_account_duplicate, container, false);
 
         ghUtil = GHUtil.getInstance(getActivity());
+        contactUsLayout = (LinearLayout) view.findViewById(R.id.contactUsLayout);
+        supportLayout = (LinearLayout) view.findViewById(R.id.supportLayout);
         signOutLayout = (LinearLayout) view.findViewById(R.id.signOutLayout);
         userNameTextView = (TextView) view.findViewById(R.id.userNameTextView);
         versionNameTextView = (TextView) view.findViewById(R.id.versionNameTextView);
@@ -84,11 +90,15 @@ public class AccountFragment extends Fragment implements ItemClickListener {
         selectedLocation = (TextView) view.findViewById(R.id.selectedLocation);
         rateUsLinearLayout = (LinearLayout) view.findViewById(R.id.rateUsLinearLayout);
         ordersLayout = (LinearLayout) view.findViewById(R.id.ordersLayout);
-        loginLayout = (ScrollView) view.findViewById(R.id.loginLayout);
-        logoutLayout = (RelativeLayout) view.findViewById(R.id.logoutLayout);
+        loginLayout = (LinearLayout) view.findViewById(R.id.loginLayout);
+        logoutLayout = (LinearLayout) view.findViewById(R.id.logoutLayout);
         wtsappLayout = (LinearLayout) view.findViewById(R.id.wtsappLayout);
         aboutUsLinearLayout = (LinearLayout) view.findViewById(R.id.aboutUsLinearLayout);
         feedbackLinearLayout = (LinearLayout) view.findViewById(R.id.feedbackLinearLayout);
+        shareLayout = (LinearLayout) view.findViewById(R.id.shareLayout);
+        tncLayout = (LinearLayout) view.findViewById(R.id.tncLayout);
+        privacyPolicyLayout = (LinearLayout) view.findViewById(R.id.privacyPolicyLayout);
+        suggestionLayout = (LinearLayout) view.findViewById(R.id.suggestionLayout);
         context = getActivity();
         shared = new Shared(getActivity());
 
@@ -114,6 +124,20 @@ public class AccountFragment extends Fragment implements ItemClickListener {
             }
         });
 
+        supportLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), SupportActivity.class));
+            }
+        });
+
+        shareLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareApp();
+            }
+        });
+
         loginTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,6 +151,42 @@ public class AccountFragment extends Fragment implements ItemClickListener {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), WebViewActivity.class);
                 intent.putExtra("url", "https://www.grocershub.in/about-us");
+                startActivity(intent);
+            }
+        });
+
+        tncLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("url", "https://www.grocershub.in/terms-conditions");
+                startActivity(intent);
+            }
+        });
+
+        privacyPolicyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("url", "https://www.grocershub.in/privacy-policy-cookie-restriction-mode");
+                startActivity(intent);
+            }
+        });
+
+        suggestionLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SuggestionsActivity.class);
+                intent.putExtra("type", "suggestion");
+                startActivity(intent);
+            }
+        });
+
+        contactUsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SuggestionsActivity.class);
+                intent.putExtra("type", "contactus");
                 startActivity(intent);
             }
         });
@@ -153,7 +213,7 @@ public class AccountFragment extends Fragment implements ItemClickListener {
             e.printStackTrace();
         }
 
-       /* userNameTextView.setText(shared.getUserName());
+      /*userNameTextView.setText(shared.getUserName());
         userNumberTextView.setText(shared.getUserMobile());
         userMailTextView.setText(shared.getUserEmail());*/
 
@@ -219,6 +279,12 @@ public class AccountFragment extends Fragment implements ItemClickListener {
         }
     }
 
+    public void shareApp() {
+        Intent intentInvite = new Intent(Intent.ACTION_SEND);
+        intentInvite.setType("text/plain");
+        intentInvite.putExtra(Intent.EXTRA_TEXT, "http://play.google.com/store/apps/details?id=" + context.getPackageName());
+        startActivity(Intent.createChooser(intentInvite, "Share using"));
+    }
 
     @Override
     public void onResume() {
@@ -227,10 +293,17 @@ public class AccountFragment extends Fragment implements ItemClickListener {
             loginLayout.setVisibility(View.VISIBLE);
             editLayout.setVisibility(View.VISIBLE);
             logoutLayout.setVisibility(GONE);
+
+            signOutLayout.setVisibility(View.VISIBLE);
+            ordersLayout.setVisibility(View.VISIBLE);
+            wtsappLayout.setVisibility(View.VISIBLE);
         } else {
             loginLayout.setVisibility(GONE);
             editLayout.setVisibility(GONE);
             logoutLayout.setVisibility(View.VISIBLE);
+            signOutLayout.setVisibility(GONE);
+            ordersLayout.setVisibility(GONE);
+            wtsappLayout.setVisibility(GONE);
         }
 
         userNameTextView.setText(shared.getUserName());
@@ -258,8 +331,16 @@ public class AccountFragment extends Fragment implements ItemClickListener {
                         locationsModel.setPostcode(response.body().getData().get(p).getPostcode());
                         cityArrayList.add(locationsModel);
                     }
-                    if (cityArrayList.size() > 0)
+                    if (cityArrayList.size() == 1) {
+                        shared.setCity(cityArrayList.get(0).getCity());
+                        shared.setZipCode(cityArrayList.get(0).getPostcode());
+                        if (shared.getCity().length() > 0) {
+                            selectedLocation.setText(shared.getCity().substring(0, 1).toUpperCase() + shared.getCity().substring(1, shared.getCity().toString().length()));
+                        }
+                        Toast.makeText(context, "Currently we are serving in only one location", Toast.LENGTH_LONG).show();
+                    } else if (cityArrayList.size() > 0) {
                         selectCity(cityArrayList);
+                    }
 
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -273,7 +354,6 @@ public class AccountFragment extends Fragment implements ItemClickListener {
             }
         });
     }
-
 
     public void selectCity(ArrayList<LocationsModel> tempCityArrayList) {
         citiesDialog = new Dialog(getActivity());
@@ -321,8 +401,6 @@ public class AccountFragment extends Fragment implements ItemClickListener {
 
                 shared.clearPreferences();
                 Toast.makeText(getActivity(), "Signout Successful", Toast.LENGTH_SHORT).show();
-                shared.setCity("Hyderabad");
-                shared.setZipCode("500081");
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

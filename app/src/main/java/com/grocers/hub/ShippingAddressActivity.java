@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +29,7 @@ import com.grocers.hub.constants.Shared;
 import com.grocers.hub.models.AddAddressRequest;
 import com.grocers.hub.models.FinalOrderResponse;
 import com.grocers.hub.models.GeneralResponse;
+import com.grocers.hub.models.LocationsModel;
 import com.grocers.hub.models.ShippingAddressRequest;
 import com.grocers.hub.models.ShippingResponse;
 import com.grocers.hub.models.UserAddressListModel;
@@ -63,6 +67,8 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
     ArrayList<UserAddressListModel> userAddressListModelArrayList;
     public static int selectedAddressPosition;
     AddressListAdapter addressListAdapter;
+    ArrayList<String> pincodesArrayList;
+    String pincodeSelected;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -116,6 +122,7 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         } else {
             Toast.makeText(ShippingAddressActivity.this, "Please check your internet connection", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     /*public void setShippingAddressServiceCall() {
@@ -262,6 +269,7 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
             HttpPost httpPost = new HttpPost("https://www.grocershub.in/homeapi/shippinginfo?token=" + shared.getToken());
             JSONObject mainObject = new JSONObject();
 
+            Log.v("url", "https://www.grocershub.in/homeapi/shippinginfo?token=" + shared.getToken());
             try {
                 JSONObject billing_address = new JSONObject();
                 billing_address.put("city", city);
@@ -351,62 +359,71 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         final EditText nameEditText = (EditText) addAddressDialog.findViewById(R.id.nameEditText);
         final EditText emailEditText = (EditText) addAddressDialog.findViewById(R.id.emailEditText);
         final EditText phoneEditText = (EditText) addAddressDialog.findViewById(R.id.phoneEditText);
-        final EditText pincodeEditText = (EditText) addAddressDialog.findViewById(R.id.pincodeEditText);
+        //final EditText pincodeEditText = (EditText) addAddressDialog.findViewById(R.id.pincodeEditText);
         final EditText addressEditText = (EditText) addAddressDialog.findViewById(R.id.addressEditText);
         final EditText cityEditText = (EditText) addAddressDialog.findViewById(R.id.cityEditText);
+        final AppCompatSpinner appCompatSpinner = (AppCompatSpinner) addAddressDialog.findViewById(R.id.pincodeSpinner);
+        pincodeSelected = "";
+        if (pincodesArrayList != null) {
+            ArrayAdapter<String> pincodeAdapter = new ArrayAdapter<String>(ShippingAddressActivity.this, android.R.layout.simple_spinner_item, pincodesArrayList);
+            pincodeAdapter.setDropDownViewResource(R.layout.spinner_text);
+            appCompatSpinner.setAdapter(pincodeAdapter);
+        }
+
+        appCompatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
+                                       long arg3) {
+                if (arg2 == 0) {
+                    pincodeSelected = "";
+                } else {
+                    pincodeSelected = pincodesArrayList.get(arg2);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        if (shared.getUserName().length() > 0) {
+            nameEditText.setText(shared.getUserName());
+            emailEditText.setText(shared.getUserEmail());
+            phoneEditText.setText(shared.getUserMobile());
+        }
 
         addAddressTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (cityEditText.getText().toString().length() > 0 && nameEditText.getText().toString().length() > 0 && emailEditText.getText().toString().length() > 0 && pincodeEditText.getText().toString().length() > 0 && addressEditText.getText().toString().length() > 0 && phoneEditText.getText().toString().length() > 0) {
-
-                    if (pincodeEditText.getText().toString().length() == 6) {
-
+                if (cityEditText.getText().toString().length() > 0 &&
+                        nameEditText.getText().toString().length() > 0 &&
+                        emailEditText.getText().toString().length() > 0 &&
+                        addressEditText.getText().toString().length() > 0 &&
+                        phoneEditText.getText().toString().length() > 0) {
+                    if (pincodeSelected.length() == 6) {
                         if (ghUtil.isValidEmail(emailEditText.getText().toString())) {
-
                             if (ghUtil.isValidPhone(phoneEditText.getText().toString())) {
-                                /*AddAddressRequest addAddressRequest = new AddAddressRequest();
-                                AddAddressRequest address = new AddAddressRequest();
-                                AddAddressRequest region = new AddAddressRequest();
-                                region.setRegion_code("TG");
-                                region.setRegion_id(564);
-
-                                address.setCustomer_id(Integer.parseInt(shared.getUserID()));
-                                address.setRegion(region);
-                                address.setRegion_id(0);
-                                address.setCountry_id("IN");
-                                address.setStreet(addressEditText.getText().toString());
-                                address.setTelephone(phoneEditText.getText().toString());
-                                address.setPostcode(pincodeEditText.getText().toString());
-                                address.setCity(cityEditText.getText().toString());
-                                address.setFirstname(nameEditText.getText().toString());
-                                address.setLastname(nameEditText.getText().toString());
-                                address.setDefault_billing(true);
-                                address.setDefault_shipping(true);
-
-
-                                addAddressRequest.setAddress(address);
-                                addAddressServiceCall(addAddressRequest);*/
                                 addAddressDialog.dismiss();
-                                addAddress(addressEditText.getText().toString(), phoneEditText.getText().toString(), pincodeEditText.getText().toString(), cityEditText.getText().toString(), nameEditText.getText().toString());
-
+                                addAddress(addressEditText.getText().toString(), phoneEditText.getText().toString(), pincodeSelected, cityEditText.getText().toString(), nameEditText.getText().toString());
                             } else {
                                 Toast.makeText(ShippingAddressActivity.this, "Please provide valid phone", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             Toast.makeText(ShippingAddressActivity.this, "Please provide valid email", Toast.LENGTH_SHORT).show();
                         }
-
                     } else {
                         Toast.makeText(ShippingAddressActivity.this, "Please provide valid pincode", Toast.LENGTH_SHORT).show();
                     }
-
                 } else {
                     Toast.makeText(context, "Please enter all values", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        addAddressDialog.show();
+        if (pincodesArrayList != null) {
+            addAddressDialog.show();
+        }
     }
 
     public void addAddressServiceCall(AddAddressRequest addAddressRequest) {
@@ -467,6 +484,7 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
                         addressRecyclerView.setVisibility(View.GONE);
                         noAddressTextView.setVisibility(View.VISIBLE);
                     }
+                    getLocations();
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -618,6 +636,33 @@ public class ShippingAddressActivity extends AppCompatActivity implements ItemCl
         }
         new AddAddressServiceCall().execute();
         ghUtil.showDialog(ShippingAddressActivity.this);
+    }
+
+    public void getLocations() {
+        ghUtil.showDialog(ShippingAddressActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<LocationsModel> loginResponseCall = service.getLocations();
+        loginResponseCall.enqueue(new Callback<LocationsModel>() {
+            @Override
+            public void onResponse(Call<LocationsModel> call, Response<LocationsModel> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    pincodesArrayList = new ArrayList<String>();
+                    pincodesArrayList.add("Select Pincode");
+                    for (int p = 0; p < response.body().getData().size(); p++) {
+                        pincodesArrayList.add(response.body().getData().get(p).getPostcode());
+                    }
+                } else {
+                    Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LocationsModel> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

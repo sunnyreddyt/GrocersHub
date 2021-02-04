@@ -396,9 +396,22 @@ public class CategoryProductsActivity extends AppCompatActivity implements ItemC
                             }
                         } else if (offlineCartProductList.get(q).getSkuID().equalsIgnoreCase(productsResponseArrayList.get(p).getSku())) {
                             productsResponseArrayList.get(p).setCartQuantity(offlineCartProductList.get(q).getQty());
-
                         }
                     }
+                }
+
+                for (int h = 0; h < productsResponseArrayList.size(); h++) {
+                    double originalPrice = productsResponseArrayList.get(h).getPrice();
+                    int originalPriceInt = (int) originalPrice;
+                    double discount = 0;
+                    if (originalPriceInt > 0) {
+                        double finalPrice = productsResponseArrayList.get(h).getFinalPrice();
+                        int finalPriceInt = (int) finalPrice;
+                        int decreaseAmount = originalPriceInt - finalPriceInt;
+                        double divisionValue = (double) decreaseAmount / originalPrice;
+                        discount = divisionValue * 100.0;
+                    }
+                    productsResponseArrayList.get(h).setDiscountPercentage(discount);
                 }
 
                 productsRecyclerView.setVisibility(View.VISIBLE);

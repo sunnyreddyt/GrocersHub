@@ -98,6 +98,14 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".SuggestionsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".SupportActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".instamojo.activities.PaymentDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SdkTheme">

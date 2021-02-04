@@ -62,11 +62,12 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
 
         ImageView productImageView, deleteImageView;
         CardView itemLayout;
-        TextView costTextView, addTextView, countTextView, deleteTextView, productNameTextView, productQuantityTextView, offerCostTextView;
+        TextView costTextView, offerTextView, addTextView, countTextView, deleteTextView, productNameTextView, productQuantityTextView, offerCostTextView;
 
         public MyViewHolder(View view) {
             super(view);
 
+            offerTextView = (TextView) view.findViewById(R.id.offerTextView);
             productImageView = (ImageView) view.findViewById(R.id.productImageView);
             addTextView = (TextView) view.findViewById(R.id.addTextView);
             itemLayout = (CardView) view.findViewById(R.id.itemLayout);
@@ -95,11 +96,30 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
         holder.productNameTextView.setText(cartResponseArrayList.get(position).getName());
         Picasso.get().load(cartResponseArrayList.get(position).getImage()).into(holder.productImageView);
         holder.offerCostTextView.setText(String.valueOf(cartResponseArrayList.get(position).getFinalPrice()));
-        holder.costTextView.setVisibility(View.INVISIBLE);
+        holder.costTextView.setText(String.valueOf(cartResponseArrayList.get(position).getPrice()));
+
+        double originalPrice = cartResponseArrayList.get(position).getPrice();
+        int originalPriceInt = (int) originalPrice;
+        if (originalPriceInt > 0) {
+            double finalPrice = cartResponseArrayList.get(position).getFinalPrice();
+            int finalPriceInt = (int) finalPrice;
+            int decreaseAmount = originalPriceInt - finalPriceInt;
+            double divisionValue = (double) decreaseAmount / originalPrice;
+            double discount = divisionValue * 100.0;
+            if ((int) discount > 0) {
+                holder.offerTextView.setText(String.valueOf((int) discount) + "% off");
+            }
+        }
+
+        if ((cartResponseArrayList.get(position).getFinalPrice() == cartResponseArrayList.get(position).getPrice()) || cartResponseArrayList.get(position).getPrice() == 0) {
+            holder.costTextView.setVisibility(View.INVISIBLE);
+            holder.offerTextView.setVisibility(View.INVISIBLE);
+        }
         holder.countTextView.setText(String.valueOf(cartResponseArrayList.get(position).getQty()));
         if (cartResponseArrayList.get(position).getDefault_title() != null && cartResponseArrayList.get(position).getDefault_title().length() > 0) {
             holder.productQuantityTextView.setText(cartResponseArrayList.get(position).getDefault_title());
         }
+
 
         /*if (position == 0) {
             CartActivity.totalAmount = 0;
@@ -149,7 +169,7 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
                 int price = (int) priceDouble;
                 int quantity = cartResponseArrayList.get(position).getQty();
                 int productPrice = price * quantity;
-               // CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
+                // CartActivity.totalAmount = CartActivity.totalAmount + productPrice;
 
                 int maxQuantityAllowed = cartResponseArrayList.get(position).getMaxQtyAllowed();
                 if (maxQuantityAllowed > count) {

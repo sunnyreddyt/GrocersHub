@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -19,6 +20,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.gson.Gson;
 import com.grocers.hub.R;
@@ -461,6 +464,20 @@ public class GHUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void noInternetConnectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Please check your internet connection");
+        builder.setCancelable(true);
+        builder.setPositiveButton(
+                "Okay",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.show();
     }
 
     public void dismissDialog() {

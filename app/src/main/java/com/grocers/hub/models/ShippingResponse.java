@@ -34,6 +34,7 @@ public class ShippingResponse {
     private ArrayList<ShippingResponse> items;
     private double item_id;
     private double price;
+    private double special_price;
     private double base_price;
     private double qty;
     private double row_total;
@@ -396,6 +397,13 @@ public class ShippingResponse {
         this.total_segments = total_segments;
     }
 
+    public double getSpecial_price() {
+        return special_price;
+    }
+
+    public void setSpecial_price(double special_price) {
+        this.special_price = special_price;
+    }
 
     public double getValue() {
         return value;

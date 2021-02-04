@@ -75,7 +75,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <!--<com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp">
@@ -97,7 +97,22 @@
                     app:fontFamily="@font/roboto" />
 
             </com.google.android.material.textfield.TextInputLayout>
+-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/item_border"
+                android:orientation="horizontal">
 
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/pincodeSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:gravity="center_vertical"
+                    android:tooltipText="Select Pincode" />
+
+            </RelativeLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -159,13 +174,13 @@
                     android:id="@+id/phoneEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:digits="0123456789"
                     android:hint="Phone"
                     android:imeOptions="actionDone"
                     android:inputType="phone"
                     android:maxEms="10"
                     android:maxLength="10"
                     android:maxLines="1"
-                    android:digits="0123456789"
                     android:paddingLeft="@dimen/_8sdp"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"

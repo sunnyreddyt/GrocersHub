@@ -52,15 +52,15 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout itemLayout, cartCountLayout;
-        RelativeLayout optionsLayout, cartAddLayout;
-        TextView productNameTextView, offerCostTextView, costTextView, addTextView, minusTextView, countTextView, plusTextView;
+        LinearLayout cartCountLayout;
+        RelativeLayout itemLayout, optionsLayout, cartAddLayout, discountLayout;
+        TextView discountTextView, productNameTextView, offerCostTextView, costTextView, addTextView, minusTextView, countTextView, plusTextView;
         ImageView productImageView;
         Spinner optionsSpinner;
 
         public MyViewHolder(View view) {
             super(view);
-            itemLayout = (LinearLayout) view.findViewById(R.id.itemLayout);
+            itemLayout = (RelativeLayout) view.findViewById(R.id.itemLayout);
             productNameTextView = (TextView) view.findViewById(R.id.productNameTextView);
             offerCostTextView = (TextView) view.findViewById(R.id.offerCostTextView);
             costTextView = (TextView) view.findViewById(R.id.costTextView);
@@ -73,6 +73,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
             countTextView = (TextView) view.findViewById(R.id.countTextView);
             plusTextView = (TextView) view.findViewById(R.id.plusTextView);
             cartCountLayout = (LinearLayout) view.findViewById(R.id.cartCountLayout);
+            discountLayout = (RelativeLayout) view.findViewById(R.id.discountLayout);
+            discountTextView = (TextView) view.findViewById(R.id.discountTextView);
         }
     }
 
@@ -271,6 +273,20 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
             double priceDouble = Double.parseDouble(productsResponseArrayList.get(position).getOptions().get(0).getPrice());
             int priceInt = (int) priceDouble;
 
+            double discount = 0;
+            if (priceInt > 0) {
+                int decreaseAmount = priceInt - optionalFinalPriceInteger;
+                double divisionValue = (double) decreaseAmount / priceInt;
+                discount = divisionValue * 100.0;
+            }
+            if (discount > 0) {
+                holder.discountLayout.setVisibility(View.VISIBLE);
+                holder.discountTextView.setText(String.valueOf((int) discount) + "% off");
+            } else {
+                holder.discountLayout.setVisibility(View.GONE);
+            }
+
+
             if (priceInt == productsResponseArrayList.get(position).getOptions().get(0).getFinalPrice()) {
                 holder.costTextView.setVisibility(View.GONE);
             }
@@ -310,6 +326,19 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
                         holder.costTextView.setVisibility(View.VISIBLE);
                     }
 
+                    double discount = 0;
+                    if (priceInt > 0) {
+                        int decreaseAmount = priceInt - finalPriceInteger;
+                        double divisionValue = (double) decreaseAmount / priceInt;
+                        discount = divisionValue * 100.0;
+                    }
+                    if (discount > 0) {
+                        holder.discountLayout.setVisibility(View.VISIBLE);
+                        holder.discountTextView.setText(String.valueOf((int) discount) + "% off");
+                    } else {
+                        holder.discountLayout.setVisibility(View.GONE);
+                    }
+
                     if (productsResponseArrayList.get(position).getOptions().get(i).getCartQuantity() > 0) {
                         holder.cartCountLayout.setVisibility(View.VISIBLE);
                         holder.cartAddLayout.setVisibility(View.GONE);
@@ -331,6 +360,24 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
         } else {
             holder.optionsSpinner.setVisibility(View.INVISIBLE);
             holder.optionsLayout.setVisibility(View.INVISIBLE);
+
+            double originalPrice = productsResponseArrayList.get(position).getPrice();
+            int originalPriceInt = (int) originalPrice;
+            double discount = 0;
+            if (originalPriceInt > 0) {
+                double finalPrice = productsResponseArrayList.get(position).getFinalPrice();
+                int finalPriceInt = (int) finalPrice;
+                int decreaseAmount = originalPriceInt - finalPriceInt;
+                double divisionValue = (double) decreaseAmount / originalPrice;
+                discount = divisionValue * 100.0;
+            }
+            if (discount > 0) {
+                holder.discountLayout.setVisibility(View.VISIBLE);
+                holder.discountTextView.setText(String.valueOf((int) discount) + "% off");
+            } else {
+                holder.discountLayout.setVisibility(View.GONE);
+            }
+
         }
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {

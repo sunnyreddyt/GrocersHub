@@ -74,14 +74,14 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
     ImageView backImageView;
     RecyclerView paymentMethodsRecyclerView, productsRecyclerView;
     GHUtil ghUtil;
-    TextView orderTextView, couponMessageTextView, couponTotalTextView, subTotalTextView, discountTextView, shippingTextView, taxTextView, grandTotalTextView, applyCouponTextView;
+    TextView orderTextView, totalDiscountTextView, orderDiscountTextView, couponMessageTextView, subTotalTextView, couponDiscountTextView, shippingTextView, taxTextView, amountPayableTextView, grandTotalTextView, applyCouponTextView;
     Context context;
     Shared shared;
+    LinearLayout shippingLayout, taxLayout, couponDiscountLayout;
     String quoteID = "", orderID = "";
     String email, phone, postcode, address, name;
     Dialog couponDialog, orderSuccessDialog;
     String selectedPaymentMethod = "";
-    LinearLayout couponAmountLayout;
     public static int selectedPaymentPosition = -1;
     PaymentAdapter paymentAdapter;
     ShippingResponse shippingResponse;
@@ -102,19 +102,23 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         context = CheckoutActivity.this;
         ghUtil = GHUtil.getInstance(CheckoutActivity.this);
 
+        totalDiscountTextView = (TextView) findViewById(R.id.totalDiscountTextView);
         orderTextView = (TextView) findViewById(R.id.orderTextView);
         backImageView = (ImageView) findViewById(R.id.backImageView);
         productsRecyclerView = (RecyclerView) findViewById(R.id.productsRecyclerView);
         paymentMethodsRecyclerView = (RecyclerView) findViewById(R.id.paymentMethodsRecyclerView);
-        discountTextView = (TextView) findViewById(R.id.discountTextView);
+        couponDiscountTextView = (TextView) findViewById(R.id.couponDiscountTextView);
+        couponDiscountLayout = (LinearLayout) findViewById(R.id.couponDiscountLayout);
         shippingTextView = (TextView) findViewById(R.id.shippingTextView);
         applyCouponTextView = (TextView) findViewById(R.id.applyCouponTextView);
         taxTextView = (TextView) findViewById(R.id.taxTextView);
+        amountPayableTextView = (TextView) findViewById(R.id.amountPayableTextView);
         grandTotalTextView = (TextView) findViewById(R.id.grandTotalTextView);
         subTotalTextView = (TextView) findViewById(R.id.subTotalTextView);
         couponMessageTextView = (TextView) findViewById(R.id.couponMessageTextView);
-        couponAmountLayout = (LinearLayout) findViewById(R.id.couponAmountLayout);
-        couponTotalTextView = (TextView) findViewById(R.id.couponTotalTextView);
+        shippingLayout = (LinearLayout) findViewById(R.id.shippingLayout);
+        taxLayout = (LinearLayout) findViewById(R.id.taxLayout);
+        orderDiscountTextView = (TextView) findViewById(R.id.orderDiscountTextView);
 
         mCurrentEnv = Instamojo.Environment.PRODUCTION;
         Instamojo.getInstance().initialize(CheckoutActivity.this, mCurrentEnv);
@@ -151,12 +155,41 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
         OrderProductsAdapter orderProductsAdapter = new OrderProductsAdapter(CheckoutActivity.this, shippingResponse.getTotals().getItems());
         productsRecyclerView.setAdapter(orderProductsAdapter);
 
-        subTotalTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getBase_subtotal()));
-        discountTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getDiscount_amount()));
-        shippingTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getBase_shipping_amount()));
-        taxTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getTax_amount()));
+        subTotalTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getSubtotal_incl_tax()));
+        if (shippingResponse.getTotals().getDiscount_amount() > 0) {
+            couponDiscountLayout.setVisibility(View.VISIBLE);
+            couponDiscountTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getDiscount_amount()));
+        } else {
+            couponDiscountLayout.setVisibility(View.GONE);
+        }
+        if (shippingResponse.getTotals().getBase_shipping_amount() > 0) {
+            shippingTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getBase_shipping_amount()));
+            shippingLayout.setVisibility(View.VISIBLE);
+        }
+        if (shippingResponse.getTotals().getTax_amount() > 0) {
+            taxTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getTax_amount()));
+            taxLayout.setVisibility(View.VISIBLE);
+        }
+        amountPayableTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getGrand_total()));
         grandTotalTextView.setText("₹ " + String.valueOf(shippingResponse.getTotals().getGrand_total()));
         orderAmount = String.valueOf(shippingResponse.getTotals().getGrand_total());
+
+        int totalDiscounts = 0;
+
+        for (int i = 0; i < shippingResponse.getTotals().getItems().size(); i++) {
+            double specialPrice = shippingResponse.getTotals().getItems().get(i).getSpecial_price();
+            int specialPriceInt = (int) specialPrice;
+            int quant = (int) shippingResponse.getTotals().getItems().get(i).getQty();
+            int specialPriceProductTotal = quant * specialPriceInt;
+            totalDiscounts = totalDiscounts + specialPriceProductTotal;
+        }
+        orderDiscountTextView.setText("₹ " + String.valueOf(totalDiscounts));
+        if (totalDiscounts > 0) {
+            totalDiscountTextView.setText("Your savings on this order ₹" + String.valueOf(totalDiscounts));
+        } else {
+            totalDiscountTextView.setVisibility(View.GONE);
+        }
+
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -397,20 +430,24 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                     couponDialog.dismiss();
 
                     if (response.body().getCartDetails() != null && response.body().getStatus() == 200) {
-                         discountTextView.setText("₹ " + String.valueOf(response.body().getCartDetails().getBase_shipping_amount()));
                         //shippingTextView.setText("₹ " + String.valueOf(response.body().getCartDetails().getBase_shipping_amount()));
                         // taxTextView.setText("₹ " + String.valueOf(response.body().getTotals().getBase_tax_amount()));
-                        grandTotalTextView.setText("₹ " + String.valueOf(response.body().getCartDetails().getBase_subtotal_with_discount()));
+                        amountPayableTextView.setText("₹ " + String.valueOf(response.body().getCartDetails().getBase_subtotal_with_discount()));
 
                         couponMessageTextView.setText("Coupon Applied: " + response.body().getCartDetails().getCoupon_code());
                         couponMessageTextView.setTextColor(Color.parseColor("#01d365"));
+
+                        int baseTotalWithDiscount = (int) response.body().getCartDetails().getBase_subtotal_with_discount();
+
+                        int discountApplied = (int) (Double.parseDouble(orderAmount) - baseTotalWithDiscount);
+                        couponDiscountLayout.setVisibility(View.VISIBLE);
+                        couponDiscountTextView.setText("₹ " + String.valueOf(discountApplied));
 
                     } else {
                         couponMessageTextView.setText(couponCode + " " + response.body().getMessage());
                         couponMessageTextView.setTextColor(Color.parseColor("#ff0013"));
                     }
                     couponMessageTextView.setVisibility(View.VISIBLE);
-                    couponTotalTextView.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
                 }
@@ -846,8 +883,7 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                             } else {
                                 orderSuccessDialog(finalOrderResponseDup);
                             }
-                        }
-                        else{
+                        } else {
                             if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
                                 Toast.makeText(context, "Order placing failed, please contact customer care if money got decucted", Toast.LENGTH_SHORT).show();
                             } else {
@@ -861,7 +897,8 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                             Toast.makeText(context, "Order placing failed, please contact customer care if money got decucted", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(context, "Order placing failed", Toast.LENGTH_SHORT).show();
-                        }                    }
+                        }
+                    }
 
                 } else {
                     if (selectedPaymentMethod.equalsIgnoreCase("instamojo")) {
@@ -877,7 +914,8 @@ public class CheckoutActivity extends AppCompatActivity implements ItemClickList
                     Toast.makeText(context, "Order placing failed, please contact customer care if money got decucted", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "Order placing failed", Toast.LENGTH_SHORT).show();
-                }                e.printStackTrace();
+                }
+                e.printStackTrace();
             }
 
         }

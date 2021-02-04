@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/background_color">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:layout_marginBottom="@dimen/_3sdp"
         android:paddingTop="@dimen/_8sdp"
         android:paddingLeft="@dimen/_6sdp"
         android:paddingRight="@dimen/_6sdp"
         android:paddingBottom="@dimen/_8sdp"
-        android:elevation="@dimen/_1sdp"
         android:weightSum="1">
 
         <LinearLayout
@@ -27,7 +26,7 @@
                 android:id="@+id/productNameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
+                android:fontFamily="@font/roboto"
                 android:text="Salt 1 Kg"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_11sdp" />
@@ -37,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Qty: 1"
+                android:fontFamily="@font/roboto"
                 android:textSize="@dimen/_10sdp" />
 
         </LinearLayout>
@@ -50,16 +50,40 @@
             android:text=":"
             android:textSize="@dimen/_10sdp" />
 
-        <TextView
-            android:id="@+id/costTextView"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:gravity="center|right"
-            android:paddingLeft="@dimen/_3sdp"
-            android:textSize="@dimen/_10sdp" />
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/costTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|right"
+                android:fontFamily="@font/roboto"
+                android:paddingLeft="@dimen/_3sdp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10sdp" />
+
+            <TextView
+                android:id="@+id/originalPriceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center|right"
+                android:layout_gravity="right"
+                android:fontFamily="@font/roboto"
+                android:background="@drawable/strike_through"
+                android:paddingLeft="@dimen/_3sdp"
+                android:textSize="@dimen/_10sdp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/background_color" />
+
+</LinearLayout>

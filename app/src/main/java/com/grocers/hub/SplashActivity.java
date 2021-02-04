@@ -1,9 +1,12 @@
 package com.grocers.hub;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.LabeledIntent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +37,7 @@ import com.grocers.hub.adapters.CityListAdapter;
 import com.grocers.hub.adapters.ItemClickListener;
 import com.grocers.hub.constants.Shared;
 import com.grocers.hub.fragments.MainActivity;
+import com.grocers.hub.models.GeneralResponse;
 import com.grocers.hub.models.LocationsModel;
 import com.grocers.hub.network.APIInterface;
 import com.grocers.hub.network.ApiClient;
@@ -180,14 +185,16 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
 
     public void mainCode() {
         if (shared.getCity() != null && shared.getCity().length() > 0) {
-            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            if (ghUtil.isConnectingToInternet()) {
+                versionCheck();
+            } else {
+                ghUtil.noInternetConnectionDialog();
+            }
         } else {
             if (ghUtil.isConnectingToInternet()) {
                 getLocations();
             } else {
-                Toast.makeText(SplashActivity.this, "Please check internet connection", Toast.LENGTH_SHORT).show();
+                ghUtil.noInternetConnectionDialog();
             }
         }
     }
@@ -233,8 +240,14 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
                         locationsModel.setPostcode(response.body().getData().get(p).getPostcode());
                         cityArrayList.add(locationsModel);
                     }
-                    if (cityArrayList.size() > 0)
+                    if (cityArrayList.size() == 1) {
+                        shared.setCity(cityArrayList.get(0).getCity());
+                        shared.setZipCode(cityArrayList.get(0).getPostcode());
+                        Toast.makeText(context, "Currently we are serving in only one location", Toast.LENGTH_LONG).show();
+                        mainCode();
+                    } else if (cityArrayList.size() > 0) {
                         selectCity(cityArrayList);
+                    }
 
                 } else {
                     Toast.makeText(context, "Something went wrong, please try after sometime", Toast.LENGTH_LONG).show();
@@ -278,5 +291,59 @@ public class SplashActivity extends AppCompatActivity implements ActivityCompat.
             openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
             startActivity(openInChooser);
         }
+    }
+
+    public void versionCheck() {
+        ghUtil.showDialog(SplashActivity.this);
+        APIInterface service = ApiClient.getClient().create(APIInterface.class);
+        Call<GeneralResponse> loginResponseCall = service.getVersion();
+        loginResponseCall.enqueue(new Callback<GeneralResponse>() {
+            @Override
+            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+                ghUtil.dismissDialog();
+                if (response.code() == 200) {
+                    try {
+                        PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+                        String version = pInfo.versionName;
+                        if (version.equals(response.body().getUpdated_version())) {
+                            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setMessage("Please updated app for best user experience");
+                            builder.setCancelable(true);
+
+                            builder.setPositiveButton(
+                                    "Yes",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
+                                            Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                                            goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                                                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                                                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                                            try {
+                                                startActivity(goToMarket);
+                                            } catch (ActivityNotFoundException e) {
+                                                startActivity(new Intent(Intent.ACTION_VIEW,
+                                                        Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
+                                            }
+                                        }
+                                    });
+                            builder.show();
+                        }
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeneralResponse> call, Throwable t) {
+                ghUtil.dismissDialog();
+                Toast.makeText(SplashActivity.this, "Something went wrong, please try after sometime", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

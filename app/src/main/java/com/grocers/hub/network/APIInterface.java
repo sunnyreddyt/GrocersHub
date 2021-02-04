@@ -25,6 +25,8 @@ import com.grocers.hub.models.QuoteIDResponse;
 import com.grocers.hub.models.ShippingAddressRequest;
 import com.grocers.hub.models.ShippingResponse;
 import com.grocers.hub.models.SimilarProductsResponse;
+import com.grocers.hub.models.SuggestionRequest;
+import com.grocers.hub.models.SupportResponse;
 import com.grocers.hub.models.UpdateCartRequest;
 import com.grocers.hub.models.UpdateOrderStatusRequest;
 import com.grocers.hub.models.UpdateOrderStatusResponse;
@@ -76,7 +78,6 @@ public interface APIInterface {
     @GET("homeapi/offersscreen?")
     Call<HomeResponse> getOffersDetails(@Query("zipcode") String zipcode);
 
-
     @Headers({"Accept: application/json"})
     @GET("homeapi/Categoryproducts?")
     Call<ProductsResponse> getProducts(@Query("categoryId") int categoryId, @Query("zipcode") String zipcode, @Query("p") int p, @Query("limit") int limit);
@@ -96,6 +97,10 @@ public interface APIInterface {
     @Headers({"Accept: application/json"})
     @GET("minOrder.php")
     Call<MinimumOrderResponse> getMinimumOrder();
+
+    @Headers({"Accept: application/json"})
+    @GET("contact_sugge_supp.php?type=support")
+    Call<SupportResponse> getSupportDetails();
 
     @Headers({"Accept: application/json"})
     @POST("rest/V1/carts/mine/items")
@@ -150,6 +155,16 @@ public interface APIInterface {
     Call<ApplyCouponResponse> applyCoupon(@Query("cartId") String cartId, @Query("couponCode") String couponCode);
 
     @Headers({"Accept: application/json"})
+    @POST("contact_sugge_supp.php?type=contactus")
+    Call<GeneralResponse> submitContactUsRequest(@Query("name") String name, @Query("phone") String phone,
+                                                 @Query("message") String message);
+
+    @Headers({"Accept: application/json"})
+    @POST("contact_sugge_supp.php?type=suggestion")
+    Call<GeneralResponse> submitSuggestion(@Query("name") String name, @Query("phone") String phone,
+                                           @Query("message") String message);
+
+    @Headers({"Accept: application/json"})
     @GET("rest/V1/coupons/search?")
     Call<CouponListResponseModel> getCoupons(@Header("Authorization") String auth, @Query("searchCriteria[sortOrders][0][field]") int field);
 
@@ -160,6 +175,10 @@ public interface APIInterface {
     @Headers({"Accept: application/json"})
     @GET("homeapi/Forgotpassword?")
     Call<GeneralResponse> forgotPassword(@Query("email") String email, @Query("token") String token);
+
+    @Headers({"Accept: application/json"})
+    @GET("app_version.php")
+    Call<GeneralResponse> getVersion();
 
 
 }
